@@ -1,0 +1,24 @@
+name: CI
+
+on: 
+    push:
+        branches:
+            - main
+    pull_request:
+        branches: 
+            - main
+    # can add tags if needed
+
+jobs: 
+    test: 
+        name: Test
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - uses: julia-actions/setup-julia@latest
+              with:
+                version: '1.7'
+            - name: Install test dependencies
+              run: julia --project=test/ -e 'using Pkg; Pkg.instantiate()'
+            - name: Run tests
+              run: julia --project=. -e 'using Pkg; Pkg.test()'
