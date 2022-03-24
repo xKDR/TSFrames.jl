@@ -53,10 +53,26 @@ function TS(coredata::DataFrame, index::UnitRange{Int}, meta::Dict=Dict{String, 
     TS(coredata, index_vals, meta)
 end
 
+# FIXME:
+# julia> TS(rand(10), index_vals)
+# ERROR: MethodError: no method matching TS(::Vector{Float64}, ::Vector{Int64})
+function TS(coredata::AbstractVector{T}, meta::Dict=Dict{String, Any}()) where {T}
+    index_vals = collect(Base.OneTo(length(coredata)))
+    df = DataFrame([coredata], :auto, copycols=true)
+    TS(df, index_vals, meta)
+end
+
+function TS(coredata::AbstractArray{T,2}, meta::Dict=Dict{String, Any}()) where {T}
+    index_vals = collect(Base.OneTo(length(coredata)))
+    df = DataFrame(coredata, :auto, copycols=true)
+    TS(df, index_vals, meta)
+end
+
 function Base.show(ts::TS)
-    print("Index:", ts.index, "\n")
-    print(ts.coredata, "\n")
-    print("Metadata:", ts.meta)
+    print(first(ts.coredata, 10), "\n")
+    print("Index col: ", ts.index, "\n")
+    print("Metadata: ", ts.meta)
+    print("Size: ", size(ts))
 end
 
 function Base.print(ts::TS)
@@ -100,7 +116,10 @@ end
 
 ## Row-column indexing
 function Base.getindex(ts::TS, i::Int, j::Int)
-    TS(ts.coredata[[i], [j-1]], ts.index, ts.meta) # j-1: index is always 1
+    if j == ts.index
+        error("j cannot be index column")
+    end
+    TS(ts.coredata[[i], Cols(ts.index, j)], ts.index, ts.meta)
 end
 
 function Base.getindex(ts::TS, i::Colon, j::Int)
@@ -109,19 +128,23 @@ function Base.getindex(ts::TS, i::Colon, j::Int)
     end
     TS(ts.coredata[:, [ts.index, j]], ts.index, ts.meta)
 end
+
+function Base.getindex(ts::TS, r::UnitRange, j::Int)
+    TS(ts.coredata[collect(r), j], ts.index, ts.meta)
+end
 ##
 
 function nrow(ts::TS)
-    nrow(ts.coredata)
+    size(ts.coredata)[1]
 end
 
 function ncol(ts::TS)
-    ncol(ts.coredata) - 1
+    size(ts.coredata)[2] - 1
 end
 
 function size(ts::TS)
-    nr = nrow(ts.coredata)
-    nc = ncol(ts.coredata) - 1  # minus the index
+    nr = nrow(ts)
+    nc = ncol(ts)
     (nr, nc)
 end
 
@@ -130,7 +153,7 @@ function toperiod(ts::TS, period, fun)
     idxConverted = Dates.value.(trunc.(ts.coredata[!, ts.index], period))
     # XXX: can we do without inserting a column?
     cd = copy(ts.coredata)
-    insertcols!(cd, ncol(cd), :idxConverted => idxConverted;
+    insertcols!(cd, size(cd)[2], :idxConverted => idxConverted;
                 after=true, copycols=true)
     gd = groupby(cd, :idxConverted, sort=true)
     idxname = Symbol(names(cd)[ts.index])
@@ -141,7 +164,7 @@ end
 function apply(ts::TS, period, fun, cols) # fun=mean,median,maximum,minimum; cols=[:a, :b]
     idxConverted = Dates.value.(trunc.(ts.coredata[!, ts.index], period))
     cd = copy(ts.coredata)
-    insertcols!(cd, ncol(cd), :idxConverted => idxConverted;
+    insertcols!(cd, size(cd)[2], :idxConverted => idxConverted;
                 after=true, copycols=true)
     idxname = Symbol(names(cd)[ts.index])
     gd = groupby(cd, :idxConverted, sort=true)
