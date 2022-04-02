@@ -3,6 +3,11 @@ uuid = "9f90e835-9451-4aaa-bcb1-743a1b8d2f84"
 authors = ["xKDR Forum"]
 version = "0.1.0"
 
+[deps]
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+ShiftedArrays = "1277b4bf-5013-50f5-be3d-901d8477a67a"
+
 [compat]
 julia = "1.7"
 
