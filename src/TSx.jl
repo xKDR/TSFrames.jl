@@ -3,6 +3,7 @@ module TSx
 using DataFrames, Dates, ShiftedArrays
 
 import Base.convert 
+import Base.diff
 import Base.filter
 import Base.getindex
 import Base.print
@@ -19,7 +20,7 @@ struct TS
     index :: Int              # column index
     meta :: Dict
     function isRegular(vals)
-        d = diff(vals)
+        d = Base.diff(vals)
         if all([i == d[1] for i in d])
             result = true
         else
