@@ -177,7 +177,7 @@ function apply(ts::TS, period, fun, cols) # fun=mean,median,maximum,minimum; col
 end
     
 function lag(ts::TS, lag_value::Int = 1)
-    sdf = DataFrame(Base.lag(Matrix(ts.coredata[:, Not(ts.index)]), 
+    sdf = DataFrame(ShiftedArrays.lag(Matrix(ts.coredata[:, Not(ts.index)]), 
                     lag_value))
     rename!(sdf, names(ts.coredata[:, Not(ts.index)]))
     insertcols!(sdf, ts.index, "Index", col = ts.coredata[ts.index])
