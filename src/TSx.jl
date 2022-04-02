@@ -58,7 +58,7 @@ struct TS
         if isRegular(ind)
             meta["regular"] = true
         end
-        meta["index_type"] = eltype(coredata[!, index])
+        meta["index_type"] = eltype(index)
         cd = copy(coredata)
         insertcols!(cd, 1, :Index => index; after=false, copycols=true)
         DataFrames.rename!(cd, index => :Index)
@@ -134,8 +134,13 @@ function Base.getindex(ts::TS, a::AbstractArray{Int64, 1})
     TS(ts.coredata[a, :], ts.index, ts.meta)
 end
 
+function Base.getindex(ts::TS, a::Date)
+    df = filter(x -> x.Index == d, ts.coredata)
+    TS(df, ts.index, ts.meta)
+end
+
 function Base.getindex(ts::TS, i::Any)
-    ind = findall(x -> x == TSx.convert(ts.meta["index_type"], i), ts.coredata[!, ts.index]) # XXX: may return duplicate indices
+    ind = findall(x -> x == TSx.convert(ts.meta["index_type"], i), ts.coredata[!, :Index]) # XXX: may return duplicate indices
     TS(ts.coredata[ind, :], ts.index, ts.meta)     # XXX: check if data is being copied
 end
 ##
@@ -175,7 +180,7 @@ function size(ts::TS)
 end
 
 # convert to period
-function toperiod(ts::TS, period, fun)
+function toperiod(ts::TS, period, fun) # fun: first(), last()
     idxConverted = Dates.value.(trunc.(ts.coredata[!, :Index], period))
     # XXX: can we do without inserting a column?
     cd = copy(ts.coredata)
