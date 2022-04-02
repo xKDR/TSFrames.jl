@@ -70,6 +70,10 @@ function TS(coredata::AbstractArray{T,2}, meta::Dict=Dict{String, Any}()) where 
     TS(df, index_vals, meta)
 end
 
+function indexcol(ts::TS)
+    ts.coredata[!, ts.index]
+end
+
 function Base.show(ts::TS)
     print(first(ts.coredata, 10), "\n")
     print("Index col: ", ts.index, "\n")
@@ -173,7 +177,7 @@ function apply(ts::TS, period, fun, cols) # fun=mean,median,maximum,minimum; col
 end
     
 function lag(ts::TS, lag_value::Int = 1)
-    sdf = DataFrame(lag(Matrix(ts.coredata[:, Not(ts.index)]), 
+    sdf = DataFrame(Base.lag(Matrix(ts.coredata[:, Not(ts.index)]), 
                     lag_value))
     rename!(sdf, names(ts.coredata[:, Not(ts.index)]))
     insertcols!(sdf, ts.index, "Index", col = ts.coredata[ts.index])
@@ -188,7 +192,7 @@ function diff(ts::TS, periods::Int = 1, differences::Int = 1)
     end
     ddf = ts.coredata
     for _ in 1:differences
-        ddf = ddf[:, Not(ts.index)] .- lag(ts, periods).coredata[:, Not(ts.index)]
+        ddf = ddf[:, Not(ts.index)] .- TSx.lag(ts, periods).coredata[:, Not(ts.index)]
     end
     insertcols!(ddf, ts.index, "Index", col = ts.coredata[ts.index])
     TS(ddf, ts.index, ts.meta)
@@ -198,7 +202,7 @@ function pctchange(ts::TS, periods::Int = 1)
     if periods <= 0
         error("periods must be a positive int")
     end
-    ddf = (ts.coredata[:, Not(ts.index)] ./ lag(ts, periods).coredata[:, Not(ts.index)]) .- 1
+    ddf = (ts.coredata[:, Not(ts.index)] ./ TSx.lag(ts, periods).coredata[:, Not(ts.index)]) .- 1
     insertcols!(ddf, ts.index, "Index", col = ts.coredata[ts.index])
     TS(ddf, ts.index, ts.meta)
 end
