@@ -1,6 +1,6 @@
 module TSx
 
-using DataFrames, Dates
+using DataFrames, Dates, ShiftedArrays
 
 import Base.convert 
 import Base.filter
@@ -170,5 +170,37 @@ function apply(ts::TS, period, fun, cols) # fun=mean,median,maximum,minimum; col
     res = combine(gd, cols .=> fun) # TODO: add the (period-based) index
     res[!, Not(:idxConverted)]
 end
+    
+function lag(ts::TS, lag_value::Int = 1)
+    sdf = DataFrame(lag(Matrix(ts.coredata[:, Not(ts.index)]), 
+                    lag_value))
+    rename!(sdf, names(ts.coredata[:, Not(ts.index)]))
+    insertcols!(sdf, ts.index, "Index", col = ts.coredata[ts.index])
+    TS(sdf, ts.index, ts.meta)
+end
+
+function diff(ts::TS, periods::Int = 1, differences::Int = 1)
+    if periods <= 0
+        error("periods must be a postive int")
+    elseif differences <= 0
+        error("differences must be a positive int")
+    end
+    ddf = ts.coredata
+    for _ in 1:differences
+        ddf = ddf[:, Not(ts.index)] .- lag(ts, periods).coredata[:, Not(ts.index)]
+    end
+    insertcols!(ddf, ts.index, "Index", col = ts.coredata[ts.index])
+    TS(ddf, ts.index, ts.meta)
+end
+
+function pctchange(ts::TS, periods::Int = 1)
+    if periods <= 0
+        error("periods must be a positive int")
+    end
+    ddf = (ts.coredata[:, Not(ts.index)] ./ lag(ts, periods).coredata[:, Not(ts.index)]) .- 1
+    insertcols!(ddf, ts.index, "Index", col = ts.coredata[ts.index])
+    TS(ddf, ts.index, ts.meta)
+end
+
 
 end                             # END module TSx
