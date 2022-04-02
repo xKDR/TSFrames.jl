@@ -6,6 +6,7 @@ import Base.convert
 import Base.diff
 import Base.filter
 import Base.getindex
+import Base.names
 import Base.print
 import Base.==
 import Base.show
@@ -13,7 +14,20 @@ import Base.size
 
 import Dates.Period
 
-export TS, convert, getindex, nrow, ncol, size, toperiod, apply
+export TS,
+    apply,
+    convert,
+    diff,
+    getindex,
+    lag,
+    names,
+    nrow,
+    ncol,
+    pctchange,
+    print,
+    show,
+    size,
+    toperiod
 
 struct TS
     coredata :: DataFrame
@@ -36,6 +50,7 @@ struct TS
         end
         meta["index_type"] = eltype(coredata[!, index])
         cd = copy(coredata)
+        DataFrames.rename!(cd, index => :Index)
         new(sort(cd, index), index, meta)
     end
     function TS(coredata::DataFrame, index::AbstractArray{T}, meta::Dict=Dict{String, Any}()) where {T<:Int}
@@ -45,7 +60,8 @@ struct TS
         end
         meta["index_type"] = eltype(coredata[!, index])
         cd = copy(coredata)
-        insertcols!(cd, 1, :index => index; after=false, copycols=true)
+        insertcols!(cd, 1, :Index => index; after=false, copycols=true)
+        DataFrames.rename!(cd, index => :Index)
         new(sort(cd, index), 1, meta)
     end
 end
@@ -71,7 +87,11 @@ function TS(coredata::AbstractArray{T,2}, meta::Dict=Dict{String, Any}()) where 
 end
 
 function indexcol(ts::TS)
-    ts.coredata[!, ts.index]
+    ts.coredata[!, :Index]
+end
+
+function names(ts::TS)
+    names(ts.coredata[!, Not(:Index)])
 end
 
 function Base.show(ts::TS)
@@ -125,7 +145,7 @@ function Base.getindex(ts::TS, i::Int, j::Int)
     if j == ts.index
         error("j cannot be index column")
     end
-    TS(ts.coredata[[i], Cols(ts.index, j)], ts.index, ts.meta)
+    TS(ts.coredata[[i], Cols(:Index, j)], ts.index, ts.meta)
 end
 
 function Base.getindex(ts::TS, i::Colon, j::Int)
@@ -156,7 +176,7 @@ end
 
 # convert to period
 function toperiod(ts::TS, period, fun)
-    idxConverted = Dates.value.(trunc.(ts.coredata[!, ts.index], period))
+    idxConverted = Dates.value.(trunc.(ts.coredata[!, :Index], period))
     # XXX: can we do without inserting a column?
     cd = copy(ts.coredata)
     insertcols!(cd, size(cd)[2], :idxConverted => idxConverted;
@@ -167,7 +187,7 @@ function toperiod(ts::TS, period, fun)
 end
 
 function apply(ts::TS, period, fun, cols) # fun=mean,median,maximum,minimum; cols=[:a, :b]
-    idxConverted = Dates.value.(trunc.(ts.coredata[!, ts.index], period))
+    idxConverted = Dates.value.(trunc.(ts.coredata[!, :Index], period))
     cd = copy(ts.coredata)
     insertcols!(cd, size(cd)[2], :idxConverted => idxConverted;
                 after=true, copycols=true)
@@ -175,12 +195,12 @@ function apply(ts::TS, period, fun, cols) # fun=mean,median,maximum,minimum; col
     res = combine(gd, cols .=> fun) # TODO: add the (period-based) index
     res[!, Not(:idxConverted)]
 end
-    
+
 function lag(ts::TS, lag_value::Int = 1)
-    sdf = DataFrame(ShiftedArrays.lag(Matrix(ts.coredata[:, Not(ts.index)]), 
+    sdf = DataFrame(ShiftedArrays.lag(Matrix(ts.coredata[:, Not(:Index)]), 
                     lag_value))
-    rename!(sdf, names(ts.coredata[:, Not(ts.index)]))
-    insertcols!(sdf, ts.index, "Index", col = ts.coredata[ts.index])
+    rename!(sdf, names(ts.coredata[:, Not(:Index)]))
+    insertcols!(sdf, ts.index, "Index", col = ts.coredata[!, :Index])
     TS(sdf, ts.index, ts.meta)
 end
 
@@ -192,9 +212,9 @@ function diff(ts::TS, periods::Int = 1, differences::Int = 1)
     end
     ddf = ts.coredata
     for _ in 1:differences
-        ddf = ddf[:, Not(ts.index)] .- TSx.lag(ts, periods).coredata[:, Not(ts.index)]
+        ddf = ddf[:, Not(:Index)] .- TSx.lag(ts, periods).coredata[:, Not(:Index)]
     end
-    insertcols!(ddf, ts.index, "Index", col = ts.coredata[ts.index])
+    insertcols!(ddf, ts.index, "Index", col = ts.coredata[!, :Index])
     TS(ddf, ts.index, ts.meta)
 end
 
@@ -202,8 +222,8 @@ function pctchange(ts::TS, periods::Int = 1)
     if periods <= 0
         error("periods must be a positive int")
     end
-    ddf = (ts.coredata[:, Not(ts.index)] ./ TSx.lag(ts, periods).coredata[:, Not(ts.index)]) .- 1
-    insertcols!(ddf, ts.index, "Index", col = ts.coredata[ts.index])
+    ddf = (ts.coredata[:, Not(:Index)] ./ TSx.lag(ts, periods).coredata[:, Not(:Index)]) .- 1
+    insertcols!(ddf, ts.index, "Index", col = ts.coredata[:Index])
     TS(ddf, ts.index, ts.meta)
 end
 
