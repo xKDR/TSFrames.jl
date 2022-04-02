@@ -7,6 +7,7 @@ import Base.filter
 import Base.getindex
 import Base.print
 import Base.==
+import Base.show
 import Base.size
 
 import Dates.Period
@@ -156,7 +157,6 @@ function toperiod(ts::TS, period, fun)
     insertcols!(cd, size(cd)[2], :idxConverted => idxConverted;
                 after=true, copycols=true)
     gd = groupby(cd, :idxConverted, sort=true)
-    idxname = Symbol(names(cd)[ts.index])
     resgd = [fun(x) for x in gd]
     TS(DataFrame(resgd)[!, Not(:idxConverted)], ts.index, ts.meta)
 end
@@ -166,7 +166,6 @@ function apply(ts::TS, period, fun, cols) # fun=mean,median,maximum,minimum; col
     cd = copy(ts.coredata)
     insertcols!(cd, size(cd)[2], :idxConverted => idxConverted;
                 after=true, copycols=true)
-    idxname = Symbol(names(cd)[ts.index])
     gd = groupby(cd, :idxConverted, sort=true)
     res = combine(gd, cols .=> fun) # TODO: add the (period-based) index
     res[!, Not(:idxConverted)]
