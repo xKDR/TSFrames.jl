@@ -95,10 +95,10 @@ function names(ts::TS)
 end
 
 function Base.show(ts::TS)
-    print(first(ts.coredata, 10), "\n")
-    print("Index col: ", ts.index, "\n")
-    print("Metadata: ", ts.meta)
-    print("Size: ", size(ts))
+    println(first(ts.coredata, 10))
+    println("Index col: ", ts.index)
+    println("Metadata: ", ts.meta)
+    println("Size: ", size(ts))
 end
 
 function Base.print(ts::TS)
@@ -135,7 +135,7 @@ function Base.getindex(ts::TS, a::AbstractArray{Int64, 1})
 end
 
 function Base.getindex(ts::TS, i::Any)
-    ind = findall(x -> x == convert(ts.meta["index_type"], i), ts.coredata[!, ts.index]) # XXX: may return duplicate indices
+    ind = findall(x -> x == TSx.convert(ts.meta["index_type"], i), ts.coredata[!, ts.index]) # XXX: may return duplicate indices
     TS(ts.coredata[ind, :], ts.index, ts.meta)     # XXX: check if data is being copied
 end
 ##
