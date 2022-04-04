@@ -107,6 +107,9 @@ end
 
 ## Date-time type conversions for indexing
 function convert(::Type{Date}, str::String)
+    # sp = split("2007-01", '-')
+    # l = length(sp)
+    # if
     Date(Dates.parse_components(str, Dates.dateformat"yyyy-mm-dd")...)
 end
 
@@ -180,14 +183,17 @@ function size(ts::TS)
 end
 
 # convert to period
-function toperiod(ts::TS, period, fun) # fun: first(), last()
+function toperiod(ts::TS, period, fun, ohlc=false) # fun: first(), last(), maximum(), minimum()
     idxConverted = Dates.value.(trunc.(ts.coredata[!, :Index], period))
     # XXX: can we do without inserting a column?
     cd = copy(ts.coredata)
     insertcols!(cd, size(cd)[2], :idxConverted => idxConverted;
                 after=true, copycols=true)
-    gd = groupby(cd, :idxConverted, sort=true)
-    resgd = [fun(x) for x in gd]
+    gd = groupby(cd, :idxConverted, sort=true) # XXX: second arg could be another var
+    if ohlc = false
+        resgd = combine(gd, :dates => fun, :data => fun)
+    else
+        resgd = combine(gd, :dates => last, :data => [first, last, maximum, minimum])
     TS(DataFrame(resgd)[!, Not(:idxConverted)], ts.index, ts.meta)
 end
 
@@ -197,7 +203,7 @@ function apply(ts::TS, period, fun, cols) # fun=mean,median,maximum,minimum; col
     insertcols!(cd, size(cd)[2], :idxConverted => idxConverted;
                 after=true, copycols=true)
     gd = groupby(cd, :idxConverted, sort=true)
-    res = combine(gd, cols .=> fun) # TODO: add the (period-based) index
+    res = combine(gd, :Index => last, cols .=> fun) # TODO: add the (period-based) index
     res[!, Not(:idxConverted)]
 end
     
@@ -232,5 +238,10 @@ function pctchange(ts::TS, periods::Int = 1)
     TS(ddf, ts.index, ts.meta)
 end
 
+function computelogreturns(ts::TS)
+    combine(ts.coredata,
+            :Index => (x -> x[2:length(x)]) => :Index,
+            Not(:Index) => (x -> diff(log.(x))) => :logreturns)
+end
 
 end                             # END module TSx
