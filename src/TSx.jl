@@ -194,6 +194,7 @@ function toperiod(ts::TS, period, fun, ohlc=false) # fun: first(), last(), maxim
         resgd = combine(gd, :dates => fun, :data => fun)
     else
         resgd = combine(gd, :dates => last, :data => [first, last, maximum, minimum])
+    end
     TS(DataFrame(resgd)[!, Not(:idxConverted)], ts.index, ts.meta)
 end
 
@@ -238,7 +239,7 @@ function pctchange(ts::TS, periods::Int = 1)
     TS(ddf, ts.index, ts.meta)
 end
 
-function computelogreturns(ts::TS)
+    function computelogreturns(ts::TS)
     combine(ts.coredata,
             :Index => (x -> x[2:length(x)]) => :Index,
             Not(:Index) => (x -> diff(log.(x))) => :logreturns)
