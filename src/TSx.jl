@@ -191,9 +191,9 @@ function toperiod(ts::TS, period, fun, ohlc=false) # fun: first(), last(), maxim
                 after=true, copycols=true)
     gd = groupby(cd, :idxConverted, sort=true) # XXX: second arg could be another var
     if ohlc == false
-        resgd = combine(gd, :dates => fun, :data => fun)
+        resgd = combine(gd, :Index => fun, :data => fun)
     else
-        resgd = combine(gd, :dates => last, :data => [first, last, maximum, minimum])
+        resgd = combine(gd, :Index => last, :data => [first, last, maximum, minimum])
     end
     TS(DataFrame(resgd)[!, Not(:idxConverted)], ts.index, ts.meta)
 end
