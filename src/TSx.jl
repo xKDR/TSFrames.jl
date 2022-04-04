@@ -190,7 +190,7 @@ function toperiod(ts::TS, period, fun, ohlc=false) # fun: first(), last(), maxim
     insertcols!(cd, size(cd)[2], :idxConverted => idxConverted;
                 after=true, copycols=true)
     gd = groupby(cd, :idxConverted, sort=true) # XXX: second arg could be another var
-    if ohlc = false
+    if ohlc == false
         resgd = combine(gd, :dates => fun, :data => fun)
     else
         resgd = combine(gd, :dates => last, :data => [first, last, maximum, minimum])
