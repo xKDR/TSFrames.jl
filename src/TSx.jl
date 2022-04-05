@@ -218,11 +218,9 @@ function apply(ts::TS, period, fun, cols) # fun=mean,median,maximum,minimum; col
     res = combine(gd, :Index => last, cols .=> fun) # TODO: add the (period-based) index
     res[!, Not(:idxConverted)]
 end
-    
+
 function lag(ts::TS, lag_value::Int = 1)
-    sdf = DataFrame(ShiftedArrays.lag(Matrix(ts.coredata[:, Not(:Index)]), 
-                    lag_value))
-    rename!(sdf, names(ts.coredata[:, Not(:Index)]))
+    sdf = DataFrame(ShiftedArrays.lag.(eachcol(ts.coredata[!, Not(:Index)]), lag_value), TSx.names(ts))
     insertcols!(sdf, ts.index, :Index => ts.coredata[!, :Index])
     TS(sdf, ts.index, ts.meta)
 end
@@ -237,7 +235,7 @@ function diff(ts::TS, periods::Int = 1, differences::Int = 1)
     for _ in 1:differences
         ddf = ddf[:, Not(:Index)] .- TSx.lag(ts, periods).coredata[:, Not(:Index)]
     end
-    insertcols!(ddf, ts.index, "Index" => ts.coredata[!, :Index])
+    insertcols!(ddf, 1, "Index" => ts.coredata[!, :Index])
     TS(ddf, ts.index, ts.meta)
 end
 
@@ -246,7 +244,7 @@ function pctchange(ts::TS, periods::Int = 1)
         error("periods must be a positive int")
     end
     ddf = (ts.coredata[:, Not(:Index)] ./ TSx.lag(ts, periods).coredata[:, Not(:Index)]) .- 1
-    insertcols!(ddf, ts.index, "Index" => ts.coredata[:Index])
+    insertcols!(ddf, ts.index, "Index" => ts.coredata[!, :Index])
     TS(ddf, ts.index, ts.meta)
 end
 
