@@ -53,6 +53,17 @@ struct TS
         DataFrames.rename!(cd, index => :Index)
         new(sort(cd, index), index, meta)
     end
+    function TS(coredata::AbstractArray{V}, index::AbstractArray{T}, meta::Dict=Dict{String, Any}()) where {V, T<:Int}
+        ind = sort(index)
+        if isRegular(ind)
+            meta["regular"] = true
+        end
+        meta["index_type"] = eltype(index)
+        cd = copy(coredata)
+        df = DataFrame(cd, :auto)
+        insertcols!(cd, 1, :Index => index; after=false, copycols=true)
+        new(sort(cd, index), 1, meta)
+    end
     function TS(coredata::DataFrame, index::AbstractArray{T}, meta::Dict=Dict{String, Any}()) where {T<:Int}
         ind = sort(index)
         if isRegular(ind)
@@ -61,7 +72,6 @@ struct TS
         meta["index_type"] = eltype(index)
         cd = copy(coredata)
         insertcols!(cd, 1, :Index => index; after=false, copycols=true)
-        DataFrames.rename!(cd, index => :Index)
         new(sort(cd, index), 1, meta)
     end
 end
@@ -190,12 +200,13 @@ function toperiod(ts::TS, period, fun, ohlc=false) # fun: first(), last(), maxim
     insertcols!(cd, size(cd)[2], :idxConverted => idxConverted;
                 after=true, copycols=true)
     gd = groupby(cd, :idxConverted, sort=true) # XXX: second arg could be another var
+    resgd = nothing
     if ohlc == false
-        resgd = combine(gd, :Index => fun, :data => fun)
+        resgd = combine(gd, :Index => fun, Not(:Index) => fun)
     else
-        resgd = combine(gd, :Index => last, :data => [first, last, maximum, minimum])
+        resgd = combine(gd, :Index => last, Not(:Index) => [first, last, maximum, minimum])
     end
-    TS(DataFrame(resgd)[!, Not(:idxConverted)], ts.index, ts.meta)
+    TS(resgd[!, Not(:idxConverted)], ts.index, ts.meta)
 end
 
 function apply(ts::TS, period, fun, cols) # fun=mean,median,maximum,minimum; cols=[:a, :b]
@@ -239,7 +250,7 @@ function pctchange(ts::TS, periods::Int = 1)
     TS(ddf, ts.index, ts.meta)
 end
 
-    function computelogreturns(ts::TS)
+function computelogreturns(ts::TS)
     combine(ts.coredata,
             :Index => (x -> x[2:length(x)]) => :Index,
             Not(:Index) => (x -> diff(log.(x))) => :logreturns)
