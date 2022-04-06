@@ -1,6 +1,6 @@
 module TSx
 
-using DataFrames, Dates, ShiftedArrays
+using DataFrames, Dates, ShiftedArrays, RollingFunctions
 
 import Base.convert 
 import Base.diff
@@ -27,7 +27,8 @@ export TS,
     print,
     show,
     size,
-    toperiod
+    toperiod,
+    rollapply
 
 
 
@@ -261,6 +262,20 @@ function computelogreturns(ts::TS)
     combine(ts.coredata,
             :Index => (x -> x[2:length(x)]) => :Index,
             Not(:Index) => (x -> diff(log.(x))) => :logreturns)
+end
+
+######################
+# Rolling Function
+######################
+
+function rollapply(FUN::Function, ts::TS,column::Int, windowsize:: Int)
+    if windowsize < 1
+        error("windowsize must be positive")
+    end
+    res = RollingFunctions.rolling(FUN, ts.coredata[!,column], windowsize)
+    idx = TSx.indexcol(ts)[windowsize:end]
+    res_df = DataFrame(Index = idx,roll_fun = res)
+    return TS(res_df)
 end
 
 end                             # END module TSx
