@@ -163,6 +163,14 @@ function Base.getindex(ts::TS, i::Int, j::Int)
     end
     TS(ts.coredata[[i], Cols(:Index, j)])
 end
+    
+# Row-Range Column
+function Base.getindex(ts::TS,i::Union{Vector{Int16}, UnitRange{Int64}}, j::Int)
+    if j == 1
+        error("j cannot be index column")
+    end
+    return TS(ts.coredata[i, Cols(:Index,j)])
+end
 
 ##############################
 # Unfixed from this point down
