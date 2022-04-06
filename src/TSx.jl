@@ -30,7 +30,7 @@ export TS,
     toperiod
 
 
-    
+
 ####################################
 # The TS structure
 ####################################
@@ -164,31 +164,30 @@ function Base.getindex(ts::TS, i::Int, j::Int)
     TS(ts.coredata[[i], Cols(:Index, j)])
 end
 
-##############################
-# Unfixed from this point down
-##############################
-
-# By column
-function Base.getindex(ts::TS, i::Symbol, j::Int)
+# By row-range, column
+function Base.getindex(ts::TS, i::UnitRange, j::Int)
     if j == 1
-        error("j cannot be the index")
+        error("j cannot be index column")
     end
-    TS(ts.coredata[:, [:Index, j]], :Index)
-end
-
-function Base.getindex(ts::TS, r::UnitRange, j::Int)
-    TS(ts.coredata[collect(r), j], :Index)
+    return TS(ts.coredata[i, Cols(:Index,j)])
 end
 
 
+########################
+# Parameters
+########################
+
+# Number of rows
 function nrow(ts::TS)
     size(ts.coredata)[1]
 end
 
+# Number of columns
 function ncol(ts::TS)
     size(ts.coredata)[2] - 1
 end
 
+# Size of 
 function size(ts::TS)
     nr = nrow(ts)
     nc = ncol(ts)
@@ -217,6 +216,7 @@ function toperiod(ts::TS, period, fun)
     TS(DataFrame(resgd)[!, Not(:idxConverted)], :Index)
 end
 
+# Apply
 function apply(ts::TS, period, fun, cols) # fun=mean,median,maximum,minimum; cols=[:a, :b]
     idxConverted = Dates.value.(trunc.(ts.coredata[!, :Index], period))
     cd = copy(ts.coredata)
@@ -227,35 +227,36 @@ function apply(ts::TS, period, fun, cols) # fun=mean,median,maximum,minimum; col
     res[!, Not(:idxConverted)]
 end
 
+# Lag
 function lag(ts::TS, lag_value::Int = 1)
     sdf = DataFrame(ShiftedArrays.lag.(eachcol(ts.coredata[!, Not(:Index)]), lag_value), TSx.names(ts))
     insertcols!(sdf, 1, :Index => ts.coredata[!, :Index])
     TS(sdf, :Index)
 end
 
-function diff(ts::TS, periods::Int = 1, differences::Int = 1)
+# Diff
+function diff(ts::TS, periods::Int = 1) # differences::Int = 1)
     if periods <= 0
         error("periods must be a postive int")
     elseif differences <= 0
         error("differences must be a positive int")
     end
-    ddf = ts.coredata
-    for _ in 1:differences
-        ddf = ddf[:, Not(:Index)] .- TSx.lag(ts, periods).coredata[:, Not(:Index)]
-    end
-    insertcols!(ddf, 1, "Index" => ts.coredata[!, :Index])
+    ddf = ts.coredata[:, Not(:Index)] .- TSx.lag(ts, periods).coredata[:, Not(:Index)]
+    insertcols!(ddf, 1, "Index" => ts.coredata[:, :Index])
     TS(ddf, :Index)
 end
 
+# Pctchange
 function pctchange(ts::TS, periods::Int = 1)
     if periods <= 0
         error("periods must be a positive int")
     end
     ddf = (ts.coredata[:, Not(:Index)] ./ TSx.lag(ts, periods).coredata[:, Not(:Index)]) .- 1
-    insertcols!(ddf, 1, "Index" => ts.coredata[!, :Index])
+    insertcols!(ddf, 1, "Index" => ts.coredata[:, :Index])
     TS(ddf, :Index)
 end
 
+# Log Returns
 function computelogreturns(ts::TS)
     combine(ts.coredata,
             :Index => (x -> x[2:length(x)]) => :Index,
