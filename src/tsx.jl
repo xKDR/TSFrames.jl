@@ -29,6 +29,12 @@ export TS,
     size,
     toperiod
 
+
+    
+####################################
+# The TS structure
+####################################
+
 struct TS
 
     coredata :: DataFrame
@@ -66,6 +72,12 @@ struct TS
 
 end
 
+
+
+####################################
+# Constructors
+####################################
+
 # From DataFrame, index range
 function TS(coredata::DataFrame, index::UnitRange{Int})
     index_vals = collect(index)
@@ -91,22 +103,27 @@ function TS(coredata::AbstractArray{T,2}, meta::Dict=Dict{String, Any}()) where 
 end
 
 
-function indexcol(ts::TS)
-    ts.coredata[!, :Index]
-end
 
-function names(ts::TS)
-    names(ts.coredata[!, Not(:Index)])
-end
+####################################
+# Displays
+####################################
 
+# Show
 function Base.show(ts::TS)
     println(first(ts.coredata, 10))
     println("Size: ", size(ts))
 end
 
+# Print
 function Base.print(ts::TS)
     show(ts)
 end
+
+
+
+#######################
+# Indexing
+#######################
 
 ## Date-time type conversions for indexing
 function convert(::Type{Date}, str::String)
@@ -116,33 +133,30 @@ end
 function convert(::Type{String}, date::Date)
     Dates.format(date, "yyyy-mm-dd")
 end
+
     
-###
-
-# ts[1]
-# ts[1:10]
-# ts[[1,3,5]]
-# ts["2012-02-02", 2]
-
-# Row indexing
+# By row
 function Base.getindex(ts::TS, i::Int)
     TS(ts.coredata[[i], :])
 end
 
+# By row-range
 function Base.getindex(ts::TS, r::UnitRange)
     TS(ts.coredata[collect(r), :])
 end
 
+# By row-array
 function Base.getindex(ts::TS, a::AbstractArray{Int64, 1})
     TS(ts.coredata[a, :])
 end
 
+# By timestamp
 function Base.getindex(ts::TS, i::Any)
     ind = findall(x -> x == TSx.convert(eltype(ts.coredata[!, :Index]), i), ts.coredata[!, :Index]) # XXX: may return duplicate indices
     TS(ts.coredata[ind, :])     # XXX: check if data is being copied
 end
 
-# Row-column indexing
+# By row-column 
 function Base.getindex(ts::TS, i::Int, j::Int)
     if j == 1
         error("j cannot be index column")
@@ -154,6 +168,7 @@ end
 # Unfixed from this point down
 ##############################
 
+# By column
 function Base.getindex(ts::TS, i::Symbol, j::Int)
     if j == 1
         error("j cannot be the index")
@@ -164,7 +179,7 @@ end
 function Base.getindex(ts::TS, r::UnitRange, j::Int)
     TS(ts.coredata[collect(r), j], :Index)
 end
-##
+
 
 function nrow(ts::TS)
     size(ts.coredata)[1]
@@ -178,6 +193,16 @@ function size(ts::TS)
     nr = nrow(ts)
     nc = ncol(ts)
     (nr, nc)
+end
+
+# Return index column
+function indexcol(ts::TS)
+    ts.coredata[!, :Index]
+end
+
+# Return row names
+function names(ts::TS)
+    names(ts.coredata[!, Not(:Index)])
 end
 
 # convert to period
