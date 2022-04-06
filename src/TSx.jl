@@ -1,6 +1,6 @@
 module TSx
 
-using DataFrames, Dates, ShiftedArrays, RollingFunctions
+using DataFrames, Dates, ShiftedArrays, RollingFunctions, Plots
 
 import Base.convert 
 import Base.diff
@@ -276,6 +276,17 @@ function rollapply(FUN::Function, ts::TS,column::Int, windowsize:: Int)
     idx = TSx.indexcol(ts)[windowsize:end]
     res_df = DataFrame(Index = idx,roll_fun = res)
     return TS(res_df)
+end
+
+
+
+######################
+# Plot
+######################
+
+
+function tsplot(ts::TS, colnames::Vector{String} = TSx.names(ts))
+    Plots.plot(ts.coredata[!, :Index], Matrix(ts.coredata[!, colnames]))
 end
 
 end                             # END module TSx
