@@ -28,8 +28,12 @@ export TS,
     show,
     size,
     toperiod,
-    rollapply
-
+    rollapply,
+    leftjoin,
+    rightjoin,
+    innerjoin,
+    outerjoin,
+    vcat
 
 
 ####################################
@@ -278,8 +282,6 @@ function rollapply(FUN::Function, ts::TS,column::Int, windowsize:: Int)
     return TS(res_df)
 end
 
-
-
 ######################
 # Plot
 ######################
@@ -287,6 +289,35 @@ end
 
 function tsplot(ts::TS, colnames::Vector{String} = TSx.names(ts))
     Plots.plot(ts.coredata[!, :Index], Matrix(ts.coredata[!, colnames]))
+end
+
+######################
+# joins
+######################
+
+function innerjoin(ts1, ts2)
+    result = DataFrames.innerjoin(ts1.coredata, ts2.coredata, on = :Index)
+    return TS(result)
+end
+
+function outerjoin(ts1, ts2)
+    result = DataFrames.outerjoin(ts1.coredata, ts2.coredata, on = :Index)
+    return TS(result)
+end
+
+function leftjoin(ts1, ts2)
+    result = DataFrames.leftjoin(ts1.coredata, ts2.coredata, on = :Index)
+    return TS(result)
+end
+
+function rightjoin(ts1, ts2)
+    result = DataFrames.rightjoin(ts1.coredata, ts2.coredata, on = :Index)
+    return TS(result)
+end
+
+function vcat(ts1::TS, ts2::TS)
+    result_df = DataFrames.vcat(ts1.coredata, ts2.coredata)
+    return TS(result_df)
 end
 
 end                             # END module TSx
