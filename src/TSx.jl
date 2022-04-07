@@ -152,6 +152,17 @@ function Base.getindex(ts::TS, a::Date)
     TS(df, ts.index, ts.meta)
 end
 
+function Base.getindex(ts::TS, y::Year)
+    sdf = filter(x -> Dates.Year.(x.Index) == y, ts.coredata)
+    TS(sdf, ts.index, ts.meta)
+end
+
+# XXX: ideally, Dates.YearMonth class should exist
+function Base.getindex(ts::TS, y::year, m::Month)
+    filter(x -> Dates.yearmonth.(x.Index) == (y, m), ts.coredata)
+    TS(sdf, ts.index, ts.meta)
+end
+
 function Base.getindex(ts::TS, i::Any)
     ind = findall(x -> x == TSx.convert(ts.meta["index_type"], i), ts.coredata[!, :Index]) # XXX: may return duplicate indices
     TS(ts.coredata[ind, :], ts.index, ts.meta)     # XXX: check if data is being copied
