@@ -219,7 +219,7 @@ function size(ts::TS)
 end
 
 # Return index column
-function indexcol(ts::TS)
+function index(ts::TS)
     ts.coredata[!, :Index]
 end
 
@@ -287,12 +287,12 @@ end
 # Rolling Function
 ######################
 
-function rollapply(FUN::Function, ts::TS,column::Int, windowsize:: Int)
+function rollapply(fun::Function, ts::TS, column::Any, windowsize:: Int)
     if windowsize < 1
         error("windowsize must be positive")
     end
-    res = RollingFunctions.rolling(FUN, ts.coredata[!,column], windowsize)
-    idx = TSx.indexcol(ts)[windowsize:end]
+    res = RollingFunctions.rolling(fun, ts.coredata[!, column], windowsize)
+    idx = TSx.index(ts)[windowsize:end]
     res_df = DataFrame(Index = idx,roll_fun = res)
     return TS(res_df)
 end
