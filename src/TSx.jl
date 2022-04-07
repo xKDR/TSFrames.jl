@@ -78,7 +78,11 @@ struct TS
 
     # From DataFrame, index number/name/symbol
     function TS(coredata::DataFrame, index::Union{String, Symbol, Int}=1)
-        sorted_cd = sort(coredata, index)
+        if (DataFrames.ncol(coredata) == 1)
+            TS(coredata, collect(Base.OneTo(DataFrames.nrow(df))))
+        end
+
+        sorted_cd = sort(coredata, index_vals)
         index_vals = sorted_cd[!, index]
 
         cd = sorted_cd[:, Not(index)]
@@ -118,7 +122,7 @@ end
 # julia> TS(rand(10), index_vals)
 # ERROR: MethodError: no method matching TS(::Vector{Float64}, ::Vector{Int64})
 function TS(coredata::AbstractVector{T}, index::AbstractVector{V}) where {T, V}
-    df = DataFrame(coredata, :auto)
+    df = DataFrame([coredata], :auto)
     TS(df, index)
 end
 
