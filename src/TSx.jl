@@ -230,14 +230,12 @@ end
 
 # convert to period
 function toperiod(ts::TS, period, fun)
-    idxConverted = Dates.value.(trunc.(ts.coredata[!, :Index], period))
-    # XXX: can we do without inserting a column?
-    cd = copy(ts.coredata)
-    insertcols!(cd, size(cd)[2], :idxConverted => idxConverted;
-                after=true, copycols=true)
-    gd = groupby(cd, :idxConverted, sort=true)
-    resgd = [fun(x) for x in gd]
-    TS(DataFrame(resgd)[!, Not(:idxConverted)], :Index)
+    sdf = transform(df, :Index => i -> period.(i))
+    gd = groupby(sdf, :Index_function)
+    df = select(gd, :Index => fun,
+                names(df[!, Not(:Index)]),
+                keepkeys=false, renamecols=false, sort=true)
+    TS(df, :Index)
 end
 
 # Apply
