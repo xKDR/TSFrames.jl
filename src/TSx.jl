@@ -2,7 +2,7 @@ module TSx
 
 using DataFrames, Dates, ShiftedArrays, RollingFunctions, Plots
 
-import Base.convert 
+import Base.convert
 import Base.diff
 import Base.filter
 import Base.getindex
@@ -83,7 +83,7 @@ struct TS
 
         cd = sorted_cd[:, Not(index)]
         insertcols!(cd, 1, :Index => index_vals, after=false, copycols=true)
-        
+
         new(cd)
     end
 
@@ -124,6 +124,7 @@ function TS(coredata::AbstractVector{T}) where {T}
     insertcols!(df, 1, :Index => index_vals, after=false, copycols=true)
     TS(df, :Index)
 end
+
 
 # From Matrix and meta
 function TS(coredata::AbstractArray{T,2}, meta::Dict=Dict{String, Any}()) where {T}
@@ -176,7 +177,7 @@ function convert(::Type{String}, date::Date)
     Dates.format(date, "yyyy-mm-dd")
 end
 
-    
+
 # By row
 function Base.getindex(ts::TS, i::Int)
     TS(ts.coredata[[i], :])
@@ -214,7 +215,7 @@ function Base.getindex(ts::TS, i::Any)
     TS(ts.coredata[ind, :])     # XXX: check if data is being copied
 end
 
-# By row-column 
+# By row-column
 function Base.getindex(ts::TS, i::Int, j::Int)
     if j == 1
         error("j cannot be index column")
@@ -245,7 +246,7 @@ function ncol(ts::TS)
     size(ts.coredata)[2] - 1
 end
 
-# Size of 
+# Size of
 function size(ts::TS)
     nr = nrow(ts)
     nc = ncol(ts)
