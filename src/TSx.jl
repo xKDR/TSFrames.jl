@@ -39,7 +39,29 @@ export TS,
 ####################################
 # The TS structure
 ####################################
+"""
+    TS
 
+A type to hold ordered data with an index.
+
+A TS object is essentially a `DataFrame` with a specific column marked
+as an index and has the name `Index`. The DataFrame is sorted using
+index values during construction.
+
+# Constructors
+```julia
+TS(coredata::DataFrame, index::Union{String, Symbol, Int}=1)
+TS(coredata::DataFrame, index::AbstractVector{T}) where {T<:Int}
+TS(coredata::DataFrame, index::UnitRange{Int})
+TS(coredata::AbstractVector{T}, index::AbstractVector{V}) where {T, V}
+TS(coredata::AbstractVector{T}) where {T}
+TS(coredata::AbstractArray{T,2}, meta::Dict=Dict{String, Any}()) where {T}
+```
+
+# Examples
+```jldoctest
+```
+"""
 struct TS
 
     coredata :: DataFrame
@@ -133,7 +155,18 @@ end
 #######################
 # Indexing
 #######################
+"""
+# Subsetting/Indexing
 
+`TS` can be subset using row and column indices. The row selector
+could be an integer, a range, an array or it could also be a `Date`
+object or an ISO-formatted date string. The latter two subset
+`coredata` by matching on the index column.
+
+Column selector could be an integer or any other selector which
+`DataFrame` indexing supports. To fetch the index column one can use
+the `index()` method on the `TS` object.
+"""
 ## Date-time type conversions for indexing
 function convert(::Type{Date}, str::String)
     Date(Dates.parse_components(str, Dates.dateformat"yyyy-mm-dd")...)
