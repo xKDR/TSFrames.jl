@@ -5,7 +5,22 @@ import .TSx
 using DataFrames, Dates, BenchmarkTools, MarketData
 BenchmarkTools.DEFAULT_PARAMETERS.samples = 10
 df = DataFrame(ohlc)
+describe(df)
+
+5×7 DataFrame
+ Row │ variable   mean     min         median  max         nmissing  eltype   
+     │ Symbol     Union…   Any         Union…  Any         Int64     DataType
+─────┼────────────────────────────────────────────────────────────────────────
+   1 │ timestamp           2000-01-03          2001-12-31         0  Date
+   2 │ Open       46.2213  13.78       22.19   142.44             0  Float64
+   3 │ High       47.6926  14.62       22.95   150.38             0  Float64
+   4 │ Low        44.816   13.62       21.39   140.0              0  Float64
+   5 │ Close      46.1905  14.0        22.12   144.19             0  Float64
 ```
+
+df is a dataframe made from the ohlc data available in MarketData. It is an OHLC financial data
+Rows: 500
+Columns: timestamp, Open, High, Low, Close
 
 ## Creating TSx object from DataFrame
 ```
