@@ -117,6 +117,11 @@ end
 # FIXME:
 # julia> TS(rand(10), index_vals)
 # ERROR: MethodError: no method matching TS(::Vector{Float64}, ::Vector{Int64})
+function TS(coredata::AbstractVector{T}, index::AbstractVector{V}) where {T, V}
+    df = DataFrame(coredata, :auto)
+    TS(df, index)
+end
+
 function TS(coredata::AbstractVector{T}) where {T}
     index_vals = collect(Base.OneTo(length(coredata)))
     df = DataFrame()
