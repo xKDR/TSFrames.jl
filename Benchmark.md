@@ -44,7 +44,7 @@ BenchmarkTools.Trial: 10 samples with 1 evaluation.
 ## Apply methods
 
 ```
-@benchmark TSx.apply(data, Month, mean) setup=(data=ts)
+@benchmark TSx.apply(data, Month, mean,[:Open, :Close]) setup=(data=ts)
 ```
 
 ```
@@ -54,7 +54,7 @@ BenchmarkTools.Trial: 10 samples with 1 evaluation.
 ```
 
 ```
-@benchmark TSx.apply(data, Month, mean,[:Open, :Close]) setup=(data=ts)
+@benchmark TSx.apply(data, Year, sum,[:Low, :Close]) setup=(data=ts)
 ```
 ```
  Range (min … max):  279.600 μs … 508.600 μs  ┊ GC (min … max): 0.00% … 0.00%
@@ -76,5 +76,109 @@ BenchmarkTools.Trial: 10 samples with 1 evaluation.
 ### Diff
 
 ```
+ @benchmark TSx.diff(data,1) setup=(data = ts)
+```
+```
+Range (min … max):  155.300 μs … 257.700 μs  ┊ GC (min … max): 0.00% … 0.00%        
+ Time  (median):     181.300 μs               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   196.510 μs ±  34.641 μs  ┊ GC (mean ± σ):  0.00% ± 0.00%
+```
+### pctchange
 
+```
+@benchmark TSx.pctchange(data,1) setup=(data = ts)
+```
+```
+ Range (min … max):  161.300 μs … 263.900 μs  ┊ GC (min … max): 0.00% … 0.00%       
+ Time  (median):     175.650 μs               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   192.780 μs ±  40.118 μs  ┊ GC (mean ± σ):  0.00% ± 0.00%
+```
+
+## Log returns
+
+```
+@benchmark TSx.computelogreturns(data[1:500,2]) setup = (data = ts)
+```
+```
+Range (min … max):   86.000 μs … 199.600 μs  ┊ GC (min … max): 0.00% … 0.00%
+Time  (median):      92.900 μs               ┊ GC (median):    0.00%
+Time  (mean ± σ):   104.520 μs ±  34.220 μs  ┊ GC (mean ± σ):  0.00% ± 0.00%  
+```
+
+```
+@benchmark TSx.rollapply(mean, data, 3, 5) setup = (data = ts)
+```
+```
+ Range (min … max):  29.600 μs … 82.700 μs  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     30.350 μs              ┊ GC (median):    0.00%
+ Time  (mean ± σ):   36.320 μs ± 16.465 μs  ┊ GC (mean ± σ):  0.00% ± 0.00%
+```
+## Joins and Concatenation
+
+```
+v = [i for i in 1:2:500]
+df2 = df[v,[:timestamp,:Open,:High,:Low,:Close]]
+rename!(df2, :Open => :open1, :High => :high1, :Low => :low1, :Close => :close1)
+ts2 = TSx.TS(df2)
+```
+### Left Join
+
+```
+@benchmark TSx.leftjoin(ts,ts2)
+```
+```
+ Range (min … max):  107.100 μs … 220.100 μs  ┊ GC (min … max): 0.00% … 0.00%       
+ Time  (median):     113.800 μs               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   126.260 μs ±  33.537 μs  ┊ GC (mean ± σ):  0.00% ± 0.00%  
+```
+
+### Right Join
+
+```
+@benchmark TSx.rightjoin(ts,ts2)
+```
+```
+ Range (min … max):   96.700 μs … 206.400 μs  ┊ GC (min … max): 0.00% … 0.00%       
+ Time  (median):     108.850 μs               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   117.420 μs ±  32.178 μs  ┊ GC (mean ± σ):  0.00% ± 0.00%
+```
+
+### Inner Join
+
+```
+@benchmark TSx.innerjoin(ts,ts2)
+```
+```
+ Range (min … max):  71.800 μs … 180.400 μs  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     83.900 μs               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   92.870 μs ±  32.003 μs  ┊ GC (mean ± σ):  0.00% ± 0.00%
+```
+
+### Outer Join
+
+```
+ @benchmark TSx.outerjoin(ts,ts2)
+```
+```
+ Range (min … max):  114.300 μs … 228.800 μs  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     123.700 μs               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   134.950 μs ±  34.190 μs  ┊ GC (mean ± σ):  0.00% ± 0.00%
+```
+
+### vcat
+
+```
+df3 = df[1:300,[:timestamp,:Open,:High,:Low,:Close]]
+df4 = df[300:end,[:timestamp,:Open,:High,:Low,:Close]]
+ts3 = TSx.TS(df3)
+ts4 = TSx.TS(df4)
+```
+
+```
+@benchmark vcat(ts3,ts4)
+```
+```
+ Range (min … max):  89.004 ns … 100.104 ns  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     92.168 ns               ┊ GC (median):    0.00%
+ Time  (mean ± σ):   93.237 ns ±   3.751 ns  ┊ GC (mean ± σ):  0.00% ± 0.00%
 ```
