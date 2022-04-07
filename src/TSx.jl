@@ -117,14 +117,15 @@ end
 ####################################
 
 # Show
-function Base.show(ts::TS)
+function Base.show(io::IO, ts::TS)
     println(first(ts.coredata, 10))
     println("Size: ", size(ts))
 end
 
 # Print
-function Base.print(ts::TS)
-    show(ts)
+function Base.print(io::IO, ts::TS)
+    println(ts.coredata)
+    print("Size: ", size(ts))
 end
 
 
