@@ -88,7 +88,7 @@ struct TS
     end
 
     # From DataFrame, external index
-    function TS(coredata::DataFrame, index::AbstractArray{T}) where {T<:Int}
+    function TS(coredata::DataFrame, index::AbstractVector{T}) where {T<:Int}
         sorted_index = sort(index)
 
         cd = copy(coredata)
