@@ -124,14 +124,12 @@ end
 
 function TS(coredata::AbstractVector{T}) where {T}
     index_vals = collect(Base.OneTo(length(coredata)))
-    df = DataFrame()
-    df.:Auto = coredata
-    insertcols!(df, 1, :Index => index_vals, after=false, copycols=true)
-    TS(df, :Index)
+    TS(coredata, index_vals)
 end
 
 
 # From Matrix and meta
+# FIXME: use Metadata.jl
 function TS(coredata::AbstractArray{T,2}, meta::Dict=Dict{String, Any}()) where {T}
     index_vals = collect(Base.OneTo(length(coredata)))
     df = DataFrame(coredata, :auto, copycols=true)
