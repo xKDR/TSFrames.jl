@@ -312,28 +312,28 @@ end
 # joins
 ######################
 
-function innerjoin(ts1, ts2)
+function innerjoin(ts1::TS, ts2::TS)
     result = DataFrames.innerjoin(ts1.coredata, ts2.coredata, on = :Index)
     return TS(result)
 end
 
-function outerjoin(ts1, ts2)
+function outerjoin(ts1::TS, ts2::TS)
     result = DataFrames.outerjoin(ts1.coredata, ts2.coredata, on = :Index)
     return TS(result)
 end
 
-function leftjoin(ts1, ts2)
+function leftjoin(ts1::tS, ts2::TS)
     result = DataFrames.leftjoin(ts1.coredata, ts2.coredata, on = :Index)
     return TS(result)
 end
 
-function rightjoin(ts1, ts2)
+function rightjoin(ts1::TS, ts2::TS)
     result = DataFrames.rightjoin(ts1.coredata, ts2.coredata, on = :Index)
     return TS(result)
 end
 
-function vcat(ts1::TS, ts2::TS)
-    result_df = DataFrames.vcat(ts1.coredata, ts2.coredata)
+function vcat(ts::TS...; cols::Symbol=:setequal, source::Symbol=nothing)
+    result_df = DataFrames.vcat(ts1.coredata...; cols, source)
     return TS(result_df)
 end
 
