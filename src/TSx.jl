@@ -240,11 +240,9 @@ function lag(ts::TS, lag_value::Int = 1)
 end
 
 # Diff
-function diff(ts::TS, periods::Int = 1) # differences::Int = 1)
+function diff(ts::TS, periods::Int = 1) # differences::Int = 1
     if periods <= 0
         error("periods must be a postive int")
-    elseif differences <= 0
-        error("differences must be a positive int")
     end
     ddf = ts.coredata[:, Not(:Index)] .- TSx.lag(ts, periods).coredata[:, Not(:Index)]
     insertcols!(ddf, 1, "Index" => ts.coredata[:, :Index])
