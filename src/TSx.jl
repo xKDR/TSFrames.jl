@@ -95,7 +95,7 @@ struct TS
             TS(coredata, collect(Base.OneTo(DataFrames.nrow(df))))
         end
 
-        index_vals = sorted_cd[!, index]
+        index_vals = coredata[!, index]
         sorted_cd = sort(coredata, index_vals)
 
         cd = sorted_cd[:, Not(index)]
@@ -235,7 +235,7 @@ function Base.getindex(ts::TS, a::AbstractArray{Int64, 1})
     TS(ts.coredata[a, :])
 end
 
-function Base.getindex(ts::TS, a::Date)
+function Base.getindex(ts::TS, d::Date)
     sdf = filter(x -> x.Index == d, ts.coredata)
     TS(sdf)
 end
