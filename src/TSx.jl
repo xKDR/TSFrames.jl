@@ -175,6 +175,8 @@ end
 # Print
 function Base.print(io::IO, ts::TS)
     println(ts.coredata)
+    println("")
+    println("Index: {", eltype(index(ts)), "} [", length(index(ts)), "]")
     print("Size: ", size(ts))
 end
 
