@@ -18,8 +18,12 @@ describe(df)
    5 │ Close      46.1905  14.0        22.12   144.19             0  Float64
 ```
 
-df is a dataframe made from the ohlc data available in MarketData. It is an OHLC financial data
+df is a dataframe made from the ohlc data available in MarketData. 
+
+It is an OHLC financial data
+
 Rows: 500
+
 Columns: timestamp, Open, High, Low, Close
 
 ## Creating TSx object from DataFrame

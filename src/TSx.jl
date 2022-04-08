@@ -2,7 +2,7 @@ module TSx
 
 using DataFrames, Dates, ShiftedArrays, RollingFunctions, Plots
 
-import Base.convert 
+import Base.convert
 import Base.diff
 import Base.filter
 import Base.getindex
@@ -39,7 +39,42 @@ export TS,
 ####################################
 # The TS structure
 ####################################
+"""
+    TS
 
+A type to hold ordered data with an index.
+
+A TS object is essentially a `DataFrame` with a specific column marked
+as an index and has the name `Index`. The DataFrame is sorted using
+index values during construction.
+
+# Constructors
+```julia
+TS(coredata::DataFrame, index::Union{String, Symbol, Int}=1)
+TS(coredata::DataFrame, index::AbstractVector{T}) where {T<:Int}
+TS(coredata::DataFrame, index::UnitRange{Int})
+TS(coredata::AbstractVector{T}, index::AbstractVector{V}) where {T, V}
+TS(coredata::AbstractVector{T}) where {T}
+TS(coredata::AbstractArray{T,2}, meta::Dict=Dict{String, Any}()) where {T}
+```
+
+# Examples
+```jldoctest
+df = DataFrame(x1 = randn(10))
+TS(df)
+
+df = DataFrame(Index = [1, 2, 3], x1 = randn(3))
+TS(df, 1)
+
+dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10))
+df = DataFrame(dates = dates, x1 = randn(10))
+TS(df, :dates)
+TS(DataFrame(x1=randn(10), dates))
+
+TS(randn(10))
+TS(randn(10), dates)
+```
+"""
 struct TS
 
     coredata :: DataFrame
@@ -56,17 +91,21 @@ struct TS
 
     # From DataFrame, index number/name/symbol
     function TS(coredata::DataFrame, index::Union{String, Symbol, Int}=1)
-        sorted_cd = sort(coredata, index)
+        if (DataFrames.ncol(coredata) == 1)
+            TS(coredata, collect(Base.OneTo(DataFrames.nrow(df))))
+        end
+
+        sorted_cd = sort(coredata, index_vals)
         index_vals = sorted_cd[!, index]
 
         cd = sorted_cd[:, Not(index)]
         insertcols!(cd, 1, :Index => index_vals, after=false, copycols=true)
-        
+
         new(cd)
     end
 
     # From DataFrame, external index
-    function TS(coredata::DataFrame, index::AbstractArray{T}) where {T<:Int}
+    function TS(coredata::DataFrame, index::AbstractVector{T}) where {T<:Int}
         sorted_index = sort(index)
 
         cd = copy(coredata)
@@ -95,17 +134,21 @@ end
 # FIXME:
 # julia> TS(rand(10), index_vals)
 # ERROR: MethodError: no method matching TS(::Vector{Float64}, ::Vector{Int64})
-function TS(coredata::AbstractVector{T}) where {T}
-    index_vals = collect(Base.OneTo(length(coredata)))
-    df = DataFrame()
-    df.:Auto = coredata
-    insertcols!(df, 1, :Index => index_vals, after=false, copycols=true)
-    TS(df, :Index)
+function TS(coredata::AbstractVector{T}, index::AbstractVector{V}) where {T, V}
+    df = DataFrame([coredata], :auto)
+    TS(df, index)
 end
 
+function TS(coredata::AbstractVector{T}) where {T}
+    index_vals = collect(Base.OneTo(DataFrames.nrow(coredata)))
+    TS(coredata, index_vals)
+end
+
+
 # From Matrix and meta
+# FIXME: use Metadata.jl
 function TS(coredata::AbstractArray{T,2}, meta::Dict=Dict{String, Any}()) where {T}
-    index_vals = collect(Base.OneTo(length(coredata)))
+    index_vals = collect(Base.OneTo(DataFrames.nrow(coredata)))
     df = DataFrame(coredata, :auto, copycols=true)
     TS(df, index_vals)
 end
@@ -117,14 +160,21 @@ end
 ####################################
 
 # Show
-function Base.show(ts::TS)
+function Base.show(io::IO, ts::TS)
     println(first(ts.coredata, 10))
+    println("....")
+    println("....")
+    println("....")
+    println(last(ts.coredata, 10))
+    println("")
+    println("Index: {", eltype(index(ts)), "} [", length(index(ts)), "]")
     println("Size: ", size(ts))
 end
 
 # Print
-function Base.print(ts::TS)
-    show(ts)
+function Base.print(io::IO, ts::TS)
+    println(ts.coredata)
+    print("Size: ", size(ts))
 end
 
 
@@ -132,7 +182,29 @@ end
 #######################
 # Indexing
 #######################
+"""
+# Subsetting/Indexing
 
+`TS` can be subset using row and column indices. The row selector
+could be an integer, a range, an array or it could also be a `Date`
+object or an ISO-formatted date string. The latter two subset
+`coredata` by matching on the index column.
+
+Column selector could be an integer or any other selector which
+`DataFrame` indexing supports. To fetch the index column one can use
+the `index()` method on the `TS` object.
+
+# Examples
+
+```jldoctest
+ts = TS(randn(10), 1:10)
+ts[1]
+ts[1:5]
+ts[1:5, 2]
+ts[1, 2]
+ts[[1, 3]]
+```
+"""
 ## Date-time type conversions for indexing
 function convert(::Type{Date}, str::String)
     Date(Dates.parse_components(str, Dates.dateformat"yyyy-mm-dd")...)
@@ -142,7 +214,7 @@ function convert(::Type{String}, date::Date)
     Dates.format(date, "yyyy-mm-dd")
 end
 
-    
+
 # By row
 function Base.getindex(ts::TS, i::Int)
     TS(ts.coredata[[i], :])
@@ -180,7 +252,7 @@ function Base.getindex(ts::TS, i::Any)
     TS(ts.coredata[ind, :])     # XXX: check if data is being copied
 end
 
-# By row-column 
+# By row-column
 function Base.getindex(ts::TS, i::Int, j::Int)
     if j == 1
         error("j cannot be index column")
@@ -211,7 +283,7 @@ function ncol(ts::TS)
     size(ts.coredata)[2] - 1
 end
 
-# Size of 
+# Size of
 function size(ts::TS)
     nr = nrow(ts)
     nc = ncol(ts)
@@ -219,7 +291,7 @@ function size(ts::TS)
 end
 
 # Return index column
-function indexcol(ts::TS)
+function index(ts::TS)
     ts.coredata[!, :Index]
 end
 
@@ -230,14 +302,10 @@ end
 
 # convert to period
 function toperiod(ts::TS, period, fun)
-    idxConverted = Dates.value.(trunc.(ts.coredata[!, :Index], period))
-    # XXX: can we do without inserting a column?
-    cd = copy(ts.coredata)
-    insertcols!(cd, size(cd)[2], :idxConverted => idxConverted;
-                after=true, copycols=true)
-    gd = groupby(cd, :idxConverted, sort=true)
-    resgd = [fun(x) for x in gd]
-    TS(DataFrame(resgd)[!, Not(:idxConverted)], :Index)
+    sdf = transform(ts.coredata, :Index => i -> Dates.floor.(i, period))
+    gd = groupby(sdf, :Index_function)
+    df = combine(gd, fun, keepkeys=false)[!, Not(:Index_function)]
+    TS(df, :Index)
 end
 
 # Apply
@@ -289,12 +357,12 @@ end
 # Rolling Function
 ######################
 
-function rollapply(FUN::Function, ts::TS,column::Int, windowsize:: Int)
+function rollapply(fun::Function, ts::TS, column::Any, windowsize:: Int)
     if windowsize < 1
         error("windowsize must be positive")
     end
-    res = RollingFunctions.rolling(FUN, ts.coredata[!,column], windowsize)
-    idx = TSx.indexcol(ts)[windowsize:end]
+    res = RollingFunctions.rolling(fun, ts.coredata[!, column], windowsize)
+    idx = TSx.index(ts)[windowsize:end]
     res_df = DataFrame(Index = idx,roll_fun = res)
     return TS(res_df)
 end
