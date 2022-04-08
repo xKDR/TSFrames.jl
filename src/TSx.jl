@@ -140,7 +140,7 @@ function TS(coredata::AbstractVector{T}, index::AbstractVector{V}) where {T, V}
 end
 
 function TS(coredata::AbstractVector{T}) where {T}
-    index_vals = collect(Base.OneTo(length(coredata)))
+    index_vals = collect(Base.OneTo(DataFrames.nrow(coredata)))
     TS(coredata, index_vals)
 end
 
@@ -148,7 +148,7 @@ end
 # From Matrix and meta
 # FIXME: use Metadata.jl
 function TS(coredata::AbstractArray{T,2}, meta::Dict=Dict{String, Any}()) where {T}
-    index_vals = collect(Base.OneTo(length(coredata)))
+    index_vals = collect(Base.OneTo(DataFrames.nrow(coredata)))
     df = DataFrame(coredata, :auto, copycols=true)
     TS(df, index_vals)
 end
