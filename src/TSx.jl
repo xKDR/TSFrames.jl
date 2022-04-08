@@ -302,11 +302,9 @@ end
 
 # convert to period
 function toperiod(ts::TS, period, fun)
-    sdf = transform(df, :Index => i -> period.(i))
+    sdf = transform(ts.coredata, :Index => i -> Dates.floor.(i, period))
     gd = groupby(sdf, :Index_function)
-    df = select(gd, :Index => fun,
-                names(df[!, Not(:Index)]),
-                keepkeys=false, renamecols=false, sort=true)
+    df = combine(gd, fun, keepkeys=false)[!, Not(:Index_function)]
     TS(df, :Index)
 end
 
