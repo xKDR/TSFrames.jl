@@ -390,7 +390,7 @@ function outerjoin(ts1::TS, ts2::TS)
     return TS(result)
 end
 
-function leftjoin(ts1::tS, ts2::TS)
+function leftjoin(ts1::TS, ts2::TS)
     result = DataFrames.leftjoin(ts1.coredata, ts2.coredata, on = :Index)
     return TS(result)
 end
