@@ -170,7 +170,7 @@ function Base.show(io::IO, ts::TS)
         println(last(ts.coredata, 10))
         println("")
     else
-        print(ts)
+        print(ts.coredata)
     end
     println("Index: {", eltype(index(ts)), "} [", length(index(ts)), "]")
     println("Size: ", size(ts))
