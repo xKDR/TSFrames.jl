@@ -95,8 +95,8 @@ struct TS
             TS(coredata, collect(Base.OneTo(DataFrames.nrow(df))))
         end
 
-        index_vals = coredata[!, index]
-        sorted_cd = sort(coredata, index_vals)
+        sorted_cd = sort(coredata, index)
+        index_vals = sorted_cd[!, index]
 
         cd = sorted_cd[:, Not(index)]
         insertcols!(cd, 1, :Index => index_vals, after=false, copycols=true)
@@ -249,13 +249,15 @@ function Base.getindex(ts::TS, a::AbstractArray{Int64, 1})
     TS(ts.coredata[a, :])
 end
 
+# By date 
 function Base.getindex(ts::TS, d::Date)
     sdf = filter(x -> x.Index == d, ts.coredata)
     TS(sdf)
 end
 
-function Base.getindex(ts::TS, y::Year)
-    sdf = filter(x -> Dates.Year.(x.Index) == y, ts.coredata)
+# By period
+function Base.getindex(ts::TS, period::DataType, y::DataType)
+    sdf = filter(x -> Dates.period.(x.Index) == y, ts.coredata)
     TS(sdf)
 end
 
@@ -265,7 +267,7 @@ function Base.getindex(ts::TS, y::Year, m::Month)
     TS(sdf)
 end
 
-# By timestamp
+# By string timestamp
 function Base.getindex(ts::TS, i::Any)
     ind = findall(x -> x == TSx.convert(eltype(ts.coredata[!, :Index]), i), ts.coredata[!, :Index]) # XXX: may return duplicate indices
     TS(ts.coredata[ind, :])     # XXX: check if data is being copied
@@ -286,6 +288,8 @@ function Base.getindex(ts::TS, i::UnitRange, j::Int)
     end
     return TS(ts.coredata[i, Cols(:Index,j)])
 end
+
+
 
 
 ########################
