@@ -317,7 +317,7 @@ end
 function apply(ts::TS, period, fun)
     adf = transform(df, :Index => (i -> Dates.floor.(i, period)) => :Index)
     gb = groupby(adf, :Index)
-    combine(gb, names(df_year[!, Not(:Index)]) .=> [fun])
+    TS(combine(gb, names(df_year[!, Not(:Index)]) .=> [fun]))
 end
 
 # Lag
