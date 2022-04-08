@@ -60,6 +60,19 @@ TS(coredata::AbstractArray{T,2}, meta::Dict=Dict{String, Any}()) where {T}
 
 # Examples
 ```jldoctest
+df = DataFrame(x1 = randn(10))
+TS(df)
+
+df = DataFrame(Index = [1, 2, 3], x1 = randn(3))
+TS(df, 1)
+
+dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10))
+df = DataFrame(dates = dates, x1 = randn(10))
+TS(df, :dates)
+TS(DataFrame(x1=randn(10), dates))
+
+TS(randn(10))
+TS(randn(10), dates)
 ```
 """
 struct TS
@@ -149,6 +162,12 @@ end
 # Show
 function Base.show(io::IO, ts::TS)
     println(first(ts.coredata, 10))
+    println("....")
+    println("....")
+    println("....")
+    println(last(ts.coredata, 10))
+    println("")
+    println("Index: {", eltype(index(ts)), "} [", length(index(ts)), "]")
     println("Size: ", size(ts))
 end
 
@@ -174,6 +193,17 @@ object or an ISO-formatted date string. The latter two subset
 Column selector could be an integer or any other selector which
 `DataFrame` indexing supports. To fetch the index column one can use
 the `index()` method on the `TS` object.
+
+# Examples
+
+```jldoctest
+ts = TS(randn(10), 1:10)
+ts[1]
+ts[1:5]
+ts[1:5, 2]
+ts[1, 2]
+ts[[1, 3]]
+```
 """
 ## Date-time type conversions for indexing
 function convert(::Type{Date}, str::String)
