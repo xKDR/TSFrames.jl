@@ -328,14 +328,10 @@ function toperiod(ts::TS, period, fun)
 end
 
 # Apply
-function apply(ts::TS, period, fun, cols) # fun=mean,median,maximum,minimum; cols=[:a, :b]
-    idxConverted = Dates.value.(trunc.(ts.coredata[!, :Index], period))
-    cd = copy(ts.coredata)
-    insertcols!(cd, size(cd)[2], :idxConverted => idxConverted;
-                after=true, copycols=true)
-    gd = groupby(cd, :idxConverted, sort=true)
-    res = combine(gd, cols .=> fun) # TODO: add the (period-based) index
-    res[!, Not(:idxConverted)]
+function apply(ts::TS, period, fun)
+    adf = transform(df, :Index => (i -> Dates.floor.(i, period)) => :Index)
+    gb = groupby(adf, :Index)
+    TS(combine(gb, names(df_year[!, Not(:Index)]) .=> [fun]))
 end
 
 # Lag
