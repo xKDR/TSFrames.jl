@@ -380,6 +380,7 @@ function log(ts::TS,complex::Bool = false)
                 ts.coredata[!,col] = log.Complex.((skipmissing(ts.coredata)))
             end
         end
+    end
     return TS(ts.coredata)
 end
 
