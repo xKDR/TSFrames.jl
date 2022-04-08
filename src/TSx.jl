@@ -95,8 +95,8 @@ struct TS
             TS(coredata, collect(Base.OneTo(DataFrames.nrow(df))))
         end
 
-        sorted_cd = sort(coredata, index_vals)
         index_vals = sorted_cd[!, index]
+        sorted_cd = sort(coredata, index_vals)
 
         cd = sorted_cd[:, Not(index)]
         insertcols!(cd, 1, :Index => index_vals, after=false, copycols=true)
