@@ -4,16 +4,16 @@ TS(coredata::DataFrame, index::AbstractVector{T}) where {T&lt;:Int}
 TS(coredata::DataFrame, index::UnitRange{Int})
 TS(coredata::AbstractVector{T}, index::AbstractVector{V}) where {T, V}
 TS(coredata::AbstractVector{T}) where {T}
-TS(coredata::AbstractArray{T,2}, meta::Dict=Dict{String, Any}()) where {T}</code></pre><p><strong>Examples</strong></p><pre><code class="language-julia hljs">df = DataFrame(x1 = randn(10))
-TS(df)
+TS(coredata::AbstractArray{T,2}, meta::Dict=Dict{String, Any}()) where {T}</code></pre><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; df = DataFrame(x1 = randn(10))
+julia&gt; TS(df)
 
-df = DataFrame(Index = [1, 2, 3], x1 = randn(3))
-TS(df, 1)
+julia&gt; df = DataFrame(Index = [1, 2, 3], x1 = randn(3))
+julia&gt; TS(df, 1)
 
-dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10))
-df = DataFrame(dates = dates, x1 = randn(10))
-TS(df, :dates)
-TS(DataFrame(x1=randn(10), dates))
+julia&gt; dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10))
+julia&gt; df = DataFrame(dates = dates, x1 = randn(10))
+julia&gt; TS(df, :dates)
+julia&gt; TS(DataFrame(x1=randn(10), dates))
 
-TS(randn(10))
-TS(randn(10), dates)</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/39c9ad32bc36ad9e8565b518f4c4a78b28ec2f9e/src/TSx.jl#L42-L77">source</a></section></article></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.15 on <span class="colophon-date" title="Friday 8 April 2022 09:16">Friday 8 April 2022</span>. Using Julia version 1.7.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+julia&gt; TS(randn(10))
+julia&gt; TS(randn(10), dates)</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/6e03605971e7b08476b839949e3384fdadee79a9/src/TSx.jl#L42-L77">source</a></section></article></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.15 on <span class="colophon-date" title="Friday 8 April 2022 09:28">Friday 8 April 2022</span>. Using Julia version 1.7.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
