@@ -24,6 +24,7 @@ export TS,
     nrow,
     ncol,
     pctchange,
+    log,
     print,
     show,
     size,
@@ -365,11 +366,21 @@ function pctchange(ts::TS, periods::Int = 1)
     TS(ddf, :Index)
 end
 
-# Log Returns
-function computelogreturns(ts::TS)
-    combine(ts.coredata,
-            :Index => (x -> x[2:length(x)]) => :Index,
-            Not(:Index) => (x -> diff(log.(x))) => :logreturns)
+# Log Function
+function log(ts::TS,complex::Bool = false)
+    if complex == false
+        for col in names(ts.coredata)
+            if eltype(ts.coredata[!,col]) <: Union{Missing, Number}
+                ts.coredata[!,col] = log.(skipmissing(ts.coredata))
+            end
+        end
+    else
+        for col in names(ts.coredata)
+            if eltype(ts.coredata[!,col]) <: Union{Missing, Number}
+                ts.coredata[!,col] = log.Complex.((skipmissing(ts.coredata)))
+            end
+        end
+    return TS(ts.coredata)
 end
 
 ######################
