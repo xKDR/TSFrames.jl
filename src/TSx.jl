@@ -161,13 +161,17 @@ end
 
 # Show
 function Base.show(io::IO, ts::TS)
-    println("    = First 10 rows =")
-    println(first(ts.coredata, 10))
-    println("    ...")
-    println("    ...")
-    println("    = Last 10 rows =")
-    println(last(ts.coredata, 10))
-    println("")
+    if (nrow(ts) > 20)
+        println("    = First 10 rows =")
+        println(first(ts.coredata, 10))
+        println("    ...")
+        println("    ...")
+        println("    = Last 10 rows =")
+        println(last(ts.coredata, 10))
+        println("")
+    else
+        print(ts)
+    end
     println("Index: {", eltype(index(ts)), "} [", length(index(ts)), "]")
     println("Size: ", size(ts))
 end
@@ -212,12 +216,22 @@ the `index()` method on the `TS` object.
 # Examples
 
 ```jldoctest
-ts = TS(randn(10), 1:10)
-ts[1]
-ts[1:5]
-ts[1:5, 2]
-ts[1, 2]
-ts[[1, 3]]
+julia> ts = TS(randn(10), 1:10)
+julia> ts[1]
+julia> ts[1:5]
+julia> ts[1:5, 2]
+julia> ts[1, 2]
+julia> ts[[1, 3]]
+
+julia> dates = collect(Date(2007):Day(1):Date(2008, 2, 22))
+julia> ts = TS(randn(length(dates)), dates)
+julia> ts[Date(2007, 01, 01)]
+julia> ts[Date(2007)]
+julia> ts[Year(2007)]
+julia> ts[Year(2007), Month(11)]
+julia> ts["2007-01-01"]
+julia> ts["2007-01"]
+julia> ts["2007"]
 ```
 """
 # By row
