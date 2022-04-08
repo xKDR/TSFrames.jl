@@ -161,10 +161,11 @@ end
 
 # Show
 function Base.show(io::IO, ts::TS)
+    println("    = First 10 rows =")
     println(first(ts.coredata, 10))
-    println("....")
-    println("....")
-    println("....")
+    println("    ...")
+    println("    ...")
+    println("    = Last 10 rows =")
     println(last(ts.coredata, 10))
     println("")
     println("Index: {", eltype(index(ts)), "} [", length(index(ts)), "]")
