@@ -60,19 +60,19 @@ TS(coredata::AbstractArray{T,2}, meta::Dict=Dict{String, Any}()) where {T}
 
 # Examples
 ```jldoctest
-df = DataFrame(x1 = randn(10))
-TS(df)
+julia> df = DataFrame(x1 = randn(10))
+julia> TS(df)
 
-df = DataFrame(Index = [1, 2, 3], x1 = randn(3))
-TS(df, 1)
+julia> df = DataFrame(Index = [1, 2, 3], x1 = randn(3))
+julia> TS(df, 1)
 
-dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10))
-df = DataFrame(dates = dates, x1 = randn(10))
-TS(df, :dates)
-TS(DataFrame(x1=randn(10), dates))
+julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10))
+julia> df = DataFrame(dates = dates, x1 = randn(10))
+julia> TS(df, :dates)
+julia> TS(DataFrame(x1=randn(10), dates))
 
-TS(randn(10))
-TS(randn(10), dates)
+julia> TS(randn(10))
+julia> TS(randn(10), dates)
 ```
 """
 struct TS
@@ -185,7 +185,19 @@ end
 #######################
 # Indexing
 #######################
+## Date-time type conversions for indexing
+function convert(::Type{Date}, str::String)
+    Date(Dates.parse_components(str, Dates.dateformat"yyyy-mm-dd")...)
+end
+
+function convert(::Type{String}, date::Date)
+    Dates.format(date, "yyyy-mm-dd")
+end
+
+
 """
+    Subsetting/Indexing
+
 # Subsetting/Indexing
 
 `TS` can be subset using row and column indices. The row selector
@@ -208,16 +220,6 @@ ts[1, 2]
 ts[[1, 3]]
 ```
 """
-## Date-time type conversions for indexing
-function convert(::Type{Date}, str::String)
-    Date(Dates.parse_components(str, Dates.dateformat"yyyy-mm-dd")...)
-end
-
-function convert(::Type{String}, date::Date)
-    Dates.format(date, "yyyy-mm-dd")
-end
-
-
 # By row
 function Base.getindex(ts::TS, i::Int)
     TS(ts.coredata[[i], :])
