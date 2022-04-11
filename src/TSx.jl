@@ -132,9 +132,6 @@ function TS(coredata::DataFrame, index::UnitRange{Int})
 end
 
 # From AbstractVector
-# FIXME:
-# julia> TS(rand(10), index_vals)
-# ERROR: MethodError: no method matching TS(::Vector{Float64}, ::Vector{Int64})
 function TS(coredata::AbstractVector{T}, index::AbstractVector{V}) where {T, V}
     df = DataFrame([coredata], :auto)
     TS(df, index)
@@ -325,7 +322,7 @@ function names(ts::TS)
 end
 
 # convert to period
-function toperiod(ts::TS, period, fun)
+function toperiod(ts::TS, period::{T}, fun::Function) where {T<:Dates.Period}
     sdf = transform(ts.coredata, :Index => i -> Dates.floor.(i, period))
     gd = groupby(sdf, :Index_function)
     df = combine(gd, fun, keepkeys=false)[!, Not(:Index_function)]
