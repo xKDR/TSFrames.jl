@@ -322,7 +322,7 @@ function names(ts::TS)
 end
 
 # convert to period
-function toperiod(ts::TS, period::{T}, fun::Function) where {T<:Dates.Period}
+function toperiod(ts::TS, period::Vector{T}, fun::Function) where {T<:Dates.Period}
     sdf = transform(ts.coredata, :Index => i -> Dates.floor.(i, period))
     gd = groupby(sdf, :Index_function)
     df = combine(gd, fun, keepkeys=false)[!, Not(:Index_function)]
@@ -405,7 +405,7 @@ function tsplot(ts::TS, colnames::Vector{String} = TSx.names(ts))
 end
 
 ######################
-# joins
+# Joins
 ######################
 
 function innerjoin(ts1::TS, ts2::TS)
