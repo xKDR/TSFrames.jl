@@ -10,7 +10,7 @@ const data_array = Array([data_vector data_vector])
 
 const index_range = 1:DATA_SIZE
 const index_integer = collect(index_range)
-const index_timetype = collect(Date(2007, 1, 1):Day(1):Date(2008, 2, 4))
+const index_timetype = Date(2007, 1,1) + Day.(0:(DATA_SIZE - 1))
 
 const df_vector = DataFrame([data_vector], ["data"])
 const df_integer_index = DataFrame(Index = index_integer, data = data_vector)
@@ -20,6 +20,12 @@ function test_df_index_integer()
     ts = TS(df_integer_index, 1)
     @test typeof(ts) == TSx.TS
     @test ts.coredata == df_integer_index
+end
+
+function test_df_index_timetype()
+    ts = TS(df_timetype_index, 1)
+    @test typeof(ts) == TSx.TS
+    @test ts.coredata == df_timetype_index
 end
 
 function test_df_index_symbol()
@@ -40,10 +46,17 @@ function test_df_index_range()
     @test ts.coredata[!, :data] == df_vector[!, :data]
 end
 
-function test_vector_index_vector()
+function test_vector_index_vector_integer()
     ts = TS(data_vector, index_integer)
     @test typeof(ts) == TSx.TS
     @test ts.coredata[!, :Index] == index_integer
+    @test ts.coredata[!, 2] == data_vector
+end
+
+function test_vector_index_vector_timetype()
+    ts = TS(data_vector, index_timetype)
+    @test typeof(ts) == TSx.TS
+    @test ts.coredata[!, :Index] == index_timetype
     @test ts.coredata[!, 2] == data_vector
 end
 
@@ -63,9 +76,11 @@ function test_array()
 end
 
 test_df_index_integer()
+test_df_index_timetype()
 test_df_index_symbol()
 test_df_index_string()
 test_df_index_range()
-test_vector_index_vector()
+test_vector_index_vector_integer()
+test_vector_index_vector_timetype()
 test_vector()
 test_array()
