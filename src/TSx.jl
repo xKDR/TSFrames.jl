@@ -322,7 +322,7 @@ function names(ts::TS)
 end
 
 # convert to period
-function toperiod(ts::TS, period::Vector{T}, fun::Function) where {T<:Dates.Period}
+function toperiod(ts::TS, period, fun::Function)
     sdf = transform(ts.coredata, :Index => i -> Dates.floor.(i, period))
     gd = groupby(sdf, :Index_function)
     df = combine(gd, fun, keepkeys=false)[!, Not(:Index_function)]
@@ -331,9 +331,9 @@ end
 
 # Apply
 function apply(ts::TS, period, fun)
-    adf = transform(df, :Index => (i -> Dates.floor.(i, period)) => :Index)
+    adf = transform(ts.coredata, :Index => (i -> Dates.floor.(i, period)) => :Index)
     gb = groupby(adf, :Index)
-    TS(combine(gb, names(df_year[!, Not(:Index)]) .=> [fun]))
+    TS(combine(gb, names(adf[!, Not(:Index)]) .=> [fun]))
 end
 
 # Lag
