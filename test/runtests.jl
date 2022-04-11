@@ -2,5 +2,7 @@ using TSx
 using Test
 
 @testset "TSx.jl" begin
-    # Write your tests here.
+    @testset "TS()" begin
+        include("TS.jl")
+    end
 end
