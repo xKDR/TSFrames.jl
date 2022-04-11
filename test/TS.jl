@@ -1,21 +1,3 @@
-using Dates
-using DataFrames
-
-# constants
-const DATA_SIZE = 400
-
-# global variables
-const data_vector = randn(DATA_SIZE)
-const data_array = Array([data_vector data_vector])
-
-const index_range = 1:DATA_SIZE
-const index_integer = collect(index_range)
-const index_timetype = Date(2007, 1,1) + Day.(0:(DATA_SIZE - 1))
-
-const df_vector = DataFrame([data_vector], ["data"])
-const df_integer_index = DataFrame(Index = index_integer, data = data_vector)
-const df_timetype_index = DataFrame(Index = index_timetype, data = data_vector)
-
 function test_df_index_integer()
     ts = TS(df_integer_index, 1)
     @test typeof(ts) == TSx.TS
@@ -75,6 +57,9 @@ function test_array()
     @test Matrix(ts.coredata[!, Not(:Index)]) == data_array
 end
 
+# Run each test
+# NOTE: Do not forget to add any new test-function created above
+# otherwise that test won't run.
 test_df_index_integer()
 test_df_index_timetype()
 test_df_index_symbol()
