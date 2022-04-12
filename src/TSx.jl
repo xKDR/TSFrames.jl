@@ -282,11 +282,11 @@ function Base.getindex(ts::TS, i::UnitRange, j::Int)
 end
 
 function Base.getindex(ts::TS, i::Int, j::UnitRange)
-    return TS(ts.coredata[i, Cols(:Index, 1.+(j))])
+    return TS(ts.coredata[i, Cols(:Index, 1 .+(j))])
 end
 
 function Base.getindex(ts::TS, i::UnitRange, j::UnitRange)
-    return TS(ts.coredata[i, Cols(:Index, 1.+(j))])
+    return TS(ts.coredata[i, Cols(:Index, 1 .+(j))])
 end
 
 function Base.getindex(ts::TS, i::Int, j::Symbol)
