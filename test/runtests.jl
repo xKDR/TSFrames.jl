@@ -27,3 +27,11 @@ end
 @testset "toperiod()" begin
     include("toperiod.jl")
 end
+
+@testset "getindex()" begin
+    include("getindex.jl")
+end
+
+@testset "index()" begin
+    include("index.jl")
+end
