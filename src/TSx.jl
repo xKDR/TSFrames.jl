@@ -168,7 +168,7 @@ function Base.show(io::IO, ts::TS)
         println(last(ts.coredata, 10))
         println("")
     else
-        print(ts.coredata)
+        println(ts.coredata)
     end
     println("Index: {", eltype(index(ts)), "} [", length(index(ts)), "]")
     println("Size: ", size(ts))
@@ -273,30 +273,28 @@ end
 
 # By row-column
 function Base.getindex(ts::TS, i::Int, j::Int)
-    if j == 1
-        error("j cannot be index column")
-    end
-    TS(ts.coredata[[i], Cols(:Index, j)])
+    TS(ts.coredata[[i], Cols(:Index, j+1)])
 end
 
 # By row-range, column
 function Base.getindex(ts::TS, i::UnitRange, j::Int)
-    if j == 1
-        error("j cannot be index column")
-    end
-    return TS(ts.coredata[i, Cols(:Index,j)])
+    return TS(ts.coredata[i, Cols(:Index, j+1)])
 end
 
 function Base.getindex(ts::TS, i::Int, j::UnitRange)
+    return TS(ts.coredata[i, Cols(:Index, j+1)])
 end
 
 function Base.getindex(ts::TS, i::UnitRange, j::UnitRange)
+    return TS(ts.coredata[i, Cols(:Index, j+1)])
 end
 
 function Base.getindex(ts::TS, i::Int, j::Symbol)
+    return TS(ts.coredata[i, Cols(:Index, j)])
 end
 
 function Base.getindex(ts::TS, i::Int, j::String)
+    return TS(ts.coredata[i, Cols("Index", j)])
 end
 
 # By {TimeType, Period} range
