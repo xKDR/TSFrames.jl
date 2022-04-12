@@ -243,7 +243,7 @@ function Base.getindex(ts::TS, r::UnitRange)
 end
 
 # By row-array
-function Base.getindex(ts::TS, a::AbstractArray{Int64, 1})
+function Base.getindex(ts::TS, a::AbstractVector{Int64})
     TS(ts.coredata[a, :])
 end
 
@@ -254,8 +254,8 @@ function Base.getindex(ts::TS, d::Date)
 end
 
 # By period
-function Base.getindex(ts::TS, period::DataType, y::DataType)
-    sdf = filter(x -> Dates.period.(x.Index) == y, ts.coredata)
+function Base.getindex(ts::TS, y::Year)
+    sdf = filter(x -> Dates.year.(x.Index) == y, ts.coredata)
     TS(sdf)
 end
 
@@ -266,7 +266,7 @@ function Base.getindex(ts::TS, y::Year, m::Month)
 end
 
 # By string timestamp
-function Base.getindex(ts::TS, i::Any)
+function Base.getindex(ts::TS, i::String)
     ind = findall(x -> x == TSx.convert(eltype(ts.coredata[!, :Index]), i), ts.coredata[!, :Index]) # XXX: may return duplicate indices
     TS(ts.coredata[ind, :])     # XXX: check if data is being copied
 end
@@ -287,8 +287,21 @@ function Base.getindex(ts::TS, i::UnitRange, j::Int)
     return TS(ts.coredata[i, Cols(:Index,j)])
 end
 
+function Base.getindex(ts::TS, i::Int, j::UnitRange)
+end
 
+function Base.getindex(ts::TS, i::UnitRange, j::UnitRange)
+end
 
+function Base.getindex(ts::TS, i::Int, j::Symbol)
+end
+
+function Base.getindex(ts::TS, i::Int, j::String)
+end
+
+# By {TimeType, Period} range
+function Base.getindex(ts::TS, r::StepRange{T, V}) where {T<:TimeType, V<:Period}
+end
 
 ########################
 # Parameters
@@ -322,7 +335,7 @@ function names(ts::TS)
 end
 
 # convert to period
-function toperiod(ts::TS, period::{T}, fun::Function) where {T<:Dates.Period}
+function toperiod(ts::TS, period::T, fun::Function) where {T<:Dates.Period}
     sdf = transform(ts.coredata, :Index => i -> Dates.floor.(i, period))
     gd = groupby(sdf, :Index_function)
     df = combine(gd, fun, keepkeys=false)[!, Not(:Index_function)]
