@@ -335,7 +335,7 @@ function names(ts::TS)
 end
 
 # convert to period
-function toperiod(ts::TS, period::T, fun::Function) where {T<:Dates.Period}
+function toperiod(ts::TS, period::T, fun::V) where {T<:Dates.Period, V<:Function}
     sdf = transform(ts.coredata, :Index => i -> Dates.floor.(i, period))
     gd = groupby(sdf, :Index_function)
     df = combine(gd, fun, keepkeys=false)[!, Not(:Index_function)]
