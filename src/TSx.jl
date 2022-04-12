@@ -344,9 +344,9 @@ end
 
 # Apply
 function apply(ts::TS, period, fun)
-    adf = transform(df, :Index => (i -> Dates.floor.(i, period)) => :Index)
+    adf = transform(ts.coredata, :Index => (i -> Dates.floor.(i, period)) => :Index)
     gb = groupby(adf, :Index)
-    TS(combine(gb, names(df_year[!, Not(:Index)]) .=> [fun]))
+    TS(combine(gb, names(adf[!, Not(:Index)]) .=> [fun]))
 end
 
 # Lag
@@ -418,7 +418,7 @@ function tsplot(ts::TS, colnames::Vector{String} = TSx.names(ts))
 end
 
 ######################
-# joins
+# Joins
 ######################
 
 function innerjoin(ts1::TS, ts2::TS)
