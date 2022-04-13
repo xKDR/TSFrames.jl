@@ -8,7 +8,7 @@ ts = TS(df, 1)
 
 functions = [mean, median, sum, minimum, maximum, std]
 cols: [1, 3, :vec1, :vec3]
-windowsize = [1, 5, DATASIZE, 0, -1, 100000]
+windowsize = [1, 100, DATASIZE]
 
 function ts_test(func, col, windowsize)
     return TSx.rollapply(func, ts, co, windowsize)
@@ -19,11 +19,11 @@ for fun in functions
 end
 
 for fun in functions
-    @ts_test(fun, 3, 5).coredata[!,2] == RollingFunctions.rolling(fun, df[!, 3], 5)
+    @ts_test(fun, 3, 100).coredata[!,2] == RollingFunctions.rolling(fun, df[!, 3], 100)
 end
 
 for fun in functions
-    @ts_test(fun, :vec1, 5).coredata[!,2] == RollingFunctions.rolling(fun, df[!, :vec1], 5)
+    @ts_test(fun, :vec1, 100).coredata[!,2] == RollingFunctions.rolling(fun, df[!, :vec1], 100)
 end
 
 for fun in functions
