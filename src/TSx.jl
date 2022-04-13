@@ -24,7 +24,7 @@ export TS,
     nrow,
     ncol,
     pctchange,
-    log,
+    log_values,
     print,
     show,
     size,
@@ -375,21 +375,21 @@ function pctchange(ts::TS, periods::Int = 1)
 end
 
 # Log Function
-function log(ts::TS,complex::Bool = false)
-    if complex == false
+function log_values(ts::TS, complex::Bool = false)
+    if complex == true
         for col in names(ts.coredata)
             if eltype(ts.coredata[!,col]) <: Union{Missing, Number}
-                ts.coredata[!,col] = log.(skipmissing(ts.coredata))
+                ts.coredata[!,col] = log.(Complex.((ts.coredata[!,col])))
             end
         end
     else
         for col in names(ts.coredata)
             if eltype(ts.coredata[!,col]) <: Union{Missing, Number}
-                ts.coredata[!,col] = log.Complex.((skipmissing(ts.coredata)))
+                ts.coredata[!,col] = log.((ts.coredata[!,col]))
             end
         end
-    end
-    return TS(ts.coredata)
+    end      
+    return TSx.TS(ts.coredata)
 end
 
 ######################
