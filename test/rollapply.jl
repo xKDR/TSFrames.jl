@@ -15,19 +15,19 @@ function ts_test(func, col, windowsize)
 end
 
 for fun in functions
-    @ts_test(fun, 1, 1).coredata == RollingFunctions.rolling(fun, df[!, 1], 1)
+    @ts_test(fun, 1, 1).coredata[!, 2] == RollingFunctions.rolling(fun, df[!, 1], 1)
 end
 
 for fun in functions
-    @ts_test(fun, 3, 5).coredata == RollingFunctions.rolling(fun, df[!, 3], 5)
+    @ts_test(fun, 3, 5).coredata[!,2] == RollingFunctions.rolling(fun, df[!, 3], 5)
 end
 
 for fun in functions
-    @ts_test(fun, :vec1, 5).coredata == RollingFunctions.rolling(fun, df[!, :vec1], 5)
+    @ts_test(fun, :vec1, 5).coredata[!,2] == RollingFunctions.rolling(fun, df[!, :vec1], 5)
 end
 
 for fun in functions
-    @ts_test(fun, :vec3, DATA_SIZE).coredata == RollingFunctions.rolling(fun, df[!, :vec3], DATA_SIZE)
+    @ts_test(fun, :vec3, DATA_SIZE).coredata[!,2] == RollingFunctions.rolling(fun, df[!, :vec3], DATA_SIZE)
 end
 
 
