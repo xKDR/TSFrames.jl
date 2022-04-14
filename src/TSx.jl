@@ -459,7 +459,7 @@ function apply(ts::TS, period::Union{T,Type{T}}, fun::V, index_at::Function=firs
 
     df = combine(gd,
                  :Index => index_at => :Index,
-                 names(gd)[Not(n, r)] => fun,
+                 names(gd)[Not(n, r)] .=> fun,
                  keepkeys=false)
     TS(df, :Index)
 end
