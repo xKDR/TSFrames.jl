@@ -94,7 +94,7 @@ struct TS
     # From DataFrame, index number/name/symbol
     function TS(coredata::DataFrame, index::Union{String, Symbol, Int}=1)
         if (DataFrames.ncol(coredata) == 1)
-            TS(coredata, collect(Base.OneTo(DataFrames.nrow(df))))
+            TS(coredata, collect(Base.OneTo(DataFrames.nrow(coredata))))
         end
 
         sorted_cd = sort(coredata, index)
