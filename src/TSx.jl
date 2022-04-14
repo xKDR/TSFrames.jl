@@ -334,6 +334,41 @@ function names(ts::TS)
 end
 
 # convert to period
+"""
+    Apply/Period conversion
+
+# Apply/Period conversion
+`apply(ts::TS, period::Union{T,Type{T}}, fun::V, index_at::Function=first) where {T<:Union{DatePeriod,TimePeriod}, V<:Function}`
+
+Apply `fun` to `ts` object based on `period` and return correctly
+indexed rows. This method is used for doing aggregation over a time
+period or to convert `ts` into an object of lower frequency (ex. from
+daily series to monthly).
+
+`period` is any of `Period` types in the `Dates` module. Conversion
+from lower to a higher frequency will throw an error as interpolation
+isn't currently handled by this method.
+
+By default, the method uses the first value of the index within the
+period to index the resulting aggregated object. This behaviour can be
+controlled by `index_at` argument which can take `first` or `last` as
+an input.
+
+# Examples
+
+julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10))
+julia> ts = TS(DataFrame(Index = dates, x1 = randn(length(dates))))
+
+# take the first observation in each month
+julia> ts_monthly = apply(tsd, Month, first)
+# alternate months
+julia> ts_two_monthly = apply(tsd, Month(2), first)
+
+# weekly standard deviation
+julia> ts_monthly = apply(tsd, Week, Statistics.std)
+# indexed by last date of the week
+julia> ts_monthly = apply(tsd, Week, Statistics.std, last)
+"""
 function apply(ts::TS, period::Union{T,Type{T}}, fun::V, index_at::Function=first) where {T<:Union{DatePeriod,TimePeriod}, V<:Function}
     sdf = transform(ts.coredata, :Index => i -> Dates.floor.(i, period))
     gd = groupby(sdf, :Index_function)
