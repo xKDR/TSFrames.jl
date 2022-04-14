@@ -481,11 +481,11 @@ function lag(ts::TS, lag_value::Int = 1)
 end
 
 """
-# Lagging 
-`lag(ts::TS, lag_value::Int = 1)`
+# Leading 
+`lead(ts::TS, lead_value::Int = 1)`
 
-Lag the `ts` object by the specified amount. The rows corresponding
-to lagged values will be rendered as `missing` objects. The default `lag`
+Lead the `ts` object by the specified amount. The rows corresponding
+to lead values will be rendered as `missing` objects. The default `lead`
 value is set to be 1.
 """
 # Lead
@@ -494,6 +494,7 @@ function lead(ts::TS, lead_value::Int = 1)
     insertcols!(sdf, 1, :Index => ts.coredata[!, :Index])
     TS(sdf, :Index)
 end
+
 
 # Diff
 function diff(ts::TS, periods::Int = 1)
