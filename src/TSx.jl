@@ -572,7 +572,7 @@ provided.
 
 `join(ts1::TS, ts2::TS, ::JoinLeft)`:
 
-Left join, takes the index values which are present in the left
+Left join takes the index values which are present in the left
 object `ts1` and finds matching index values in the right object
 `ts2`. The resulting object includes all the rows from the left
 object, the column values from the left object, and the values
