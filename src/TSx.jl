@@ -205,7 +205,10 @@ end
 
 `TS` can be subset using row and column indices. The row selector
 could be an integer, a range, an array or it could also be a `Date`
-object or an ISO-formatted date string. The latter two subset
+object or an ISO-formatted date string ("2007-04-10"). There are
+methods to subset on year, year-month, and year-quarter.
+
+The latter two subset
 `coredata` by matching on the index column.
 
 Column selector could be an integer or any other selector which
@@ -219,10 +222,8 @@ julia> ts = TS([randn(10) randn(10) randn(10)])
 julia> ts[1]
 julia> ts[1:5]
 julia> ts[1:5, 2]
-julia> ts[1, 2:3]
-julia> ts[[1, 9]]               # select rows
-
-
+julia> ts[1:5, 2:3]
+julia> ts[[1, 9]]               # individual rows
 
 julia> dates = collect(Date(2007):Day(1):Date(2008, 2, 22))
 julia> ts = TS(randn(length(dates)), dates)
@@ -230,7 +231,11 @@ julia> ts[Date(2007, 01, 01)]
 julia> ts[Date(2007)]
 julia> ts[Year(2007)]
 julia> ts[Year(2007), Month(11)]
+julia> ts[Year(2007), Quarter(2)]
 julia> ts["2007-01-01"]
+
+julia> ts[1, :x1]
+julia> ts[1, "x1"]
 ```
 """
 function Base.getindex(ts::TS, i::Int)
@@ -259,9 +264,14 @@ function Base.getindex(ts::TS, y::Year)
     TS(sdf)
 end
 
+function Base.getindex(ts::TS, y::Year, q::Quarter)
+    sdf = filter(:Index => x -> (Year(x), Quarter(x)) == (y, q), ts.coredata)
+    TS(sdf)
+end
+
 # XXX: ideally, Dates.YearMonth class should exist
 function Base.getindex(ts::TS, y::Year, m::Month)
-    sdf = filter(:Index => x -> yearmonth(x) == (Dates.value(y), Dates.value(m)), ts.coredata)
+    sdf = filter(:Index => x -> (Year(x), Month(x)) == (y, m), ts.coredata)
     TS(sdf)
 end
 
@@ -306,16 +316,49 @@ end
 ########################
 
 # Number of rows
+"""
+# Size methods
+`nrow(ts::TS)`
+Return the number of rows of `ts`.
+
+# Examples
+```jldoctest
+julia> ts = TS(randn(100))
+julia> nrow(ts)
+```
+"""
 function nrow(ts::TS)
     size(ts.coredata)[1]
 end
 
 # Number of columns
+"""
+# Size methods
+`ncol(ts::TS)`
+Return the number of columns of `ts`.
+
+# Examples
+```jldoctest
+julia> ts = TS([randn(100) randn(100) randn(100)])
+julia> ncol(ts)
+```
+"""
 function ncol(ts::TS)
     size(ts.coredata)[2] - 1
 end
 
 # Size of
+"""
+# Size methods
+`size(ts::TS)`
+Return the number of rows and columns of `ts` as a tuple.
+
+# Examples
+```jldoctest
+julia> ts = TS([randn(100) randn(100) randn(100)])
+julia> size(ts)
+```
+"""
 function size(ts::TS)
     nr = nrow(ts)
     nc = ncol(ts)
@@ -323,6 +366,18 @@ function size(ts::TS)
 end
 
 # Return index column
+"""
+# Index column
+Return the index vector from the TS DataFrame.
+
+# Examples
+
+```jldoctest
+julia> ts = TS(randn(10), today():Month(1):today()+Month(9))
+julia> index(ts)
+julia> typeof(index(ts))
+```
+"""
 function index(ts::TS)
     ts.coredata[!, :Index]
 end
