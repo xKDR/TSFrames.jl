@@ -29,7 +29,7 @@ export TS,
     nrow,
     ncol,
     pctchange,
-    log_values,
+    log,
     print,
     rbind,
     show,
@@ -516,27 +516,57 @@ function pctchange(ts::TS, periods::Int = 1)
     TS(ddf, :Index)
 end
 
+"""
 # Log Function
-function log_values(ts::TS, complex::Bool = false)
+
+`log(ts::TS, complex::Bool = false)`
+
+log function returns the log value of the TS object/ column or any other subset. 
+If the `complex` argument is `true`, the function returns the log of negative numbers as complex numbers.
+But this also coerces the log of positive values as complex numbers with th imaginary component equal to 0.
+"""
+
+# Log Function
+function log(ts::TS, complex::Bool = false)
+    ts_new = ts
     if complex == true
-        for col in names(ts.coredata)
-            if eltype(ts.coredata[!,col]) <: Union{Missing, Number}
-                ts.coredata[!,col] = log.(Complex.((ts.coredata[!,col])))
+        for col in names(ts_new.coredata)
+            if eltype(ts_new.coredata[!,col]) <: Union{Missing, Number}
+                ts_new.coredata[!,col] = Base.log.(Complex.((ts_new.coredata[!,col])))
             end
         end
     else
-        for col in names(ts.coredata)
-            if eltype(ts.coredata[!,col]) <: Union{Missing, Number}
-                ts.coredata[!,col] = log.((ts.coredata[!,col]))
+        for col in names(ts_new.coredata)
+            if eltype(ts_new.coredata[!,col]) <: Union{Missing, Number}
+                ts_new.coredata[!,col] = Base.log.((ts_new.coredata[!,col]))
             end
         end
     end      
-    return TSx.TS(ts.coredata)
+    return TSx.TS(ts_new.coredata)
 end
 
 ######################
 # Rolling Function
 ######################
+
+"""
+# Rolling Functions
+
+`function rollapply(fun::Function, ts::TS, column::Any, windowsize:: Int)`
+
+rollapply functions applies a rollng function to a column of a TS object.
+`fun` can be a function like `mean`, `median`, `maximum`, `minimum`, `std` or any other user defined function
+`ts` is the time series on which the funciton is to be applied to
+`col` specify the column where you want the rolling funciton to be aplpied upon. It can take Int and Symbol values
+`windowsize` window size for the rolling function
+
+# Examples
+
+```jdoctest
+julia> rollapply(mean, ts, 2, 5)
+julia> rollpply(std, ts, :col3, 10)
+```
+"""
 
 function rollapply(fun::Function, ts::TS, column::Any, windowsize:: Int)
     if windowsize < 1
