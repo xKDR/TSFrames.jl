@@ -452,7 +452,7 @@ end
 ######################
 
 
-function tsplot(ts::TS, colnames::Vector{String} = TSx.names(ts))
+function plot(ts::TS, colnames::Vector{String} = TSx.names(ts))
     Plots.plot(ts.coredata[!, :Index], Matrix(ts.coredata[!, colnames]))
 end
 
