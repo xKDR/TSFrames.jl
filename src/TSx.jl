@@ -136,7 +136,7 @@ end
 function TS(coredata::DataFrame)
     if "Index" in names(coredata)
         return TS(coredata, :Index)
-    elif ncol(coredata) == 1
+    elif DataFrames.ncol(coredata) == 1
         return TS(coredata, collect(1:nrow(coredata)))
     else
         return TS(coredata, 1)
