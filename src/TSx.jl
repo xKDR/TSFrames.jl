@@ -453,6 +453,15 @@ end
 ######################
 # Joins
 ######################
+struct JoinBoth    # inner
+end
+struct JoinAll    # inner
+end
+struct JoinLeft     # left
+end
+struct JoinRight    # right
+end
+
 """
 # Joins/Column-binding
 
@@ -525,16 +534,6 @@ julia> ts2 = TS(DataFrame(Index = dates, x1 = randn(30)))
 julia> join(ts1, ts2)
 ```
 """
-struct JoinBoth    # inner
-end
-struct JoinAll    # inner
-end
-struct JoinLeft     # left
-end
-struct JoinRight    # right
-end
-
-
 function Base.join(ts1::TS, ts2::TS)
     join(ts1, ts2, JoinAll())
 end
