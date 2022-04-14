@@ -171,6 +171,10 @@ function TS(coredata::AbstractArray{T,2}) where {T}
     TS(df, index_vals)
 end
 
+function TS(coredata::AbstractArray{T,2}, index::AbstractVector{V}) where {T, V}
+    df = DataFrame(coredata, :auto, copycols=true)
+    TS(df, index)
+end
 
 
 ####################################
@@ -455,7 +459,7 @@ function apply(ts::TS, period::Union{T,Type{T}}, fun::V, index_at::Function=firs
 
     df = combine(gd,
                  :Index => index_at => :Index,
-                 names(gd)[Not(n, r)] => fun,
+                 names(gd)[Not(n, r)] .=> fun,
                  keepkeys=false)
     TS(df, :Index)
 end
