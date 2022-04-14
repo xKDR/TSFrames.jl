@@ -52,6 +52,10 @@ A TS object is essentially a `DataFrame` with a specific column marked
 as an index and has the name `Index`. The DataFrame is sorted using
 index values during construction.
 
+Permitted data inputs to constructor are DataFrame, Vector, and
+2-dimensional Array. If an index is already not present in the
+constructor then it is generated.
+
 # Constructors
 ```julia
 TS(coredata::DataFrame, index::Union{String, Symbol, Int}=1)
@@ -59,16 +63,19 @@ TS(coredata::DataFrame, index::AbstractVector{T}) where {T<:Int}
 TS(coredata::DataFrame, index::UnitRange{Int})
 TS(coredata::AbstractVector{T}, index::AbstractVector{V}) where {T, V}
 TS(coredata::AbstractVector{T}) where {T}
-TS(coredata::AbstractArray{T,2}, meta::Dict=Dict{String, Any}()) where {T}
+TS(coredata::AbstractArray{T,2}) where {T}
 ```
 
 # Examples
 ```jldoctest
 julia> df = DataFrame(x1 = randn(10))
-julia> TS(df)
+julia> TS(df)                   # generates index
 
-julia> df = DataFrame(Index = [1, 2, 3], x1 = randn(3))
-julia> TS(df, 1)
+julia> df = DataFrame(ind = [1, 2, 3], x1 = randn(3))
+julia> TS(df, 1)                # first column is index
+
+julia> df = DataFrame(x1 = randn(3), x2 = randn(3), Index = [1, 2, 3])
+julia> TS(df)                   # looks up `Index` column
 
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10))
 julia> df = DataFrame(dates = dates, x1 = randn(10))
@@ -94,7 +101,7 @@ struct TS
     end
 
     # From DataFrame, index number/name/symbol
-    function TS(coredata::DataFrame, index::Union{String, Symbol, Int}=1)
+    function TS(coredata::DataFrame, index::Union{String, Symbol, Int})
         if (DataFrames.ncol(coredata) == 1)
             TS(coredata, collect(Base.OneTo(DataFrames.nrow(coredata))))
         end
@@ -126,6 +133,16 @@ end
 # Constructors
 ####################################
 
+function TS(coredata::DataFrame)
+    if "Index" in names(coredata)
+        return TS(coredata, :Index)
+    elif ncol(coredata) == 1
+        return TS(coredata, collect(1:nrow(coredata)))
+    else
+        return TS(coredata, 1)
+    end
+end
+
 # From DataFrame, index range
 function TS(coredata::DataFrame, index::UnitRange{Int})
     index_vals = collect(index)
@@ -148,7 +165,7 @@ end
 
 # From Matrix and meta
 # FIXME: use Metadata.jl
-function TS(coredata::AbstractArray{T,2}, meta::Dict=Dict{String, Any}()) where {T}
+function TS(coredata::AbstractArray{T,2}) where {T}
     index_vals = collect(Base.OneTo(size(coredata)[1]))
     df = DataFrame(coredata, :auto, copycols=true)
     TS(df, index_vals)
