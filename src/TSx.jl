@@ -6,20 +6,24 @@ import Base.convert
 import Base.diff
 import Base.filter
 import Base.getindex
+import Base.join
 import Base.names
 import Base.print
 import Base.==
 import Base.show
 import Base.size
+import Base.vcat
 
 import Dates.Period
 
 export TS,
     apply,
     convert,
+    cbind,
     diff,
     getindex,
     index,
+    join,
     lag,
     names,
     nrow,
@@ -27,13 +31,10 @@ export TS,
     pctchange,
     log_values,
     print,
+    rbind,
     show,
     size,
     rollapply,
-    leftjoin,
-    rightjoin,
-    innerjoin,
-    outerjoin,
     vcat
 
 
@@ -422,30 +423,43 @@ end
 ######################
 # Joins
 ######################
+struct JoinBoth    # inner
+end
+struct JoinAll    # inner
+end
+struct JoinLeft     # left
+end
+struct JoinRight    # right
+end
 
-function innerjoin(ts1::TS, ts2::TS)
-    result = DataFrames.innerjoin(ts1.coredata, ts2.coredata, on = :Index)
+
+function Base.join(ts1::TS, ts2::TS, ::JoinBoth)
+    result = DataFrames.innerjoin(ts1.coredata, ts2.coredata, on = :Index, makeunique=true)
     return TS(result)
 end
 
-function outerjoin(ts1::TS, ts2::TS)
-    result = DataFrames.outerjoin(ts1.coredata, ts2.coredata, on = :Index)
+function Base.join(ts1::TS, ts2::TS, ::JoinAll)
+    result = DataFrames.outerjoin(ts1.coredata, ts2.coredata, on = :Index, makeunique=true)
     return TS(result)
 end
 
-function leftjoin(ts1::TS, ts2::TS)
-    result = DataFrames.leftjoin(ts1.coredata, ts2.coredata, on = :Index)
+function Base.join(ts1::TS, ts2::TS, ::JoinLeft)
+    result = DataFrames.leftjoin(ts1.coredata, ts2.coredata, on = :Index, makeunique=true)
     return TS(result)
 end
 
-function rightjoin(ts1::TS, ts2::TS)
-    result = DataFrames.rightjoin(ts1.coredata, ts2.coredata, on = :Index)
+function Base.join(ts1::TS, ts2::TS, ::JoinRight)
+    result = DataFrames.rightjoin(ts1.coredata, ts2.coredata, on = :Index, makeunique=true)
     return TS(result)
 end
+# alias
+cbind = join
 
-function vcat(ts::TS...; cols::Symbol=:setequal, source::Symbol=nothing)
+function Base.vcat(ts::TS...; cols::Symbol=:setequal, source::Symbol=nothing)
     result_df = DataFrames.vcat(ts1.coredata...; cols, source)
     return TS(result_df)
 end
+# alias
+rbind = vcat
 
 end                             # END module TSx
