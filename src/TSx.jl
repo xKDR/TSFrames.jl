@@ -42,9 +42,11 @@ export TS,
 # The TS structure
 ####################################
 """
-    TS
+    struct TS
+      coredata :: DataFrame
+    end
 
-A type to hold ordered data with an index.
+`::TS` - A type to hold ordered data with an index.
 
 A TS object is essentially a `DataFrame` with a specific column marked
 as an index and has the name `Index`. The DataFrame is sorted using
@@ -333,7 +335,10 @@ end
 # convert to period
 """
 # Apply/Period conversion
-`apply(ts::TS, period::Union{T,Type{T}}, fun::V, index_at::Function=first) where {T<:Union{DatePeriod,TimePeriod}, V<:Function}`
+`apply(ts::TS, period::Union{T,Type{T}},
+      fun::V,
+      index_at::Function=first) 
+    where {T<:Union{DatePeriod,TimePeriod}, V<:Function}`
 
 Apply `fun` to `ts` object based on `period` and return correctly
 indexed rows. This method is used for doing aggregation over a time
@@ -350,7 +355,7 @@ controlled by `index_at` argument which can take `first` or `last` as
 an input.
 
 # Examples
-
+```jldoctest
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10))
 julia> ts = TS(DataFrame(Index = dates, x1 = randn(length(dates))))
 
@@ -363,6 +368,7 @@ julia> ts_two_monthly = apply(tsd, Month(2), first)
 julia> ts_monthly = apply(tsd, Week, Statistics.std)
 # indexed by last date of the week
 julia> ts_monthly = apply(tsd, Week, Statistics.std, last)
+```
 """
 function apply(ts::TS, period::Union{T,Type{T}}, fun::V, index_at::Function=first) where {T<:Union{DatePeriod,TimePeriod}, V<:Function}
     sdf = transform(ts.coredata, :Index => i -> Dates.floor.(i, period))
@@ -511,6 +517,8 @@ object.
 
 The default behaviour is to assume `JoinAll()` if no `JoinType` object
 is provided to the `join` method.
+
+`cbind` is an alias for `join` method.
 
 # Examples
 ```jldoctest
