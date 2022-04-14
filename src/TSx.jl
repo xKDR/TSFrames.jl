@@ -215,12 +215,14 @@ the `index()` method on the `TS` object.
 # Examples
 
 ```jldoctest
-julia> ts = TS(randn(10), 1:10)
+julia> ts = TS([randn(10) randn(10) randn(10)])
 julia> ts[1]
 julia> ts[1:5]
 julia> ts[1:5, 2]
-julia> ts[1, 2]
-julia> ts[[1, 3]]
+julia> ts[1, 2:3]
+julia> ts[[1, 9]]               # select rows
+
+
 
 julia> dates = collect(Date(2007):Day(1):Date(2008, 2, 22))
 julia> ts = TS(randn(length(dates)), dates)
@@ -229,8 +231,6 @@ julia> ts[Date(2007)]
 julia> ts[Year(2007)]
 julia> ts[Year(2007), Month(11)]
 julia> ts["2007-01-01"]
-julia> ts["2007-01"]
-julia> ts["2007"]
 ```
 """
 function Base.getindex(ts::TS, i::Int)
@@ -255,13 +255,13 @@ end
 
 # By period
 function Base.getindex(ts::TS, y::Year)
-    sdf = filter(x -> Dates.year.(x.Index) == y, ts.coredata)
+    sdf = filter(:Index => x -> Dates.Year(x) == y, ts.coredata)
     TS(sdf)
 end
 
 # XXX: ideally, Dates.YearMonth class should exist
 function Base.getindex(ts::TS, y::Year, m::Month)
-    sdf = filter(x -> Dates.yearmonth.(x.Index) == (y, m), ts.coredata)
+    sdf = filter(:Index => x -> yearmonth(x) == (Dates.value(y), Dates.value(m)), ts.coredata)
     TS(sdf)
 end
 
@@ -522,10 +522,8 @@ is provided to the `join` method.
 
 # Examples
 ```jldoctest
-julia> df1 = DataFrame(Index=1:10, x1 = randn(10))
-julia> ts1 = TS(df1)
-julia> df2 = DataFrame(Index=1:10, x2 = randn(10))
-julia> ts2 = TS(df2)
+julia> ts1 = TS(randn(10), 1:10)
+julia> ts2 = TS(randn(10), 1:10)
 
 julia> join(ts1, ts2, JoinAll()) # with `missing` inserted
 julia> join(ts1, ts2)            # same as JoinAll()
@@ -535,9 +533,9 @@ julia> join(ts1, ts2, JoinRight())
 
 # Using TimeType objects
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10))
-julia> ts1 = TS(DataFrame(Index = dates, x1 = randn(10)))
+julia> ts1 = TS(randn(length(dates)), dates)
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,30))
-julia> ts2 = TS(DataFrame(Index = dates, x1 = randn(30)))
+julia> ts2 = TS(randn(length(dates)), dates)
 
 julia> join(ts1, ts2)
 ```
