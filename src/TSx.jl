@@ -199,8 +199,6 @@ end
 
 
 """
-    Subsetting/Indexing
-
 # Subsetting/Indexing
 
 `TS` can be subset using row and column indices. The row selector
@@ -233,7 +231,6 @@ julia> ts["2007-01"]
 julia> ts["2007"]
 ```
 """
-# By row
 function Base.getindex(ts::TS, i::Int)
     TS(ts.coredata[[i], :])
 end
@@ -335,8 +332,6 @@ end
 
 # convert to period
 """
-    Apply/Period conversion
-
 # Apply/Period conversion
 `apply(ts::TS, period::Union{T,Type{T}}, fun::V, index_at::Function=first) where {T<:Union{DatePeriod,TimePeriod}, V<:Function}`
 
@@ -459,8 +454,6 @@ end
 # Joins
 ######################
 """
-    Joins/Column-binding
-
 # Joins/Column-binding
 
 `TS` objects can be combined together column-wise using `Index` as the
@@ -473,32 +466,39 @@ column names amongst the TS objects.
 
 The following join types are supported:
 
-1. `join(ts1::TS, ts2::TS, ::JoinBoth)`: a.k.a. inner join, takes the
-intersection of the indexes of `ts1` and `ts2`, and then merges the
-columns of both the objects. The resulting object will only contain
-rows which are present in both the objects' indexes. The function will
-renamine the columns in the final object if they had same names in the
-TS objects.
+`join(ts1::TS, ts2::TS, ::JoinBoth)`
 
-2. `join(ts1::TS, ts2::TS, ::JoinAll)`: a.k.a. outer join, takes the
-union of the indexes of `ts1` and `ts2` before merging the other
-columns of input objects. The output will contain rows which are
-present in all the input objects while inserting `missing` values
-where a row was not present in any of the objects. This is the default
-behaviour if no `JoinType` object is provided.
+a.k.a. inner join, takes the intersection of the indexes of `ts1` and
+`ts2`, and then merges the columns of both the objects. The resulting
+object will only contain rows which are present in both the objects'
+indexes. The function will renamine the columns in the final object if
+they had same names in the TS objects.
 
-3. `join(ts1::TS, ts2::TS, ::JoinLeft)`: a.k.a. left join, takes the
-index values which are present in the left object `ts1` and finds
-matching index values in the right object `ts2`. The resulting object
-includes all the rows from the left object, the column values from the
-left object, and the values associated with matching index rows on the
-right. The operation inserts `missing` values where in the unmatched
-rows of the right object.
+`join(ts1::TS, ts2::TS, ::JoinAll)`:
 
-4. `join(ts1::TS, ts2::TS, ::JoinRight)`: a.k.a. left join, is similar
-to left join but works in the opposite direction. The final object
-contains all the rows from the right object while inserting
-`missing` values in rows missing from the left object.
+a.k.a. outer join, takes the union of the indexes of `ts1` and `ts2`
+before merging the other columns of input objects. The output will
+contain rows which are present in all the input objects while
+inserting `missing` values where a row was not present in any of the
+objects. This is the default behaviour if no `JoinType` object is
+provided.
+
+`join(ts1::TS, ts2::TS, ::JoinLeft)`:
+
+Left join, takes the index values which are present in the left
+object `ts1` and finds matching index values in the right object
+`ts2`. The resulting object includes all the rows from the left
+object, the column values from the left object, and the values
+associated with matching index rows on the right. The operation
+inserts `missing` values where in the unmatched rows of the right
+object.
+
+`join(ts1::TS, ts2::TS, ::JoinRight)`
+
+Right join, similar to left join but works in the opposite
+direction. The final object contains all the rows from the right
+object while inserting `missing` values in rows missing from the left
+object.
 
 The default behaviour is to assume `JoinAll()` if no `JoinType` object
 is provided to the `join` method.
@@ -511,8 +511,7 @@ julia> df2 = DataFrame(Index=1:10, x2 = randn(10))
 julia> ts2 = TS(df2)
 
 julia> join(ts1, ts2, JoinAll()) # with `missing` inserted
-# same as JoinAll()
-julia> join(ts1, ts2)            
+julia> join(ts1, ts2)            # same as JoinAll()
 julia> join(ts1, ts2, JoinBoth())
 julia> join(ts1, ts2, JoinLeft())
 julia> join(ts1, ts2, JoinRight())
