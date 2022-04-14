@@ -460,6 +460,15 @@ function apply(ts::TS, period::Union{T,Type{T}}, fun::V, index_at::Function=firs
     TS(df, :Index)
 end
 
+"""
+# Lagging 
+`lag(ts::TS, lag_value::Int = 1)`
+
+Lag the `ts` object by the specified amount. The rows corresponding
+to lagged values will be rendered as `missing` objects. The default `lag`
+value is set to be 1.
+"""
+
 # Lag
 function lag(ts::TS, lag_value::Int = 1)
     sdf = DataFrame(ShiftedArrays.lag.(eachcol(ts.coredata[!, Not(:Index)]), lag_value), TSx.names(ts))
@@ -467,8 +476,23 @@ function lag(ts::TS, lag_value::Int = 1)
     TS(sdf, :Index)
 end
 
+"""
+# Lagging 
+`lag(ts::TS, lag_value::Int = 1)`
+
+Lag the `ts` object by the specified amount. The rows corresponding
+to lagged values will be rendered as `missing` objects. The default `lag`
+value is set to be 1.
+"""
+# Lead
+function lead(ts::TS, lead_value::Int = 1)
+    sdf = DataFrame(ShiftedArrays.lead.(eachcol(ts.coredata[!, Not(:Index)]), lead_value), TSx.names(ts))
+    insertcols!(sdf, 1, :Index => ts.coredata[!, :Index])
+    TS(sdf, :Index)
+end
+
 # Diff
-function diff(ts::TS, periods::Int = 1) # differences::Int = 1
+function diff(ts::TS, periods::Int = 1)
     if periods <= 0
         error("periods must be a postive int")
     end
