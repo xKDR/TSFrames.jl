@@ -225,8 +225,6 @@ julia> ts[1:5, 2]
 julia> ts[1:5, 2:3]
 julia> ts[[1, 9]]               # individual rows
 
-
-
 julia> dates = collect(Date(2007):Day(1):Date(2008, 2, 22))
 julia> ts = TS(randn(length(dates)), dates)
 julia> ts[Date(2007, 01, 01)]
@@ -335,6 +333,18 @@ function size(ts::TS)
 end
 
 # Return index column
+"""
+# Index column
+Return the index vector from the TS DataFrame.
+
+# Examples
+
+```jldoctest
+julia> ts = TS(randn(10), today():Month(1):today()+Month(9))
+julia> index(ts)
+julia> typeof(index(ts))
+```
+"""
 function index(ts::TS)
     ts.coredata[!, :Index]
 end
