@@ -14,20 +14,27 @@ windowsize = [1, 5, 100, DATASIZE]
 
 for fun in functions
     res = @test TSx.rollapply(fun, ts, 2, 5).coredata[!, 2] == RollingFunctions.rolling(fun, df[!, 2], 5)
-    print(res)
+    println(res)
 end
 
 for fun in functions
     res = @test TSx.rollapply(fun, ts, :vec1, 5).coredata[!, :vec1] == RollingFunctions.rolling(fun, df[!, :vec1], 5)
-    print(res)
+    println(res)
 end
 
 for fun in functions
     res = @test TSx.rollapply(fun, ts, :vec3, 100).coredata[!, :vec3] == RollingFunctions.rolling(fun, df[!, :vec3], 100)
-    print(res)
+    println(res)
 end
 
 for fun in functions
     res = @test TSx.rollapply(fun, ts, :vec3, DATA_SIZE).coredata[!, :vec3] == RollingFunctions.rolling(fun, df[!, :vec3], DATA_SIZE)
-    print(res)
+    println(res)
 end
+
+for fun in functions
+    res = @test_throws ErrorException TSx.rollapply(fun, ts, 2, 10000)
+    println(res)
+end
+
+
