@@ -316,16 +316,49 @@ end
 ########################
 
 # Number of rows
+"""
+# Size methods
+`nrow(ts::TS)`
+Return the number of rows of `ts`.
+
+# Examples
+```jldoctest
+julia> ts = TS(randn(100))
+julia> nrow(ts)
+```
+"""
 function nrow(ts::TS)
     size(ts.coredata)[1]
 end
 
 # Number of columns
+"""
+# Size methods
+`ncol(ts::TS)`
+Return the number of columns of `ts`.
+
+# Examples
+```jldoctest
+julia> ts = TS([randn(100) randn(100) randn(100)])
+julia> ncol(ts)
+```
+"""
 function ncol(ts::TS)
     size(ts.coredata)[2] - 1
 end
 
 # Size of
+"""
+# Size methods
+`size(ts::TS)`
+Return the number of rows and columns of `ts` as a tuple.
+
+# Examples
+```jldoctest
+julia> ts = TS([randn(100) randn(100) randn(100)])
+julia> size(ts)
+```
+"""
 function size(ts::TS)
     nr = nrow(ts)
     nc = ncol(ts)
