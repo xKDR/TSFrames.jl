@@ -18,4 +18,3 @@ ts_monthly = apply(ts_daily, Dates.Month, first)
 @test typeof(ts_yearly) == TSx.TS
 @test typeof(ts_yearly.coredata) == DataFrame
 @test DataFrames.nrow(ts_yearly.coredata) == 1
-@test ts_yearly.coredata[1, 2] == [Statistics.mean(x) for x in eachcol(Matrix(ts_daily_matrix.coredata[!, Not(:Index)]))][1]
