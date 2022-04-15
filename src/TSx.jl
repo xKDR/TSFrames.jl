@@ -585,7 +585,7 @@ function rollapply(fun::Function, ts::TS, column::Any, windowsize::Int)
     res = RollingFunctions.rolling(fun, ts.coredata[!, col], windowsize)
     idx = TSx.index(ts)[windowsize:end]
     colname = names(ts.coredata[!, [column]])
-    res_df = DataFrame(Index = idx, "$colname_roll_$fun" = res)
+    res_df = DataFrame(Index = idx, Symbol("$(colname)_roll_$(fun)") = res)
     return TS(res_df)
 end
 
