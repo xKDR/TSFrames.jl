@@ -752,6 +752,33 @@ julia> ts2 = TS(randn(length(dates)), dates)
 
 julia> join(ts1, ts2)
 ```
+# vcat
+    
+vcat(ts::TS...; cols::Symbol=:setequal, source::Symbol=nothing)
+    
+vcat concatenates two oor more arrays along dimension 1. This method implements the `Base.vcat` method
+    
+The `cols` keyword argument determines the columns of the data frame
+`:setequal`: require all data frames to have the same column names disregarding order. 
+If they appear in different orders, the order of the first provided data frame is used.
+`:orderequal`: require all data frames to have the same column names and in the same order.
+`:intersect`: only the columns present in all provided data frames are kept. If the intersection is empty, an empty data frame is returned.
+`:union`: columns present in at least one of the provided data frames are kept. 
+ Columns not present in some data frames are filled with missing where necessary.
+    
+The `source` keyword argument, if not nothing (the default), specifies the additional column 
+to be added in the last position in the resulting data frame that will identify the source data frame.   
+ 
+# Example
+    
+```jdoctest
+   
+julia> dates1 = collect(Date(2017,1,1):Day(1):Date(2017,1,10))
+julia> ts1 = TS(randn(length(dates1)), dates1)
+julia> dates2 = collect(Date(2017,1,11):Day(1):Date(2017,1,30))
+julia> ts2 = TS(randn(length(dates2)), dates2)
+julia> vcat(ts1, ts2)
+```
 """
 function Base.join(ts1::TS, ts2::TS)
     join(ts1, ts2, JoinAll())
