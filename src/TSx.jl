@@ -56,6 +56,10 @@ Permitted data inputs to constructor are DataFrame, Vector, and
 2-dimensional Array. If an index is already not present in the
 constructor then it is generated.
 
+Since `TS.coredata` is a DataFrame it can be operated upon
+independently using methods provided by the DataFrames package
+(ex. `transform`, `combine`, etc.).
+
 # Constructors
 ```julia
 TS(coredata::DataFrame, index::Union{String, Symbol, Int}=1)
@@ -68,6 +72,7 @@ TS(coredata::AbstractArray{T,2}) where {T}
 
 # Examples
 ```jldoctest
+julia> using TSx, DataFrames
 julia> df = DataFrame(x1 = randn(10))
 julia> TS(df)                   # generates index
 
@@ -338,27 +343,30 @@ Return the number of rows of `ts`.
 # Examples
 ```jldoctest
 julia> ts = TS(randn(100))
-julia> nrow(ts)
+julia> TSx.nrow(ts)
 ```
 """
 function nrow(ts::TS)
-    size(ts.coredata)[1]
+    DataFrames.size(ts.coredata)[1]
 end
 
 # Number of columns
 """
 # Size methods
+
 `ncol(ts::TS)`
+
 Return the number of columns of `ts`.
 
 # Examples
 ```jldoctest
+julia> using TSx, DataFrames
 julia> ts = TS([randn(100) randn(100) randn(100)])
-julia> ncol(ts)
+julia> TSx.ncol(ts)
 ```
 """
 function ncol(ts::TS)
-    size(ts.coredata)[2] - 1
+    DataFrames.size(ts.coredata)[2] - 1
 end
 
 # Size of
@@ -369,13 +377,14 @@ Return the number of rows and columns of `ts` as a tuple.
 
 # Examples
 ```jldoctest
+julia> using TSx
 julia> ts = TS([randn(100) randn(100) randn(100)])
-julia> size(ts)
+julia> TSx.size(ts)
 ```
 """
 function size(ts::TS)
-    nr = nrow(ts)
-    nc = ncol(ts)
+    nr = TSx.nrow(ts)
+    nc = TSx.ncol(ts)
     (nr, nc)
 end
 
@@ -387,9 +396,10 @@ Return the index vector from the TS DataFrame.
 # Examples
 
 ```jldoctest
+julia> using Dates, TSx
 julia> ts = TS(randn(10), today():Month(1):today()+Month(9))
-julia> index(ts)
-julia> typeof(index(ts))
+julia> TSx.index(ts)
+julia> typeof(TSx.index(ts))
 ```
 """
 function index(ts::TS)
@@ -752,33 +762,6 @@ julia> ts2 = TS(randn(length(dates)), dates)
 
 julia> join(ts1, ts2)
 ```
-# vcat
-    
-vcat(ts::TS...; cols::Symbol=:setequal, source::Symbol=nothing)
-    
-vcat concatenates two oor more arrays along dimension 1. This method implements the `Base.vcat` method
-    
-The `cols` keyword argument determines the columns of the data frame
-`:setequal`: require all data frames to have the same column names disregarding order. 
-If they appear in different orders, the order of the first provided data frame is used.
-`:orderequal`: require all data frames to have the same column names and in the same order.
-`:intersect`: only the columns present in all provided data frames are kept. If the intersection is empty, an empty data frame is returned.
-`:union`: columns present in at least one of the provided data frames are kept. 
- Columns not present in some data frames are filled with missing where necessary.
-    
-The `source` keyword argument, if not nothing (the default), specifies the additional column 
-to be added in the last position in the resulting data frame that will identify the source data frame.   
- 
-# Example
-    
-```jdoctest
-   
-julia> dates1 = collect(Date(2017,1,1):Day(1):Date(2017,1,10))
-julia> ts1 = TS(randn(length(dates1)), dates1)
-julia> dates2 = collect(Date(2017,1,11):Day(1):Date(2017,1,30))
-julia> ts2 = TS(randn(length(dates2)), dates2)
-julia> vcat(ts1, ts2)
-```
 """
 function Base.join(ts1::TS, ts2::TS)
     join(ts1, ts2, JoinAll())
@@ -806,6 +789,33 @@ end
 # alias
 cbind = join
 
+"""    
+vcat(ts::TS...; cols::Symbol=:setequal, source::Symbol=nothing)
+    
+vcat concatenates two or more arrays along dimension 1. This method implements the `Base.vcat` method.
+    
+The `cols` keyword argument determines the columns of the data frame
+`:setequal`: require all data frames to have the same column names disregarding order. 
+If they appear in different orders, the order of the first provided data frame is used.
+`:orderequal`: require all data frames to have the same column names and in the same order.
+`:intersect`: only the columns present in all provided data frames are kept. If the intersection is empty, an empty data frame is returned.
+`:union`: columns present in at least one of the provided data frames are kept. 
+ Columns not present in some data frames are filled with missing where necessary.
+    
+The `source` keyword argument, if not nothing (the default), specifies the additional column 
+to be added in the last position in the resulting data frame that will identify the source data frame.   
+ 
+# Example
+    
+```jdoctest
+julia> using TSx, DataFrames
+julia> dates1 = collect(Date(2017,1,1):Day(1):Date(2017,1,10))
+julia> ts1 = TS(randn(length(dates1)), dates1)
+julia> dates2 = collect(Date(2017,1,11):Day(1):Date(2017,1,30))
+julia> ts2 = TS(randn(length(dates2)), dates2)
+julia> vcat(ts1, ts2)
+```
+"""
 function Base.vcat(ts::TS...; cols::Symbol=:setequal, source::Symbol=nothing)
     result_df = DataFrames.vcat(ts1.coredata...; cols, source)
     return TS(result_df)
