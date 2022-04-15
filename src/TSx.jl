@@ -650,7 +650,21 @@ end
 # Plot
 ######################
 
+"""
+# Plottting
+`plot(ts::TS, colnames::Vector{String} = TSx.names(ts))`
 
+Plots a timeseries plot of the TS object, with the X axis as the index.
+`colnames` lets you select which column you wish to plot.
+
+This method uses the Plots package to implement this funcitonality.
+
+# Example
+```jdoctest
+julia> df = DataFrame(Ind = today():Month(1):today()+Month(11), val1 = abs.(rand(Int16, 12)), val2 = abs.(rand(Int16, 12)))
+julia> ts = TS(df)
+julia> plot(ts)
+"""
 function plot(ts::TS, colnames::Vector{String} = TSx.names(ts))
     Plots.plot(ts.coredata[!, :Index], Matrix(ts.coredata[!, colnames]))
 end
