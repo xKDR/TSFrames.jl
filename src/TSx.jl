@@ -84,6 +84,9 @@ julia> TS(DataFrame(x1=randn(10), dates))
 
 julia> TS(randn(10))
 julia> TS(randn(10), dates)
+
+# matrix object
+julia> TS([randn(10) randn(10)], dates)
 ```
 """
 struct TS
@@ -468,12 +471,9 @@ end
 # Lagging 
 `lag(ts::TS, lag_value::Int = 1)`
 
-Lag the `ts` object by the specified amount. The rows corresponding
-to lagged values will be rendered as `missing` objects. The default `lag`
-value is set to be 1.
+Lag the `ts` object by the `lag_value`. The rows corresponding
+to lagged values will be rendered as `missing`.
 """
-
-# Lag
 function lag(ts::TS, lag_value::Int = 1)
     sdf = DataFrame(ShiftedArrays.lag.(eachcol(ts.coredata[!, Not(:Index)]), lag_value), TSx.names(ts))
     insertcols!(sdf, 1, :Index => ts.coredata[!, :Index])
@@ -484,11 +484,9 @@ end
 # Leading 
 `lead(ts::TS, lead_value::Int = 1)`
 
-Lead the `ts` object by the specified amount. The rows corresponding
-to lead values will be rendered as `missing` objects. The default `lead`
-value is set to be 1.
+Similar to lag, this method leads the `ts` object by `lead_value`. The
+lead rows are inserted with `missing`.
 """
-# Lead
 function lead(ts::TS, lead_value::Int = 1)
     sdf = DataFrame(ShiftedArrays.lead.(eachcol(ts.coredata[!, Not(:Index)]), lead_value), TSx.names(ts))
     insertcols!(sdf, 1, :Index => ts.coredata[!, :Index])
@@ -516,17 +514,20 @@ function pctchange(ts::TS, periods::Int = 1)
     TS(ddf, :Index)
 end
 
+
 """
 # Log Function
 
 `log(ts::TS, complex::Bool = false)`
 
-log function returns the log value of the TS object/ column or any other subset. 
-If the `complex` argument is `true`, the function returns the log of negative numbers as complex numbers.
-But this also coerces the log of positive values as complex numbers with th imaginary component equal to 0.
-"""
+This method computes the log value of the non-index columns in the TS
+object.
 
-# Log Function
+If the `complex` argument is `true` the function returns the log of
+negative numbers as complex numbers.  But this also coerces the log of
+positive values as complex numbers with the imaginary component equal
+to 0.
+"""
 function log(ts::TS, complex::Bool = false)
     ts_new = ts
     if complex == true
@@ -552,29 +553,39 @@ end
 """
 # Rolling Functions
 
-`function rollapply(fun::Function, ts::TS, column::Any, windowsize:: Int)`
+`rollapply(fun::Function, ts::TS, column::Any, windowsize::Int)`
 
-rollapply functions applies a rollng function to a column of a TS object.
-`fun` can be a function like `mean`, `median`, `maximum`, `minimum`, `std` or any other user defined function
-`ts` is the time series on which the funciton is to be applied to
-`col` specify the column where you want the rolling funciton to be aplpied upon. It can take Int and Symbol values
-`windowsize` window size for the rolling function
+Apply a function to a column of `ts` for each continuous set of rows
+of size `windowsize`. `column` could be any of the `DataFrame` column
+selectors.
+
+The output is a TS object with `(nrow(ts) - windowsize + 1)` rows
+indexed with the last index value of each window.
+
+This method uses `RollingFunctions` package to implement this
+functionality.
 
 # Examples
 
 ```jdoctest
-julia> rollapply(mean, ts, 2, 5)
-julia> rollpply(std, ts, :col3, 10)
+julia> ts = TS(1:12, today():Month(1):today()+Month(11))
+julia> rollpply(sum, ts, :x1, 10)
+julia> rollapply(Statistics.mean, ts, :x1, 5)
 ```
 """
-
-function rollapply(fun::Function, ts::TS, column::Any, windowsize:: Int)
+function rollapply(fun::Function, ts::TS, column::Any, windowsize::Int)
     if windowsize < 1
-        error("windowsize must be positive")
+        error("windowsize must be greater than or equal to 1")
     end
-    res = RollingFunctions.rolling(fun, ts.coredata[!, column], windowsize)
+    col = Int(1)
+    if typeof(column) <: Int
+        col = copy(column)
+        col = col+1             # index is always 1
+    end
+    res = RollingFunctions.rolling(fun, ts.coredata[!, col], windowsize)
     idx = TSx.index(ts)[windowsize:end]
-    res_df = DataFrame(Index = idx,roll_fun = res)
+    colname = names(ts.coredata[!, [column]])
+    res_df = DataFrame(Index = idx, "$colname_roll_$fun" = res)
     return TS(res_df)
 end
 
