@@ -396,7 +396,7 @@ function index(ts::TS)
     ts.coredata[!, :Index]
 end
 
-# Return row names
+# Return column names
 function names(ts::TS)
     names(ts.coredata[!, Not(:Index)])
 end
