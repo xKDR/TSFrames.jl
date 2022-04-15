@@ -549,6 +549,27 @@ function diff(ts::TS, periods::Int = 1)
     TS(ddf, :Index)
 end
 
+"""
+# Percent Change 
+`pctchange(ts::TS, periods::Int = 1)`
+
+Return the percentage change between successive row elements. 
+Default is the element in the next row. `periods` defines the number
+of rows to be shifted over. The skipped rows are rendered as `missing`.
+
+`pctchange` returns an error if column type does not have the method `/`.
+
+# Examples
+```jldoctest
+julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10))
+julia> ts = TS(DataFrame(Index = dates, x1 = randn(length(dates))))
+
+# Pctchange over successive rows
+julia> pctchange(ts)
+# Pctchange over the third row
+julia> pctchange(ts, 3)
+```
+"""
 
 # Pctchange
 function pctchange(ts::TS, periods::Int = 1)
