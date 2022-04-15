@@ -471,8 +471,20 @@ end
 # Lagging 
 `lag(ts::TS, lag_value::Int = 1)`
 
-Lag the `ts` object by the `lag_value`. The rows corresponding
-to lagged values will be rendered as `missing`.
+Lag the `ts` object by the specified `lag_value`. The rows corresponding
+to lagged values will be rendered as `missing`. Negative values of lag are
+also accepted (see `TSx.lead`).
+
+# Examples
+```jldoctest
+julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10))
+julia> ts = TS(DataFrame(Index = dates, x1 = randn(length(dates))))
+
+# Lags once
+julia> lag(ts)
+# Lags by 2 values
+julia> lag(ts, 2)
+```
 """
 function lag(ts::TS, lag_value::Int = 1)
     sdf = DataFrame(ShiftedArrays.lag.(eachcol(ts.coredata[!, Not(:Index)]), lag_value), TSx.names(ts))
@@ -485,7 +497,19 @@ end
 `lead(ts::TS, lead_value::Int = 1)`
 
 Similar to lag, this method leads the `ts` object by `lead_value`. The
-lead rows are inserted with `missing`.
+lead rows are inserted with `missing`. Negative values of lead are
+also accepted (see `TSx.lag`).
+
+# Examples
+```jldoctest
+julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10))
+julia> ts = TS(DataFrame(Index = dates, x1 = randn(length(dates))))
+
+# Leads once
+julia> lead(ts)
+# Leads by 2 values
+julia> lead(ts, 2)
+```
 """
 function lead(ts::TS, lead_value::Int = 1)
     sdf = DataFrame(ShiftedArrays.lead.(eachcol(ts.coredata[!, Not(:Index)]), lead_value), TSx.names(ts))
@@ -493,6 +517,27 @@ function lead(ts::TS, lead_value::Int = 1)
     TS(sdf, :Index)
 end
 
+"""
+# Differencing 
+`diff(ts::TS, periods::Int = 1)`
+
+Return the discrete difference of successive row elements. 
+Default is the element in the next row. `periods` defines the number
+of rows to be shifted over. The skipped rows are rendered as `missing`.
+
+`diff` returns an error if column type does not have the method `-`.
+
+# Examples
+```jldoctest
+julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10))
+julia> ts = TS(DataFrame(Index = dates, x1 = randn(length(dates))))
+
+# Difference over successive rows
+julia> diff(ts)
+# Difference over the third row
+julia> diff(ts, 3)
+```
+"""
 
 # Diff
 function diff(ts::TS, periods::Int = 1)
@@ -503,6 +548,7 @@ function diff(ts::TS, periods::Int = 1)
     insertcols!(ddf, 1, "Index" => ts.coredata[:, :Index])
     TS(ddf, :Index)
 end
+
 
 # Pctchange
 function pctchange(ts::TS, periods::Int = 1)
