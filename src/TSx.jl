@@ -18,13 +18,13 @@ import Dates.Period
 
 export TS,
     apply,
-    convert,
     cbind,
     diff,
     getindex,
     index,
     join,
     lag,
+    lead,
     names,
     nrow,
     ncol,
@@ -92,16 +92,6 @@ julia> TS([randn(10) randn(10)], dates)
 struct TS
 
     coredata :: DataFrame
-
-    function isRegular(vals)
-        d = Base.diff(vals)
-        if all([i == d[1] for i in d])
-            result = true
-        else
-            result = false
-        end
-        result
-    end
 
     # From DataFrame, index number/name/symbol
     function TS(coredata::DataFrame, index::Union{String, Symbol, Int})
