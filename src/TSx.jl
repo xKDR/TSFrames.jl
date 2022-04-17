@@ -72,26 +72,160 @@ TS(coredata::AbstractArray{T,2}) where {T}
 
 # Examples
 ```jldoctest
-julia> using TSx, DataFrames
-julia> df = DataFrame(x1 = randn(10))
-julia> TS(df)                   # generates index
+julia> using TSx, DataFrames, Random;
 
-julia> df = DataFrame(ind = [1, 2, 3], x1 = randn(3))
-julia> TS(df, 1)                # first column is index
+julia> random(x) = rand(MersenneTwister(123), x);
 
-julia> df = DataFrame(x1 = randn(3), x2 = randn(3), Index = [1, 2, 3])
-julia> TS(df)                   # looks up `Index` column
+julia> df = DataFrame(x1 = random(10)); 
 
-julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10))
-julia> df = DataFrame(dates = dates, x1 = randn(10))
-julia> TS(df, :dates)
-julia> TS(DataFrame(x1=randn(10), dates))
+julia> TS(df)             |> print  # generates index
+10×2 DataFrame
+ Row │ Index  x1        
+     │ Int64  Float64   
+─────┼──────────────────
+   1 │     1  0.768448
+   2 │     2  0.940515
+   3 │     3  0.673959
+   4 │     4  0.395453
+   5 │     5  0.313244
+   6 │     6  0.662555
+   7 │     7  0.586022
+   8 │     8  0.0521332
+   9 │     9  0.26864
+  10 │    10  0.108871
 
-julia> TS(randn(10))
-julia> TS(randn(10), dates)
+Index: {Int64} [10]
+Size: (10, 1)
 
-# matrix object
-julia> TS([randn(10) randn(10)], dates)
+julia> df = DataFrame(ind = [1, 2, 3], x1 = random(3));
+
+julia> TS(df, 1) |> print # first column is index 
+3×2 DataFrame
+ Row │ Index  x1       
+     │ Int64  Float64  
+─────┼─────────────────
+   1 │     1  0.768448
+   2 │     2  0.940515
+   3 │     3  0.673959
+
+Index: {Int64} [3]
+Size: (3, 1)
+
+julia> df = DataFrame(x1 = random(3), x2 = random(3), Index = [1, 2, 3]);
+
+julia> TS(df)  |> print   # looks up `Index` column 
+3×3 DataFrame
+ Row │ Index  x1        x2       
+     │ Int64  Float64   Float64  
+─────┼───────────────────────────
+   1 │     1  0.768448  0.768448
+   2 │     2  0.940515  0.940515
+   3 │     3  0.673959  0.673959
+
+Index: {Int64} [3]
+Size: (3, 2)
+
+julia> using Dates;
+
+julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10));
+
+julia> df = DataFrame(dates = dates, x1 = random(10));
+
+julia> TS(df, :dates) |> print
+10×2 DataFrame
+ Row │ Index       x1        
+     │ Date        Float64   
+─────┼───────────────────────
+   1 │ 2017-01-01  0.768448
+   2 │ 2017-01-02  0.940515
+   3 │ 2017-01-03  0.673959
+   4 │ 2017-01-04  0.395453
+   5 │ 2017-01-05  0.313244
+   6 │ 2017-01-06  0.662555
+   7 │ 2017-01-07  0.586022
+   8 │ 2017-01-08  0.0521332
+   9 │ 2017-01-09  0.26864
+  10 │ 2017-01-10  0.108871
+
+Index: {Dates.Date} [10]
+Size: (10, 1)
+
+julia> TS(DataFrame(x1=random(10)), dates) |> print
+10×2 DataFrame
+ Row │ Index       x1        
+     │ Date        Float64   
+─────┼───────────────────────
+   1 │ 2017-01-01  0.768448
+   2 │ 2017-01-02  0.940515
+   3 │ 2017-01-03  0.673959
+   4 │ 2017-01-04  0.395453
+   5 │ 2017-01-05  0.313244
+   6 │ 2017-01-06  0.662555
+   7 │ 2017-01-07  0.586022
+   8 │ 2017-01-08  0.0521332
+   9 │ 2017-01-09  0.26864
+  10 │ 2017-01-10  0.108871
+
+Index: {Dates.Date} [10]
+Size: (10, 1)
+
+julia> TS(random(10)) |> print
+10×2 DataFrame
+ Row │ Index  x1        
+     │ Int64  Float64   
+─────┼──────────────────
+   1 │     1  0.768448
+   2 │     2  0.940515
+   3 │     3  0.673959
+   4 │     4  0.395453
+   5 │     5  0.313244
+   6 │     6  0.662555
+   7 │     7  0.586022
+   8 │     8  0.0521332
+   9 │     9  0.26864
+  10 │    10  0.108871
+
+Index: {Int64} [10]
+Size: (10, 1)
+
+
+julia> TS(random(10), dates) |> print
+10×2 DataFrame
+ Row │ Index       x1        
+     │ Date        Float64   
+─────┼───────────────────────
+   1 │ 2017-01-01  0.768448
+   2 │ 2017-01-02  0.940515
+   3 │ 2017-01-03  0.673959
+   4 │ 2017-01-04  0.395453
+   5 │ 2017-01-05  0.313244
+   6 │ 2017-01-06  0.662555
+   7 │ 2017-01-07  0.586022
+   8 │ 2017-01-08  0.0521332
+   9 │ 2017-01-09  0.26864
+  10 │ 2017-01-10  0.108871
+
+Index: {Dates.Date} [10]
+Size: (10, 1)
+
+julia> TS([random(10) random(10)], dates) |> print # matrix object
+10×3 DataFrame
+ Row │ Index       x1         x2        
+     │ Date        Float64    Float64   
+─────┼──────────────────────────────────
+   1 │ 2017-01-01  0.768448   0.768448
+   2 │ 2017-01-02  0.940515   0.940515
+   3 │ 2017-01-03  0.673959   0.673959
+   4 │ 2017-01-04  0.395453   0.395453
+   5 │ 2017-01-05  0.313244   0.313244
+   6 │ 2017-01-06  0.662555   0.662555
+   7 │ 2017-01-07  0.586022   0.586022
+   8 │ 2017-01-08  0.0521332  0.0521332
+   9 │ 2017-01-09  0.26864    0.26864
+  10 │ 2017-01-10  0.108871   0.108871
+
+Index: {Dates.Date} [10]
+Size: (10, 2)
 ```
 """
 struct TS
@@ -135,7 +269,7 @@ function TS(coredata::DataFrame)
     if "Index" in names(coredata)
         return TS(coredata, :Index)
     elseif DataFrames.ncol(coredata) == 1
-        return TS(coredata, collect(1:nrow(coredata)))
+        return TS(coredata, collect(1:DataFrames.nrow(coredata)))
     else
         return TS(coredata, 1)
     end
@@ -237,24 +371,134 @@ the `index()` method on the `TS` object.
 # Examples
 
 ```jldoctest
-julia> ts = TS([randn(10) randn(10) randn(10)])
-julia> ts[1]
-julia> ts[1:5]
-julia> ts[1:5, 2]
-julia> ts[1:5, 2:3]
-julia> ts[[1, 9]]               # individual rows
+julia> using TSx, DataFrames, Random, Dates;
 
-julia> dates = collect(Date(2007):Day(1):Date(2008, 2, 22))
-julia> ts = TS(randn(length(dates)), dates)
-julia> ts[Date(2007, 01, 01)]
-julia> ts[Date(2007)]
-julia> ts[Year(2007)]
-julia> ts[Year(2007), Month(11)]
-julia> ts[Year(2007), Quarter(2)]
-julia> ts["2007-01-01"]
+julia> random(x) = rand(MersenneTwister(123), x);
 
-julia> ts[1, :x1]
-julia> ts[1, "x1"]
+julia> ts = TS([random(10) random(10) random(10)]); 
+
+julia> ts[1] |> print
+1×4 DataFrame
+ Row │ Index  x1        x2        x3       
+     │ Int64  Float64   Float64   Float64  
+─────┼─────────────────────────────────────
+   1 │     1  0.768448  0.768448  0.768448
+
+Index: {Int64} [1]
+Size: (1, 3)
+
+julia> ts[1:5] |> print
+5×4 DataFrame
+ Row │ Index  x1        x2        x3       
+     │ Int64  Float64   Float64   Float64  
+─────┼─────────────────────────────────────
+   1 │     1  0.768448  0.768448  0.768448
+   2 │     2  0.940515  0.940515  0.940515
+   3 │     3  0.673959  0.673959  0.673959
+   4 │     4  0.395453  0.395453  0.395453
+   5 │     5  0.313244  0.313244  0.313244
+
+Index: {Int64} [5]
+Size: (5, 3)
+
+julia> ts[1:5, 2] |> print
+5×2 DataFrame
+ Row │ Index  x2       
+     │ Int64  Float64  
+─────┼─────────────────
+   1 │     1  0.768448
+   2 │     2  0.940515
+   3 │     3  0.673959
+   4 │     4  0.395453
+   5 │     5  0.313244
+
+Index: {Int64} [5]
+Size: (5, 1)
+
+julia> ts[1:5, 2:3] |> print
+5×3 DataFrame
+ Row │ Index  x2        x3       
+     │ Int64  Float64   Float64  
+─────┼───────────────────────────
+   1 │     1  0.768448  0.768448
+   2 │     2  0.940515  0.940515
+   3 │     3  0.673959  0.673959
+   4 │     4  0.395453  0.395453
+   5 │     5  0.313244  0.313244
+
+Index: {Int64} [5]
+Size: (5, 2)
+
+julia> ts[[1, 9]] |> print               # individual rows
+2×4 DataFrame
+ Row │ Index  x1        x2        x3       
+     │ Int64  Float64   Float64   Float64  
+─────┼─────────────────────────────────────
+   1 │     1  0.768448  0.768448  0.768448
+   2 │     9  0.26864   0.26864   0.26864
+
+Index: {Int64} [2]
+Size: (2, 3)
+
+julia> dates = collect(Date(2007):Day(1):Date(2008, 2, 22));
+
+julia> ts = TS(random(length(dates)), dates); 
+
+julia> ts[Date(2007, 01, 01)] |> print
+1×2 DataFrame
+ Row │ Index       x1       
+     │ Date        Float64  
+─────┼──────────────────────
+   1 │ 2007-01-01  0.768448
+
+Index: {Dates.Date} [1]
+Size: (1, 1)
+
+julia> ts[Date(2007)] |> print
+1×2 DataFrame
+ Row │ Index       x1       
+     │ Date        Float64  
+─────┼──────────────────────
+   1 │ 2007-01-01  0.768448
+
+Index: {Dates.Date} [1]
+Size: (1, 1)
+
+julia> ts[Year(2007)]; 
+
+julia> ts[Year(2007), Month(11)]; 
+
+julia> ts[Year(2007), Quarter(2)]; 
+
+julia> ts["2007-01-01"] |> print
+1×2 DataFrame
+ Row │ Index       x1       
+     │ Date        Float64  
+─────┼──────────────────────
+   1 │ 2007-01-01  0.768448
+
+Index: {Dates.Date} [1]
+Size: (1, 1)
+
+julia> ts[1, :x1] |> print
+1×2 DataFrame
+ Row │ Index       x1       
+     │ Date        Float64  
+─────┼──────────────────────
+   1 │ 2007-01-01  0.768448
+
+Index: {Dates.Date} [1]
+Size: (1, 1)
+
+julia> ts[1, "x1"] |> print
+1×2 DataFrame
+ Row │ Index       x1       
+     │ Date        Float64  
+─────┼──────────────────────
+   1 │ 2007-01-01  0.768448
+
+Index: {Dates.Date} [1]
+Size: (1, 1)
 ```
 """
 function Base.getindex(ts::TS, i::Int)
@@ -342,8 +586,8 @@ Return the number of rows of `ts`.
 
 # Examples
 ```jldoctest
-julia> ts = TS(randn(100))
-julia> TSx.nrow(ts)
+julia> ts = TS(collect(1:100)) |> TSx.nrow
+100
 ```
 """
 function nrow(ts::TS)
@@ -360,9 +604,12 @@ Return the number of columns of `ts`.
 
 # Examples
 ```jldoctest
-julia> using TSx, DataFrames
-julia> ts = TS([randn(100) randn(100) randn(100)])
-julia> TSx.ncol(ts)
+julia> using TSx, Random;
+
+julia> random(x) = rand(MersenneTwister(123), x);
+
+julia> TS([random(100) random(100) random(100)]) |> TSx.ncol
+3
 ```
 """
 function ncol(ts::TS)
@@ -377,9 +624,10 @@ Return the number of rows and columns of `ts` as a tuple.
 
 # Examples
 ```jldoctest
-julia> using TSx
-julia> ts = TS([randn(100) randn(100) randn(100)])
-julia> TSx.size(ts)
+julia> using TSx; 
+
+julia> TS([collect(1:100) collect(1:100) collect(1:100)]) |> size
+(100, 3)
 ```
 """
 function size(ts::TS)
@@ -396,10 +644,46 @@ Return the index vector from the TS DataFrame.
 # Examples
 
 ```jldoctest
-julia> using Dates, TSx
-julia> ts = TS(randn(10), today():Month(1):today()+Month(9))
-julia> TSx.index(ts)
-julia> typeof(TSx.index(ts))
+julia> using Dates, TSx, Random; 
+
+julia> random(x) = rand(MersenneTwister(123), x);
+
+julia> ts = TS(random(10), Date("2022-02-01"):Month(1):Date("2022-02-01")+Month(9)); 
+
+julia> ts |> print
+10×2 DataFrame
+ Row │ Index       x1        
+     │ Date        Float64   
+─────┼───────────────────────
+   1 │ 2022-02-01  0.768448
+   2 │ 2022-03-01  0.940515
+   3 │ 2022-04-01  0.673959
+   4 │ 2022-05-01  0.395453
+   5 │ 2022-06-01  0.313244
+   6 │ 2022-07-01  0.662555
+   7 │ 2022-08-01  0.586022
+   8 │ 2022-09-01  0.0521332
+   9 │ 2022-10-01  0.26864
+  10 │ 2022-11-01  0.108871
+
+Index: {Dates.Date} [10]
+Size: (10, 1)
+
+julia> ts |> TSx.index 
+10-element Vector{Date}:
+ 2022-02-01
+ 2022-03-01
+ 2022-04-01
+ 2022-05-01
+ 2022-06-01
+ 2022-07-01
+ 2022-08-01
+ 2022-09-01
+ 2022-10-01
+ 2022-11-01
+
+julia>  ts |> TSx.index |> typeof 
+Vector{Date} (alias for Array{Date, 1})
 ```
 """
 function index(ts::TS)
@@ -435,18 +719,59 @@ an input.
 
 # Examples
 ```jldoctest
-julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10))
-julia> ts = TS(DataFrame(Index = dates, x1 = randn(length(dates))))
+julia> using TSx, Dates, Random, Statistics, DataFrames; 
 
-# take the first observation in each month
-julia> ts_monthly = apply(tsd, Month, first)
-# alternate months
-julia> ts_two_monthly = apply(tsd, Month(2), first)
+julia> random(x) = rand(MersenneTwister(123), x);
 
-# weekly standard deviation
-julia> ts_monthly = apply(tsd, Week, Statistics.std)
-# indexed by last date of the week
-julia> ts_monthly = apply(tsd, Week, Statistics.std, last)
+julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10)); 
+
+julia> ts = TS(DataFrame(Index = dates, x1 = random(length(dates)))); 
+
+julia> apply(ts, Month, first) |> print
+15×2 DataFrame
+ Row │ Index       x1_first  
+     │ Date        Float64   
+─────┼───────────────────────
+   1 │ 2017-01-01  0.768448
+   2 │ 2017-02-01  0.790201
+   3 │ 2017-03-01  0.467219
+   4 │ 2017-04-01  0.783473
+   5 │ 2017-05-01  0.651354
+   6 │ 2017-06-01  0.373346
+   7 │ 2017-07-01  0.83296
+   8 │ 2017-08-01  0.132716
+   9 │ 2017-09-01  0.27899
+  10 │ 2017-10-01  0.995414
+  11 │ 2017-11-01  0.214132
+  12 │ 2017-12-01  0.832917
+  13 │ 2018-01-01  0.0409471
+  14 │ 2018-02-01  0.720163
+  15 │ 2018-03-01  0.87459
+
+Index: {Dates.Date} [15]
+Size: (15, 1)
+
+julia> apply(ts, Month(2), first) |> print # alternate months
+8×2 DataFrame
+ Row │ Index       x1_first  
+     │ Date        Float64   
+─────┼───────────────────────
+   1 │ 2017-01-01  0.768448
+   2 │ 2017-03-01  0.467219
+   3 │ 2017-05-01  0.651354
+   4 │ 2017-07-01  0.83296
+   5 │ 2017-09-01  0.27899
+   6 │ 2017-11-01  0.214132
+   7 │ 2018-01-01  0.0409471
+   8 │ 2018-03-01  0.87459
+
+Index: {Dates.Date} [8]
+Size: (8, 1)
+
+julia> ts_monthly = apply(ts, Week, Statistics.std) # weekly standard deviation;
+
+julia> ts_monthly = apply(ts, Week, Statistics.std, last) # indexed by last date of the week; 
+
 ```
 """
 function apply(ts::TS, period::Union{T,Type{T}}, fun::V, index_at::Function=first) where {T<:Union{DatePeriod,TimePeriod}, V<:Function}
@@ -477,13 +802,20 @@ also accepted (see `TSx.lead`).
 
 # Examples
 ```jldoctest
-julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10))
-julia> ts = TS(DataFrame(Index = dates, x1 = randn(length(dates))))
+julia> using TSx, Dates, Random, Statistics, DataFrames; 
 
-# Lags once
-julia> lag(ts)
-# Lags by 2 values
-julia> lag(ts, 2)
+julia> random(x) = rand(MersenneTwister(123), x);
+
+julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10));
+
+julia> ts = TS(DataFrame(Index = dates, x1 = random(length(dates))));
+
+julia> lag(ts); 
+
+julia> ts = TS(DataFrame(Index = dates, x1 = random(length(dates))));
+
+julia> lag(ts, 2) # Lags by 2 values;
+
 ```
 """
 function lag(ts::TS, lag_value::Int = 1)
@@ -502,13 +834,20 @@ also accepted (see `TSx.lag`).
 
 # Examples
 ```jldoctest
-julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10))
-julia> ts = TS(DataFrame(Index = dates, x1 = randn(length(dates))))
+julia> using TSx, Dates, Random, Statistics, DataFrames; 
 
-# Leads once
-julia> lead(ts)
-# Leads by 2 values
-julia> lead(ts, 2)
+julia> random(x) = rand(MersenneTwister(123), x);
+
+julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10)); 
+
+julia> ts = TS(DataFrame(Index = dates, x1 = random(length(dates))));
+
+julia> lead(ts) # Leads once; 
+
+julia> ts = TS(DataFrame(Index = dates, x1 = random(length(dates))));
+
+julia> lead(ts, 2)# Leads by 2 values; 
+
 ```
 """
 function lead(ts::TS, lead_value::Int = 1)
@@ -529,12 +868,16 @@ of rows to be shifted over. The skipped rows are rendered as `missing`.
 
 # Examples
 ```jldoctest
-julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10))
-julia> ts = TS(DataFrame(Index = dates, x1 = randn(length(dates))))
+julia> using TSx, Dates, Random, Statistics; 
+
+julia> random(x) = rand(MersenneTwister(123), x);
+
+julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10)); 
+
+julia> ts = TS(DataFrame(Index = dates, x1 = random(length(dates))));
 
 # Difference over successive rows
-julia> diff(ts)
-# Difference over the third row
+julia> diff(ts)# Difference over the third row; 
 julia> diff(ts, 3)
 ```
 """
@@ -561,13 +904,51 @@ of rows to be shifted over. The skipped rows are rendered as `missing`.
 
 # Examples
 ```jldoctest
-julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10))
-julia> ts = TS(DataFrame(Index = dates, x1 = randn(length(dates))))
+julia> using TSx, Dates, Random, Statistics; 
+
+julia> random(x) = rand(MersenneTwister(123), x);
+
+julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10)); 
+
+julia> ts = TS(DataFrame(Index = dates, x1 = random(length(dates)))); 
 
 # Pctchange over successive rows
 julia> pctchange(ts)
+10×2 DataFrame
+ Row │ Index       x1             
+     │ Date        Float64?       
+─────┼────────────────────────────
+   1 │ 2017-01-01  missing        
+   2 │ 2017-01-02        0.223915
+   3 │ 2017-01-03       -0.283415
+   4 │ 2017-01-04       -0.413238
+   5 │ 2017-01-05       -0.207886
+   6 │ 2017-01-06        1.11514
+   7 │ 2017-01-07       -0.115511
+   8 │ 2017-01-08       -0.911039
+   9 │ 2017-01-09        4.15295
+  10 │ 2017-01-10       -0.594733
+Index: {Dates.Date} [10]
+Size: (10, 1)
+
 # Pctchange over the third row
 julia> pctchange(ts, 3)
+10×2 DataFrame
+ Row │ Index       x1              
+     │ Date        Float64?        
+─────┼─────────────────────────────
+   1 │ 2017-01-01  missing         
+   2 │ 2017-01-02  missing         
+   3 │ 2017-01-03  missing         
+   4 │ 2017-01-04       -0.485387
+   5 │ 2017-01-05       -0.666944
+   6 │ 2017-01-06       -0.0169207
+   7 │ 2017-01-07        0.4819
+   8 │ 2017-01-08       -0.83357
+   9 │ 2017-01-09       -0.59454
+  10 │ 2017-01-10       -0.814221
+Index: {Dates.Date} [10]
+Size: (10, 1)
 ```
 """
 
@@ -634,10 +1015,36 @@ functionality.
 
 # Examples
 
-```jdoctest
-julia> ts = TS(1:12, today():Month(1):today()+Month(11))
-julia> rollpply(sum, ts, :x1, 10)
-julia> rollapply(Statistics.mean, ts, :x1, 5)
+```jldoctest
+julia> using TSx, Dates; 
+
+julia> ts = TS(1:12, Date("2022-02-01"):Month(1):Date("2022-02-01")+Month(11));  
+
+julia> ts |> print
+12×2 DataFrame
+ Row │ Index       x1    
+     │ Date        Int64 
+─────┼───────────────────
+   1 │ 2022-02-01      1
+   2 │ 2022-03-01      2
+   3 │ 2022-04-01      3
+   4 │ 2022-05-01      4
+   5 │ 2022-06-01      5
+   6 │ 2022-07-01      6
+   7 │ 2022-08-01      7
+   8 │ 2022-09-01      8
+   9 │ 2022-10-01      9
+  10 │ 2022-11-01     10
+  11 │ 2022-12-01     11
+  12 │ 2023-01-01     12
+
+Index: {Dates.Date} [12]
+Size: (12, 1)
+
+julia> # rollapply(sum, ts, :x1, 10); 
+
+julia> # rollapply(Statistics.mean, ts, :x1, 5); 
+
 ```
 """
 function rollapply(fun::Function, ts::TS, column::Any, windowsize::Int)
@@ -670,10 +1077,16 @@ Plots a timeseries plot of the TS object, with the X axis as the index.
 This method uses the Plots package to implement this funcitonality.
 
 # Example
-```jdoctest
-julia> df = DataFrame(Ind = today():Month(1):today()+Month(11), val1 = abs.(rand(Int16, 12)), val2 = abs.(rand(Int16, 12)))
-julia> ts = TS(df)
-julia> plot(ts)
+```jldoctest
+julia> using TSx, DataFrames, Dates; 
+
+julia> df = DataFrame(Ind = Date("2022-02-01"):Month(1):Date("2022-02-01")+Month(11), val1 = abs.(rand(Int16, 12)), val2 = abs.(rand(Int16, 12)));
+
+julia> TS(df);
+
+julia> # plot(ts); 
+
+```
 """
 function plot(ts::TS, colnames::Vector{String} = TSx.names(ts))
     Plots.plot(ts.coredata[!, :Index], Matrix(ts.coredata[!, colnames]))
@@ -745,22 +1158,61 @@ is provided to the `join` method.
 
 # Examples
 ```jldoctest
-julia> ts1 = TS(randn(10), 1:10)
-julia> ts2 = TS(randn(10), 1:10)
+julia> using TSx, Dates, Random, DataFrames; 
 
-julia> join(ts1, ts2, JoinAll()) # with `missing` inserted
-julia> join(ts1, ts2)            # same as JoinAll()
-julia> join(ts1, ts2, JoinBoth())
-julia> join(ts1, ts2, JoinLeft())
-julia> join(ts1, ts2, JoinRight())
+julia> random(x) = rand(MersenneTwister(123), x);
 
-# Using TimeType objects
+julia> ts1 = TS(random(10), 1:10); 
+
+julia> ts2 = TS(random(10), 1:10); 
+
+julia> join(ts1, ts2, TSx.JoinAll()) |> print
+10×3 DataFrame
+ Row │ Index  x1         x1_1      
+     │ Int64  Float64?   Float64?  
+─────┼─────────────────────────────
+   1 │     1  0.768448   0.768448
+   2 │     2  0.940515   0.940515
+   3 │     3  0.673959   0.673959
+   4 │     4  0.395453   0.395453
+   5 │     5  0.313244   0.313244
+   6 │     6  0.662555   0.662555
+   7 │     7  0.586022   0.586022
+   8 │     8  0.0521332  0.0521332
+   9 │     9  0.26864    0.26864
+  10 │    10  0.108871   0.108871
+
+Index: {Int64} [10]
+Size: (10, 2)
+
+julia> join(ts1, ts2);             # same as JoinAll()
+
+julia> join(ts1, ts2, TSx.JoinBoth());
+
+julia> join(ts1, ts2, TSx.JoinLeft()); 
+
+julia> join(ts1, ts2, TSx.JoinRight());
+
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10))
-julia> ts1 = TS(randn(length(dates)), dates)
-julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,30))
-julia> ts2 = TS(randn(length(dates)), dates)
+10-element Vector{Date}:
+ 2017-01-01
+ 2017-01-02
+ 2017-01-03
+ 2017-01-04
+ 2017-01-05
+ 2017-01-06
+ 2017-01-07
+ 2017-01-08
+ 2017-01-09
+ 2017-01-10
 
-julia> join(ts1, ts2)
+julia> ts1 = TS(random(length(dates)), dates); 
+
+julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,30)); 
+
+julia> ts2 = TS(random(length(dates)), dates); 
+
+julia> join(ts1, ts2); 
 ```
 """
 function Base.join(ts1::TS, ts2::TS)
@@ -807,13 +1259,81 @@ to be added in the last position in the resulting data frame that will identify 
  
 # Example
     
-```jdoctest
-julia> using TSx, DataFrames
+```jldoctest
+julia> using TSx, DataFrames, Dates, Random;
+
+julia> random(x) = rand(MersenneTwister(123), x); 
+
 julia> dates1 = collect(Date(2017,1,1):Day(1):Date(2017,1,10))
-julia> ts1 = TS(randn(length(dates1)), dates1)
-julia> dates2 = collect(Date(2017,1,11):Day(1):Date(2017,1,30))
-julia> ts2 = TS(randn(length(dates2)), dates2)
-julia> vcat(ts1, ts2)
+10-element Vector{Date}:
+ 2017-01-01
+ 2017-01-02
+ 2017-01-03
+ 2017-01-04
+ 2017-01-05
+ 2017-01-06
+ 2017-01-07
+ 2017-01-08
+ 2017-01-09
+ 2017-01-10
+
+julia> TS(random(length(dates1)), dates1) |> print
+10×2 DataFrame
+ Row │ Index       x1        
+     │ Date        Float64   
+─────┼───────────────────────
+   1 │ 2017-01-01  0.768448
+   2 │ 2017-01-02  0.940515
+   3 │ 2017-01-03  0.673959
+   4 │ 2017-01-04  0.395453
+   5 │ 2017-01-05  0.313244
+   6 │ 2017-01-06  0.662555
+   7 │ 2017-01-07  0.586022
+   8 │ 2017-01-08  0.0521332
+   9 │ 2017-01-09  0.26864
+  10 │ 2017-01-10  0.108871
+
+Index: {Dates.Date} [10]
+Size: (10, 1)
+
+julia> dates2 = collect(Date(2017,1,11):Day(1):Date(2017,1,30)); 
+
+julia> TS(random(length(dates2)), dates2) |> print
+20×2 DataFrame
+ Row │ Index       x1        
+     │ Date        Float64   
+─────┼───────────────────────
+   1 │ 2017-01-11  0.768448
+   2 │ 2017-01-12  0.940515
+   3 │ 2017-01-13  0.673959
+   4 │ 2017-01-14  0.395453
+   5 │ 2017-01-15  0.313244
+   6 │ 2017-01-16  0.662555
+   7 │ 2017-01-17  0.586022
+   8 │ 2017-01-18  0.0521332
+   9 │ 2017-01-19  0.26864
+  10 │ 2017-01-20  0.108871
+  11 │ 2017-01-21  0.163666
+  12 │ 2017-01-22  0.473017
+  13 │ 2017-01-23  0.865412
+  14 │ 2017-01-24  0.617492
+  15 │ 2017-01-25  0.285698
+  16 │ 2017-01-26  0.463847
+  17 │ 2017-01-27  0.275819
+  18 │ 2017-01-28  0.446568
+  19 │ 2017-01-29  0.582318
+  20 │ 2017-01-30  0.255981
+
+Index: {Dates.Date} [20]
+Size: (20, 1)
+
+julia> ts1 = TS(randn(length(dates1)), dates1); 
+
+julia> ts2 = TS(randn(length(dates2)), dates2); 
+
+julia> # vcat(ts1, ts2); 
+
+
 ```
 """
 function Base.vcat(ts::TS...; cols::Symbol=:setequal, source::Symbol=nothing)
