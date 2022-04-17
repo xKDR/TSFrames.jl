@@ -24,10 +24,6 @@ df_timetype_index = DataFrame(Index = index_timetype, data = data_vector)
     include("TS.jl")
 end
 
-@testset "toperiod()" begin
-    include("toperiod.jl")
-end
-
 @testset "getindex()" begin
     include("getindex.jl")
 end
