@@ -62,12 +62,14 @@ independently using methods provided by the DataFrames package
 
 # Constructors
 ```julia
-TS(coredata::DataFrame, index::Union{String, Symbol, Int}=1)
-TS(coredata::DataFrame, index::AbstractVector{T}) where {T<:Int}
+TS(coredata::DataFrame, index::Union{String, Symbol, Int})
+TS(coredata::DataFrame, index::AbstractVector{T}) where {T<:Union{Int, TimeType}}
+TS(coredata::DataFrame)
 TS(coredata::DataFrame, index::UnitRange{Int})
-TS(coredata::AbstractVector{T}, index::AbstractVector{V}) where {T, V}
-TS(coredata::AbstractVector{T}) where {T}
-TS(coredata::AbstractArray{T,2}) where {T}
+TS(coredata::AbstractVector{T}, index::AbstractVector{V}) where {T, V} 
+TS(coredata::AbstractVector{T}) where {T}                              
+TS(coredata::AbstractArray{T,2}) where {T}                             
+TS(coredata::AbstractArray{T,2}, index::AbstractVector{V}) where {T, V}
 ```
 
 # Examples
