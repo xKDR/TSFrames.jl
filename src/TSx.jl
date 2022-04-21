@@ -699,9 +699,26 @@ Return the number of rows of `ts`.
 
 # Examples
 ```jldoctest
-julia> ts = TS(collect(1:100));
+julia> ts = TS(collect(1:10))
+(10 x 1) TS with Int64 Index
+
+ Index  x1    
+ Int64  Int64 
+──────────────
+     1      1
+     2      2
+     3      3
+     4      4
+     5      5
+     6      6
+     7      7
+     8      8
+     9      9
+    10     10
+
+
 julia> TSx.nrow(ts)
-100
+10
 ```
 """
 function nrow(ts::TS)
@@ -1135,10 +1152,8 @@ functionality.
 
 # Examples
 
-```jldoctest
-julia> using Statistics;
-julia> ts = TS(1:12, Date("2022-02-01"):Month(1):Date("2022-02-01")+Month(11));
-julia> show(ts)
+```jldoctest; setup = :(using Statistics)
+julia> ts = TS(1:12, Date("2022-02-01"):Month(1):Date("2022-02-01")+Month(11))
 (12 x 1) TS with Date Index
 
  Index       x1    
