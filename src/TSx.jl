@@ -51,8 +51,7 @@ export TS,
 A TS object is essentially a `DataFrame` with a specific column marked
 as an index. The input `DataFrame` is sorted during construction and
 is stored under the property `coredata`. The index is stored in the
-`Index` column of `coredata`. `coredata` is sorted using `Index`
-values during object construction.
+`Index` column of `coredata`.
 
 Permitted data inputs to the constructors are `DataFrame`, `Vector`,
 and 2-dimensional `Array`. If an index is already not present in the
@@ -83,7 +82,7 @@ TS(coredata::AbstractArray{T,2}, index::AbstractVector{V}) where {T, V}
 
 # Examples
 ```jldoctest
-julia> using TSx, DataFrames, Random;
+julia> using Random;
 
 julia> random(x) = rand(MersenneTwister(123), x);
 
@@ -143,8 +142,6 @@ julia> TS(df)   # uses existing `Index` column
 
 Index: {Int64} [3]
 Size: (3, 2)
-
-julia> using Dates;
 
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10));
 
@@ -370,7 +367,7 @@ the `index()` method on the `TS` object.
 # Examples
 
 ```jldoctest
-julia> using TSx, DataFrames, Random, Dates;
+julia> using Random;
 
 julia> random(x) = rand(MersenneTwister(123), x);
 
@@ -725,7 +722,7 @@ Return the number of columns of `ts`.
 
 # Examples
 ```jldoctest
-julia> using TSx, Random;
+julia> using Random;
 
 julia> random(x) = rand(MersenneTwister(123), x);
 
@@ -745,8 +742,6 @@ Return the number of rows and columns of `ts` as a tuple.
 
 # Examples
 ```jldoctest
-julia> using TSx; 
-
 julia> TSx.size(TS([collect(1:100) collect(1:100) collect(1:100)]))
 (100, 3)
 ```
@@ -765,7 +760,7 @@ Return the index vector from the `coredata` DataFrame.
 # Examples
 
 ```jldoctest
-julia> using Dates, TSx, Random; 
+julia> using Random; 
 
 julia> random(x) = rand(MersenneTwister(123), x);
 
@@ -820,7 +815,6 @@ excludes index.
 
 # Examples
 ```jldoctest
-julia> using TSx
 julia> names(TS([1:10 11:20]))
 2-element Vector{String}:
  "x1"
@@ -855,7 +849,7 @@ an input.
 
 # Examples
 ```jldoctest
-julia> using TSx, Dates, Random, Statistics, DataFrames; 
+julia> using Random, Statistics; 
 
 julia> random(x) = rand(MersenneTwister(123), x);
 
@@ -938,7 +932,7 @@ also accepted (see `TSx.lead`).
 
 # Examples
 ```jldoctest
-julia> using TSx, Dates, Random, Statistics, DataFrames; 
+julia> using Random, Statistics; 
 
 julia> random(x) = rand(MersenneTwister(123), x);
 
@@ -970,7 +964,7 @@ also accepted (see `TSx.lag`).
 
 # Examples
 ```jldoctest
-julia> using TSx, Dates, Random, Statistics, DataFrames; 
+julia> using Random, Statistics; 
 
 julia> random(x) = rand(MersenneTwister(123), x);
 
@@ -1004,7 +998,7 @@ of rows to be shifted over. The skipped rows are rendered as `missing`.
 
 # Examples
 ```jldoctest
-julia> using TSx, Dates, Random, Statistics; 
+julia> using Random, Statistics; 
 
 julia> random(x) = rand(MersenneTwister(123), x);
 
@@ -1040,7 +1034,7 @@ of rows to be shifted over. The skipped rows are rendered as `missing`.
 
 # Examples
 ```jldoctest
-julia> using TSx, Dates, Random, Statistics; 
+julia> using Random, Statistics;
 
 julia> random(x) = rand(MersenneTwister(123), x);
 
@@ -1152,8 +1146,6 @@ functionality.
 # Examples
 
 ```jldoctest
-julia> using TSx, Dates; 
-
 julia> ts = TS(1:12, Date("2022-02-01"):Month(1):Date("2022-02-01")+Month(11));  
 
 julia> ts
@@ -1216,8 +1208,6 @@ This method uses the Plots package to implement this funcitonality.
 
 # Example
 ```jldoctest
-julia> using TSx, DataFrames, Dates; 
-
 julia> df = DataFrame(Ind = Date("2022-02-01"):Month(1):Date("2022-02-01")+Month(11), val1 = abs.(rand(Int16, 12)), val2 = abs.(rand(Int16, 12)));
 
 julia> TS(df);
@@ -1296,7 +1286,7 @@ is provided to the `join` method.
 
 # Examples
 ```jldoctest
-julia> using TSx, Dates, Random, DataFrames; 
+julia> using Random;
 
 julia> random(x) = rand(MersenneTwister(123), x);
 
@@ -1398,7 +1388,7 @@ to be added in the last position in the resulting data frame that will identify 
 # Example
     
 ```jldoctest
-julia> using TSx, DataFrames, Dates, Random;
+julia> using Random;
 
 julia> random(x) = rand(MersenneTwister(123), x); 
 
