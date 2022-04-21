@@ -81,12 +81,12 @@ TS(coredata::AbstractArray{T,2}, index::AbstractVector{V}) where {T, V}
 ```
 
 # Examples
-```jldoctest; setup = :(using TSx, Random)
+```jldoctest; setup = :(using TSx, DataFrames, Dates, Random)
 julia> using Random;
 julia> random(x) = rand(MersenneTwister(123), x);
 
-julia> df = DataFrame(x1 = random(10));
-julia> TS(df)   # generates index
+julia> df = DataFrame(x1 = random(10))
+julia> ts = TS(df)   # generates index
 (10 x 1) TS with Int64 Index
 
  Index  x1        
@@ -120,7 +120,7 @@ julia> df = DataFrame(ind = [1, 2, 3], x1 = random(3))
    2 │     2  0.940515
    3 │     3  0.673959
 
-julia> TS(df, 1)        # the first column is index
+julia> ts = TS(df, 1)        # the first column is index
 (3 x 1) TS with Int64 Index
 
  Index  x1       
@@ -139,7 +139,7 @@ julia> df = DataFrame(x1 = random(3), x2 = random(3), Index = [1, 2, 3]);
    2 │ 0.940515  0.940515      2
    3 │ 0.673959  0.673959      3
 
-julia> TS(df)   # uses existing `Index` column
+julia> ts = TS(df)   # uses existing `Index` column
 (3 x 2) TS with Int64 Index
 
  Index  x1        x2       
@@ -149,11 +149,9 @@ julia> TS(df)   # uses existing `Index` column
      2  0.940515  0.940515
      3  0.673959  0.673959
 
-julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10));
-
-julia> df = DataFrame(dates = dates, x1 = random(10));
-
-julia> TS(df, :dates)
+julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10))
+julia> df = DataFrame(dates = dates, x1 = random(10))
+julia> ts = TS(df, :dates)
 (10 x 1) TS with Date Index
 
  Index       x1        
@@ -170,7 +168,8 @@ julia> TS(df, :dates)
  2017-01-09  0.26864
  2017-01-10  0.108871
 
-julia> TS(DataFrame(x1=random(10)), dates)
+
+julia> ts = TS(DataFrame(x1=random(10)), dates)
 (10 x 1) TS with Date Index
 
  Index       x1        
