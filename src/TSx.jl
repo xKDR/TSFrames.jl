@@ -56,7 +56,14 @@ values during object construction.
 
 Permitted data inputs to the constructors are `DataFrame`, `Vector`,
 and 2-dimensional `Array`. If an index is already not present in the
-constructor then a sequential integer index is created automatically.
+constructor then a sequential integer index is created
+automatically.
+
+`TS(coredata::DataFrame)`: Here, the constructor looks for a column
+named `Index` in `coredata` as the index column, if this is not found
+then the first column of `coredata` is made the index by default. If
+`coredata` only has a single column then a new sequential index is
+generated.
 
 Since `TS.coredata` is a DataFrame it can be operated upon
 independently using methods provided by the DataFrames package
