@@ -186,7 +186,7 @@ julia> ts = TS(DataFrame(x1=random(10)), dates)
  2017-01-09  0.26864
  2017-01-10  0.108871
 
-julia> TS(random(10))
+julia> ts = TS(random(10))
 (10 x 1) TS with Int64 Index
 
  Index  x1        
@@ -203,7 +203,7 @@ julia> TS(random(10))
      9  0.26864
     10  0.108871
 
-julia> TS(random(10), dates)
+julia> ts = TS(random(10), dates)
 (10 x 1) TS with Date Index
 
  Index       x1        
@@ -220,7 +220,7 @@ julia> TS(random(10), dates)
  2017-01-09  0.26864
  2017-01-10  0.108871
 
-julia> TS([random(10) random(10)], dates) # matrix object
+julia> ts = TS([random(10) random(10)], dates) # matrix object
 (10 x 2) TS with Date Index
 
  Index       x1         x2        
