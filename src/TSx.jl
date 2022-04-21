@@ -360,7 +360,9 @@ function Base.show(io::IO, ts::TS)
     println("(", TSx.nrow(ts), " x ", TSx.ncol(ts), ") TS with ", eltype(index(ts)), " Index")
     println("")
     DataFrames.show(ts.coredata, show_row_number=false, summary=false)
+    return nothing
 end
+Base.show(ts::TS) = show(stdout, ts)
 
 #######################
 # Indexing
@@ -397,7 +399,7 @@ julia> using Random;
 
 julia> random(x) = rand(MersenneTwister(123), x);
 
-julia> ts = TS([random(10) random(10) random(10)]) |> print
+julia> ts = TS([random(10) random(10) random(10)])
 
 # first row
 julia> ts[1]  |> print
