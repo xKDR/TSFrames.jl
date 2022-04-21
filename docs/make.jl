@@ -1,7 +1,7 @@
 using TSx
 using Documenter
 
-DocMeta.setdocmeta!(TSx, :DocTestSetup, :(using TSx); recursive=true)
+DocMeta.setdocmeta!(TSx, :DocTestSetup, :(using TSx, DataFrames, Random); recursive=true)
 
 makedocs(;
     modules=[TSx],
@@ -16,6 +16,8 @@ makedocs(;
     pages=[
         "Home" => "index.md",
     ],
+    doctest=false,               # TODO: switch to true in the version after v0.1.0
+    strict=false,                # TODO: switch to true in the version after v0.1.0
 )
 
 deploydocs(;
