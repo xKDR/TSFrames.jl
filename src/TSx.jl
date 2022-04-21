@@ -1023,9 +1023,9 @@ julia> ts |> print
 Index: {Dates.Date} [12]
 Size: (12, 1)
 
-julia> # rollapply(sum, ts, :x1, 10); 
+julia> rollapply(sum, ts, :x1, 10); 
 
-julia> # rollapply(Statistics.mean, ts, :x1, 5); 
+julia> rollapply(Statistics.mean, ts, :x1, 5); 
 
 ```
 """
@@ -1037,11 +1037,13 @@ function rollapply(fun::Function, ts::TS, column::Any, windowsize::Int)
     if typeof(column) <: Int
         col = copy(column)
         col = col+1             # index is always 1
+    else
+        col = column
     end
     res = RollingFunctions.rolling(fun, ts.coredata[!, col], windowsize)
     idx = TSx.index(ts)[windowsize:end]
-    colname = names(ts.coredata[!, [column]])
-    res_df = DataFrame([idx, res], ["Index", "$(colname)_roll_$(fun)"])
+    colname = names(ts.coredata[!, [col]])[1]
+    res_df = DataFrame([idx, res], ["Index", "$(colname)_rolling_$(fun)"])
     return TS(res_df)
 end
 
