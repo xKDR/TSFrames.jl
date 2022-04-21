@@ -81,7 +81,7 @@ TS(coredata::AbstractArray{T,2}, index::AbstractVector{V}) where {T, V}
 ```
 
 # Examples
-```jldoctest
+```jldoctest; setup = :(using TSx, Random)
 julia> using Random;
 julia> random(x) = rand(MersenneTwister(123), x);
 
