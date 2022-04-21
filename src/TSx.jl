@@ -29,8 +29,8 @@ export TS,
     nrow,
     ncol,
     pctchange,
+    plot,
     log,
-    print,
     rbind,
     show,
     size,
@@ -317,30 +317,10 @@ end
 
 # Show
 function Base.show(io::IO, ts::TS)
-    if (nrow(ts) > 20)
-        println("    = First 10 rows =")
-        println(first(ts.coredata, 10))
-        println("    ...")
-        println("    ...")
-        println("    = Last 10 rows =")
-        println(last(ts.coredata, 10))
-        println("")
-    else
-        println(ts.coredata)
-    end
-    println("Index: {", eltype(index(ts)), "} [", length(index(ts)), "]")
-    println("Size: ", size(ts))
-end
-
-# Print
-function Base.print(io::IO, ts::TS)
-    println(ts.coredata)
+    println("(", TSx.nrow(ts), " x ", TSx.ncol(ts), ") TS with ", eltype(index(ts)), " Index")
     println("")
-    println("Index: {", eltype(index(ts)), "} [", length(index(ts)), "]")
-    print("Size: ", size(ts))
+    DataFrames.show(ts.coredata, show_row_number=false, summary=false)
 end
-
-
 
 #######################
 # Indexing
