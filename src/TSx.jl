@@ -331,9 +331,10 @@ methods to subset on year, year-month, and year-quarter. The latter
 two subset `coredata` by matching on the index column.
 
 Column selector could be an integer or any other selector which
-`DataFrame` indexing supports. Use `Colon` to fetch specific columns
-containing all rows (ex: `ts[:, [:x1, :x2]]`). For fetching the index column
-vector use the `index()` method.
+`DataFrame` indexing supports. You can use a Symbols to fetch specific
+columns (ex: `ts[:x1]`, `ts[[:x1, :x2]]`).
+
+For fetching the index column vector use the `index()` method.
 
 # Examples
 
@@ -385,10 +386,11 @@ julia> ts[1:5, 2]       |> print
 julia> ts[1:5, 2:3]     |> print
 
 # individual rows
-julia> ts[[1, 9]]     |> print
+julia> ts[[1, 9]]       |> print
 
 
-julia> ts[: [:x1, :x2]]     |> print
+julia> ts[:x1]          |> print
+julia> ts[[:x1, :x2]]   |> print
 
 
 julia> dates = collect(Date(2007):Day(1):Date(2008, 2, 22));
@@ -532,20 +534,28 @@ function Base.getindex(ts::TS, i::Int, j::String)
     return TS(ts.coredata[[i], Cols("Index", j)])
 end
 
-function Base.getindex(ts::TS, Colon, i::Vector{Int})
-    TS(select(ts.coredata, :Index, i.+1), :Index)  # increment: account for Index
+function Base.getindex(ts::TS, Colon, j::Vector{Int})
+    TS(select(ts.coredata, :Index, j.+1), :Index)  # increment: account for Index
 end
 
-function Base.getindex(ts::TS, Colon, i::Int)
-    ts[:, [i]]
+function Base.getindex(ts::TS, Colon, j::Int)
+    ts[:, [j]]
 end
 
-function Base.getindex(ts::TS, Colon, i::Vector{T}) where {T<:Union{String, Symbol}}
-    TS(select(ts.coredata, :Index, i), :Index)  # increment: account for Index
+function Base.getindex(ts::TS, Colon, j::Vector{T}) where {T<:Union{String, Symbol}}
+    TS(select(ts.coredata, :Index, j), :Index)  # increment: account for Index
 end
 
-function Base.getindex(ts::TS, Colon, i::T) where {T<:Union{String, Symbol}}
-    ts[:, [i]]
+function Base.getindex(ts::TS, Colon, j::T) where {T<:Union{String, Symbol}}
+    ts[:, [j]]
+end
+
+function Base.getindex(ts::TS, j::Vector{Symbol})
+    ts[:, j]
+end
+
+function Base.getindex(ts::TS, j::Symbol)
+    ts[:, [j]]
 end
 
 # By {TimeType, Period} range
