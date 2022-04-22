@@ -90,8 +90,8 @@ julia> df = DataFrame(x1 = random(10))
 julia> ts = TS(df)   # generates index
 (10 x 1) TS with Int64 Index
 
- Index  x1        
- Int64  Float64   
+ Index  x1
+ Int64  Float64
 ──────────────────
      1  0.768448
      2  0.940515
@@ -114,8 +114,8 @@ julia> combine(ts.coredata, :x1 => Statistics.mean, DataFrames.nrow)
 
 julia> df = DataFrame(ind = [1, 2, 3], x1 = random(3))
 3×2 DataFrame
- Row │ ind    x1       
-     │ Int64  Float64  
+ Row │ ind    x1
+     │ Int64  Float64
 ─────┼─────────────────
    1 │     1  0.768448
    2 │     2  0.940515
@@ -124,8 +124,8 @@ julia> df = DataFrame(ind = [1, 2, 3], x1 = random(3))
 julia> ts = TS(df, 1)        # the first column is index
 (3 x 1) TS with Int64 Index
 
- Index  x1       
- Int64  Float64  
+ Index  x1
+ Int64  Float64
 ─────────────────
      1  0.768448
      2  0.940515
@@ -133,8 +133,8 @@ julia> ts = TS(df, 1)        # the first column is index
 
 julia> df = DataFrame(x1 = random(3), x2 = random(3), Index = [1, 2, 3]);
 3×3 DataFrame
- Row │ x1        x2        Index 
-     │ Float64   Float64   Int64 
+ Row │ x1        x2        Index
+     │ Float64   Float64   Int64
 ─────┼───────────────────────────
    1 │ 0.768448  0.768448      1
    2 │ 0.940515  0.940515      2
@@ -143,8 +143,8 @@ julia> df = DataFrame(x1 = random(3), x2 = random(3), Index = [1, 2, 3]);
 julia> ts = TS(df)   # uses existing `Index` column
 (3 x 2) TS with Int64 Index
 
- Index  x1        x2       
- Int64  Float64   Float64  
+ Index  x1        x2
+ Int64  Float64   Float64
 ───────────────────────────
      1  0.768448  0.768448
      2  0.940515  0.940515
@@ -157,8 +157,8 @@ julia> df = DataFrame(dates = dates, x1 = random(10))
 julia> ts = TS(df, :dates)
 (10 x 1) TS with Date Index
 
- Index       x1        
- Date        Float64   
+ Index       x1
+ Date        Float64
 ───────────────────────
  2017-01-01  0.768448
  2017-01-02  0.940515
@@ -178,8 +178,8 @@ julia> ts = TS(DataFrame(x1=random(10)), dates)
 julia> ts = TS(random(10))
 (10 x 1) TS with Int64 Index
 
- Index  x1        
- Int64  Float64   
+ Index  x1
+ Int64  Float64
 ──────────────────
      1  0.768448
      2  0.940515
@@ -198,8 +198,8 @@ julia> ts = TS(random(10), dates);
 julia> ts = TS([random(10) random(10)], dates) # matrix object
 (10 x 2) TS with Date Index
 
- Index       x1         x2        
- Date        Float64    Float64   
+ Index       x1         x2
+ Date        Float64    Float64
 ──────────────────────────────────
  2017-01-01  0.768448   0.768448
  2017-01-02  0.940515   0.940515
@@ -731,8 +731,8 @@ julia> ts = TS(df) |> print
 julia> apply(ts, Month, first) |> print
 (15 x 1) TS with Date Index
 
- Index       x1_first  
- Date        Float64   
+ Index       x1_first
+ Date        Float64
 ───────────────────────
  2017-01-01  0.768448
  2017-02-01  0.790201
@@ -754,8 +754,8 @@ julia> apply(ts, Month, first) |> print
 julia> apply(ts, Month(2), first) |> print
 (8 x 1) TS with Date Index
 
- Index       x1_first  
- Date        Float64   
+ Index       x1_first
+ Date        Float64
 ───────────────────────
  2017-01-01  0.768448
  2017-03-01  0.467219
@@ -1109,16 +1109,16 @@ using Int indexes, String(s), or Symbol(s).
 ```jldoctest; setup = :(using TSx, DataFrames, Dates, Plots, Random, Statistics)
 julia> dates = Date("2022-01-01"):Month(1):Date("2022-01-01")+Month(11);
 
-julia> df = DataFrame(Index = dates, 
-        val1 = randn(12), 
+julia> df = DataFrame(Index = dates,
+        val1 = randn(12),
         val2 = randn(12),
         val3 = randn(12));
 
 julia> TS(df)           |> print
 (12 x 3) TS with Date Index
 
- Index       val1       val2       val3       
- Date        Float64    Float64    Float64    
+ Index       val1       val2       val3
+ Date        Float64    Float64    Float64
 ──────────────────────────────────────────────
  2022-01-01  -2.2798    -0.801856  -0.696722
  2022-02-01  -0.266063   0.268206   0.743648
