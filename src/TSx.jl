@@ -1358,11 +1358,14 @@ argument of `DataFrames.vcat`.
 
 Currently, `DataFrames.vcat` supports four types of column-merge strategies:
 
-1. `:setequal`: only merge if both objects have same column names, use the order of columns in `ts1`.
+1. `:setequal`: only merge if both objects have same column names, use
+the order of columns in `ts1`.
 
-2. `:orderequal`: only merge if both objects have same column names and columns are in the same order.
+2. `:orderequal`: only merge if both objects have same column names
+and columns are in the same order.
 
-3. `:intersect`: only merge the columns which are common to both objects, ignore the rest.
+3. `:intersect`: only merge the columns which are common to both
+objects, ignore the rest.
 
 4. `:union`: merge even if columns differ, the resulting object has
 all the columns filled with `missing`, if necessary.
@@ -1377,7 +1380,8 @@ julia> dates1 = collect(Date(2017,1,1):Day(1):Date(2017,1,10));
 
 julia> dates2 = collect(Date(2017,1,11):Day(1):Date(2017,1,30));
 
-julia> ts1 = TS(randn(length(dates1)), dates1) |> print
+julia> ts1 = TS([randn(length(dates1)) randn(length(dates1))], dates1) |> print
+julia> show(ts1)
 (10 x 1) TS with Dates.Date Index
 
  Index       x1
@@ -1394,7 +1398,9 @@ julia> ts1 = TS(randn(length(dates1)), dates1) |> print
  2017-01-09   0.177526
  2017-01-10  -1.08461
 
-julia> ts2 = TS(randn(length(dates2)), dates2) |> print
+julia> df = DataFrame(x1 = randn(length(dates2)), y1 = randn(length(dates2)))
+julia> ts2 = TS(df, dates2)
+julia> show(ts2)
 (20 x 1) TS with Dates.Date Index
 
  Index       x1
@@ -1421,6 +1427,8 @@ julia> ts2 = TS(randn(length(dates2)), dates2) |> print
 
 
 julia> vcat(ts1, ts2)           |> print
+
+julia> vcat(ts1, ts2; colmerge=:intersect)           |> print
 
 ```
 """
