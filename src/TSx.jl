@@ -327,14 +327,12 @@ end
 `TS` can be subset using row and column indices. The row selector
 could be an integer, a range, an array or it could also be a `Date`
 object or an ISO-formatted date string ("2007-04-10"). There are
-methods to subset on year, year-month, and year-quarter.
-
-The latter two subset
-`coredata` by matching on the index column.
+methods to subset on year, year-month, and year-quarter. The latter
+two subset `coredata` by matching on the index column.
 
 Column selector could be an integer or any other selector which
-`DataFrame` indexing supports. To fetch the index column one can use
-the `index()` method on the `TS` object.
+`DataFrame` indexing supports. For fetching the index column use the
+`index()` method.
 
 # Examples
 
