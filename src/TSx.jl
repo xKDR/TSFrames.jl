@@ -1348,23 +1348,26 @@ end
 cbind = join
 
 """
-vcat(ts::TS...; cols::Symbol=:setequal, source::Symbol=nothing)
+vcat(ts1::TS, ts2::TS; colmerge::Symbol=:union)
 
-vcat concatenates two or more arrays along dimension 1. This method implements the `Base.vcat` method.
+Concatenate rows of two TS objects, append `ts2` to `ts1`.
 
-The `cols` keyword argument determines the columns of the data frame
-`:setequal`: require all data frames to have the same column names disregarding order.
-If they appear in different orders, the order of the first provided data frame is used.
-`:orderequal`: require all data frames to have the same column names and in the same order.
-`:intersect`: only the columns present in all provided data frames are kept. If the intersection is empty, an empty data frame is returned.
-`:union`: columns present in at least one of the provided data frames are kept.
- Columns not present in some data frames are filled with missing where necessary.
+The `colmerge` keyword argument specifies the column merge
+strategy. The value of `colmerge` is directly passed to `cols`
+argument of `DataFrames.vcat`.
 
-The `source` keyword argument, if not nothing (the default), specifies the additional column
-to be added in the last position in the resulting data frame that will identify the source data frame.
+Currently, `DataFrames.vcat` supports four types of column-merge strategies:
 
-# Example
+1. `:setequal`: only merge if both objects have same column names, use the order of columns in `ts1`.
 
+2. `:orderequal`: only merge if both objects have same column names and columns are in the same order.
+
+3. `:intersect`: only merge the columns which are common to both objects, ignore the rest.
+
+4. `:union`: merge even if columns differ, the resulting object has
+all the columns filled with `missing`, if necessary.
+
+# Examples
 ```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
 julia> using Random;
 
@@ -1417,13 +1420,12 @@ julia> ts2 = TS(randn(length(dates2)), dates2) |> print
           4 rows omitted
 
 
-julia> # vcat(ts1, ts2);        # FIXME
-
+julia> vcat(ts1, ts2)           |> print
 
 ```
 """
-function Base.vcat(ts::TS...; cols::Symbol=:setequal, source::Symbol=nothing)
-    result_df = DataFrames.vcat(ts1.coredata...; cols, source)
+function Base.vcat(ts1::TS, ts2::TS; colmerge=:union)
+    result_df = DataFrames.vcat(ts1.coredata, ts2.coredata; cols=colmerge)
     return TS(result_df)
 end
 # alias
