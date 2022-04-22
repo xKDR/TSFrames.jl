@@ -331,8 +331,9 @@ methods to subset on year, year-month, and year-quarter. The latter
 two subset `coredata` by matching on the index column.
 
 Column selector could be an integer or any other selector which
-`DataFrame` indexing supports. For fetching the index column use the
-`index()` method.
+`DataFrame` indexing supports. Use `Colon` to fetch specific columns
+containing all rows (ex: `ts[:, [:x1, :x2]]`). For fetching the index column
+vector use the `index()` method.
 
 # Examples
 
@@ -385,6 +386,9 @@ julia> ts[1:5, 2:3]     |> print
 
 # individual rows
 julia> ts[[1, 9]]     |> print
+
+
+julia> ts[: [:x1, :x2]]     |> print
 
 
 julia> dates = collect(Date(2007):Day(1):Date(2008, 2, 22));
@@ -526,6 +530,22 @@ end
 
 function Base.getindex(ts::TS, i::Int, j::String)
     return TS(ts.coredata[[i], Cols("Index", j)])
+end
+
+function Base.getindex(ts::TS, Colon, i::Vector{Int})
+    TS(select(ts.coredata, :Index, i.+1), :Index)  # increment: account for Index
+end
+
+function Base.getindex(ts::TS, Colon, i::Int)
+    ts[:, [i]]
+end
+
+function Base.getindex(ts::TS, Colon, i::Vector{T}) where {T<:Union{String, Symbol}}
+    TS(select(ts.coredata, :Index, i), :Index)  # increment: account for Index
+end
+
+function Base.getindex(ts::TS, Colon, i::T) where {T<:Union{String, Symbol}}
+    ts[:, [i]]
 end
 
 # By {TimeType, Period} range
