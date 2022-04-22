@@ -332,7 +332,9 @@ two subset `coredata` by matching on the index column.
 
 Column selector could be an integer or any other selector which
 `DataFrame` indexing supports. You can use a Symbols to fetch specific
-columns (ex: `ts[:x1]`, `ts[[:x1, :x2]]`).
+columns (ex: `ts[:x1]`, `ts[[:x1, :x2]]`). For fetching column values
+as `Vector` or `Matrix`, use `Colon`: `ts[:, :x1]` and `ts[:, [:x1,
+:x2]]`.
 
 For fetching the index column vector use the `index()` method.
 
@@ -389,8 +391,16 @@ julia> ts[1:5, 2:3]     |> print
 julia> ts[[1, 9]]       |> print
 
 
+# only select x1, return a TS
 julia> ts[:x1]          |> print
+
 julia> ts[[:x1, :x2]]   |> print
+
+# return x1 as Vector{T}
+julia> ts[:, :x1]          |> print
+
+
+julia> ts[:, [:x1, :x2]]   |> print
 
 
 julia> dates = collect(Date(2007):Day(1):Date(2008, 2, 22));
@@ -534,28 +544,34 @@ function Base.getindex(ts::TS, i::Int, j::String)
     return TS(ts.coredata[[i], Cols("Index", j)])
 end
 
+# returns a TS object
 function Base.getindex(ts::TS, Colon, j::Vector{Int})
     TS(select(ts.coredata, :Index, j.+1), :Index)  # increment: account for Index
 end
 
+# returns a Vector
 function Base.getindex(ts::TS, Colon, j::Int)
     ts[:, [j]]
 end
 
+# returns a TS object
 function Base.getindex(ts::TS, Colon, j::Vector{T}) where {T<:Union{String, Symbol}}
+    Matrix(ts.coredata[!, j])
+end
+
+# returns a Vector
+function Base.getindex(ts::TS, Colon, j::T) where {T<:Union{String, Symbol}}
+    ts.coredata[!, j]
+end
+
+# returns a TS object
+function Base.getindex(ts::TS, j::Vector{Symbol})
     TS(select(ts.coredata, :Index, j), :Index)  # increment: account for Index
 end
 
-function Base.getindex(ts::TS, Colon, j::T) where {T<:Union{String, Symbol}}
-    ts[:, [j]]
-end
-
-function Base.getindex(ts::TS, j::Vector{Symbol})
-    ts[:, j]
-end
-
+# returns a Vector
 function Base.getindex(ts::TS, j::Symbol)
-    ts[:, [j]]
+    ts[[j]]
 end
 
 # By {TimeType, Period} range
