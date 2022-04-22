@@ -1069,28 +1069,68 @@ end
 
 """
 # Plottting
-`plot(ts::TS, colnames::Vector{String} = TSx.names(ts))`
+`plot(ts::TS, cols = TSx.names(ts))`
 
-Plots a timeseries plot of the TS object, with the X axis as the index.
-`colnames` lets you select which column you wish to plot.
+Plots a timeseries plot of the TS object, with the index on the x-axis
+and selected `cols` on the y-axis. By default, plot all the columns.
 
-This method uses the Plots package to implement this funcitonality.
+This method uses the Plots package to implement this functionality.
 
 # Example
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
-julia> df = DataFrame(Ind = Date("2022-02-01"):Month(1):Date("2022-02-01")+Month(11), val1 = abs.(rand(Int16, 12)), val2 = abs.(rand(Int16, 12)));
+```jldoctest; setup = :(using TSx, DataFrames, Dates, Plots, Random, Statistics)
+julia> dates = Date("2022-01-01"):Month(1):Date("2022-01-01")+Month(11);
+
+julia> df = DataFrame(Index = dates, 
+        val1 = randn(12), 
+        val2 = randn(12),
+        val3 = randn(12));
+
+julia> TS(df)
+(12 x 3) TS with Date Index
+
+ Index       val1       val2       val3       
+ Date        Float64    Float64    Float64    
+──────────────────────────────────────────────
+ 2022-01-01  -2.2798    -0.801856  -0.696722
+ 2022-02-01  -0.266063   0.268206   0.743648
+ 2022-03-01   1.01839    1.64479   -0.296677
+ 2022-04-01   2.05753   -1.21628    0.339607
+ 2022-05-01   0.967545   1.21421    0.893949
+ 2022-06-01   0.191933  -0.56957   -1.0605
+ 2022-07-01  -1.73478    0.283089   0.360917
+ 2022-08-01  -0.305464  -1.55139    0.0505422
+ 2022-09-01  -2.40175    0.503355   0.743701
+ 2022-10-01  -0.273021   1.41333   -0.0682414
+ 2022-11-01   0.469246  -0.765097  -0.0119999
+ 2022-12-01  -1.12906    0.625611   1.72409
 
 
-julia> TS(df);
+julia> plot(ts)
 
+julia> plot(ts[1:6], [:val1, :val3])
 
-julia> # plot(ts);
-
+julia> plot(ts, [1, 2], size=(600, 400))
 ```
 """
-function plot(ts::TS, colnames::Vector{String} = TSx.names(ts))
-    Plots.plot(ts.coredata[!, :Index], Matrix(ts.coredata[!, colnames]))
+function plot(ts::TS, cols::Vector{T} = 1:TSx.ncol(ts);
+              size=(1200, 1200),
+              xlabel="Index") where {T<:Union{Int, UnitRange}}
+    columns = collect(cols)     # by default creates a copy
+    colnames = names(ts)[columns]
+    columns .+= 1               # account for Index column
+    Plots.plot(index(ts), Matrix(ts.coredata[!, columns]);
+               size=size,
+               xlabel="Index",
+               ylabel=join(colnames, ", "))
+    return nothing
 end
+
+function plot(ts::TS, cols::Vector{T} = TSx.names(ts)) where {T<:Union{Symbol, String}}
+    colindices = [DataFrames.columnindex(ts.coredata, i) for i in cols]
+    colindices .-= 1            # decrement to account for Index
+    plot(ts, colindices)
+end
+
 
 ######################
 # Joins
