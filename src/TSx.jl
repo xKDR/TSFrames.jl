@@ -26,7 +26,9 @@ export TS,
     lag,
     lead,
     names,
+    nr,
     nrow,
+    nc,
     ncol,
     pctchange,
     plot,
@@ -518,6 +520,10 @@ function Base.getindex(ts::TS, i::String)
     TS(ts.coredata[ind, :])     # XXX: check if data is being copied
 end
 
+# By {TimeType, Period} range
+function Base.getindex(ts::TS, r::StepRange{T, V}) where {T<:TimeType, V<:Period}
+end
+
 # By row-column
 function Base.getindex(ts::TS, i::Int, j::Int)
     TS(ts.coredata[[i], Cols(:Index, j+1)])
@@ -544,39 +550,51 @@ function Base.getindex(ts::TS, i::Int, j::String)
     return TS(ts.coredata[[i], Cols("Index", j)])
 end
 
+function Base.getindex(ts::TS, i::Vector{Int}, j::Int)
+    TS(ts.coredata[i, Cols(:Index, j+1)]) # increment: account for Index
+end
+
+function Base.getindex(ts::TS, i::Vector{Int}, j::UnitRange)
+    ts[i, collect(j)]
+end
+
+function Base.getindex(ts::TS, i::UnitRange, j::Vector{Int})
+    ts[collect(i), j]
+end
+
+function Base.getindex(ts::TS, i::Int, j::Vector{Int})
+    TS(ts.coredata[[i], Cols(:Index, j.+1)]) # increment: account for Index
+end
+
+function Base.getindex(ts::TS, i::Vector{Int}, j::Vector{Int})
+    TS(ts.coredata[i, Cols(:Index, j.+1)]) # increment: account for Index
+end
+
+function Base.getindex(ts::TS, i::Int, j::Vector{T}) where {T<:Union{String, Symbol}}
+    TS(ts.coredata[[i], Cols(:Index, j)])
+end
+
+## Column indexing with Colon
 # returns a TS object
-function Base.getindex(ts::TS, Colon, j::Vector{Int})
+function Base.getindex(ts::TS, ::Colon, j::Vector{Int})
     TS(select(ts.coredata, :Index, j.+1), :Index)  # increment: account for Index
 end
 
-# returns a Vector
-function Base.getindex(ts::TS, Colon, j::Int)
-    ts[:, [j]]
-end
-
 # returns a TS object
-function Base.getindex(ts::TS, Colon, j::Vector{T}) where {T<:Union{String, Symbol}}
-    Matrix(ts.coredata[!, j])
-end
-
-# returns a Vector
-function Base.getindex(ts::TS, Colon, j::T) where {T<:Union{String, Symbol}}
-    ts.coredata[!, j]
-end
-
-# returns a TS object
-function Base.getindex(ts::TS, j::Vector{Symbol})
+function Base.getindex(ts::TS, ::Colon, j::Vector{T}) where {T<:Union{String, Symbol}}
     TS(select(ts.coredata, :Index, j), :Index)  # increment: account for Index
 end
 
 # returns a Vector
-function Base.getindex(ts::TS, j::Symbol)
-    ts[[j]]
+function Base.getindex(ts::TS, ::Colon, j::Int)
+    ts.coredata[!, j+1]
 end
 
-# By {TimeType, Period} range
-function Base.getindex(ts::TS, r::StepRange{T, V}) where {T<:TimeType, V<:Period}
+# returns a Vector
+function Base.getindex(ts::TS, ::Colon, j::T) where {T<:Union{String, Symbol}}
+    ts.coredata[!, j]
 end
+####
 
 ########################
 # Parameters
@@ -586,7 +604,9 @@ end
 """
 # Size methods
 `nrow(ts::TS)`
-Return the number of rows of `ts`.
+`nr(ts::TS)`
+
+Return the number of rows of `ts`. `nr` is an alias for `nrow`.
 
 # Examples
 ```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
@@ -600,6 +620,8 @@ julia> TSx.nrow(ts)
 function nrow(ts::TS)
     DataFrames.size(ts.coredata)[1]
 end
+# alias
+nr = TSx.nrow
 
 # Number of columns
 """
@@ -607,7 +629,7 @@ end
 
 `ncol(ts::TS)`
 
-Return the number of columns of `ts`.
+Return the number of columns of `ts`. `nc` is an alias for `ncol`.
 
 # Examples
 ```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
@@ -617,11 +639,16 @@ julia> random(x) = rand(MersenneTwister(123), x);
 
 julia> TSx.ncol(TS([random(100) random(100) random(100)]))
 3
+
+julia> nc(TS([random(100) random(100) random(100)]))
+3
 ```
 """
 function ncol(ts::TS)
     DataFrames.size(ts.coredata)[2] - 1
 end
+# alias
+nc = TSx.ncol
 
 # Size of
 """
@@ -1001,7 +1028,7 @@ negative numbers as complex numbers.  Using this coerces the log of
 positive values as complex numbers with the imaginary component equal
 to 0.
 """
-function log(ts::TS, complex::Bool = false)
+function log(ts::TS, complex::Bool = false) # FIXME: log doesn't work with Missing, takes log of Index too
     ts_new = ts
     if complex == true
         for col in names(ts_new.coredata)
@@ -1089,7 +1116,7 @@ julia> rollapply(Statistics.mean, ts, 1, 5) |> print
 
 ```
 """
-function rollapply(fun::Function, ts::TS, column::Any, windowsize::Int)
+function rollapply(fun::Function, ts::TS, column::Any, windowsize::Int) # TODO: multiple columns
     if windowsize < 1
         error("windowsize must be greater than or equal to 1")
     end
@@ -1440,4 +1467,3 @@ end
 rbind = vcat
 
 end                             # END module TSx
-
