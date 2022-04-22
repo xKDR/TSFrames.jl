@@ -312,11 +312,11 @@ Base.show(ts::TS) = show(stdout, ts)
 # Indexing
 #######################
 ## Date-time type conversions for indexing
-function convert(::Type{Date}, str::String)
+function _convert(::Type{Date}, str::String)
     Date(Dates.parse_components(str, Dates.dateformat"yyyy-mm-dd")...)
 end
 
-function convert(::Type{String}, date::Date)
+function _convert(::Type{String}, date::Date)
     Dates.format(date, "yyyy-mm-dd")
 end
 
@@ -514,7 +514,7 @@ end
 
 # By string timestamp
 function Base.getindex(ts::TS, i::String)
-    ind = findall(x -> x == TSx.convert(eltype(ts.coredata[!, :Index]), i), ts.coredata[!, :Index]) # XXX: may return duplicate indices
+    ind = findall(x -> x == TSx._convert(eltype(ts.coredata[!, :Index]), i), ts.coredata[!, :Index]) # XXX: may return duplicate indices
     TS(ts.coredata[ind, :])     # XXX: check if data is being copied
 end
 
@@ -993,11 +993,11 @@ end
 
 `log(ts::TS, complex::Bool = false)`
 
-This method computes the log value of the non-index columns in the TS
+This method computes the log value of non-index columns in the TS
 object.
 
 If the `complex` argument is `true` the function returns the log of
-negative numbers as complex numbers.  But this also coerces the log of
+negative numbers as complex numbers.  Using this coerces the log of
 positive values as complex numbers with the imaginary component equal
 to 0.
 """
@@ -1209,7 +1209,7 @@ The following join types are supported:
 a.k.a. inner join, takes the intersection of the indexes of `ts1` and
 `ts2`, and then merges the columns of both the objects. The resulting
 object will only contain rows which are present in both the objects'
-indexes. The function will renamine the columns in the final object if
+indexes. The function will rename columns in the final object if
 they had same names in the TS objects.
 
 `join(ts1::TS, ts2::TS, ::JoinAll)`:
@@ -1440,3 +1440,4 @@ end
 rbind = vcat
 
 end                             # END module TSx
+
