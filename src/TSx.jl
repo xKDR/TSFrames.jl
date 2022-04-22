@@ -1,6 +1,6 @@
 module TSx
 
-using DataFrames, Dates, ShiftedArrays, RollingFunctions, Plots
+using DataFrames, Dates, ShiftedArrays, RecipesBase, RollingFunctions
 
 import Base.convert
 import Base.diff
@@ -1069,12 +1069,13 @@ end
 
 """
 # Plottting
-`plot(ts::TS, cols = TSx.names(ts))`
+`plot(ts::TS, cols::Vector{Int} = collect(1:TSx.ncol(ts)))`
+`plot(ts::TS, cols::Vector{T}) where {T<:Union{String, Symbol}}`
+`plot(ts::TS, cols::T) where {T<:Union{Int, String, Symbol}}`
 
-Plots a timeseries plot of the TS object, with the index on the x-axis
-and selected `cols` on the y-axis. By default, plot all the columns.
-
-This method uses the Plots package to implement this functionality.
+Plots a TS object with the index on the x-axis and selected `cols` on
+the y-axis. By default, plot all the columns. Columns can be selected
+using Int indexes, String(s), or Symbol(s).
 
 # Example
 ```jldoctest; setup = :(using TSx, DataFrames, Dates, Plots, Random, Statistics)
@@ -1085,7 +1086,7 @@ julia> df = DataFrame(Index = dates,
         val2 = randn(12),
         val3 = randn(12));
 
-julia> TS(df)
+julia> TS(df)           |> print
 (12 x 3) TS with Date Index
 
  Index       val1       val2       val3       
@@ -1105,6 +1106,8 @@ julia> TS(df)
  2022-12-01  -1.12906    0.625611   1.72409
 
 
+julia> using Plots
+
 julia> plot(ts)
 
 julia> plot(ts[1:6], [:val1, :val3])
@@ -1112,25 +1115,25 @@ julia> plot(ts[1:6], [:val1, :val3])
 julia> plot(ts, [1, 2], size=(600, 400))
 ```
 """
-function plot(ts::TS, cols::Vector{T} = 1:TSx.ncol(ts);
-              size=(1200, 1200),
-              xlabel="Index") where {T<:Union{Int, UnitRange}}
-    columns = collect(cols)     # by default creates a copy
-    colnames = names(ts)[columns]
-    columns .+= 1               # account for Index column
-    Plots.plot(index(ts), Matrix(ts.coredata[!, columns]);
-               size=size,
-               xlabel="Index",
-               ylabel=join(colnames, ", "))
-    return nothing
+@recipe function f(ts::TS, cols::Vector{Int} = collect(1:TSx.ncol(ts)))
+    seriestype := :line
+    size --> (1200, 1200)
+    xlabel --> :Index
+    ylabel --> join(TSx.names(ts)[cols], ", ")
+    legend := true
+    label := permutedims(TSx.names(ts)[cols])
+    (TSx.index(ts), Matrix(ts.coredata[!, cols.+1])) # increment to account for Index
 end
 
-function plot(ts::TS, cols::Vector{T} = TSx.names(ts)) where {T<:Union{Symbol, String}}
+@recipe function f(ts::TS, cols::Vector{T}) where {T<:Union{String, Symbol}}
     colindices = [DataFrames.columnindex(ts.coredata, i) for i in cols]
     colindices .-= 1            # decrement to account for Index
-    plot(ts, colindices)
+    (ts, colindices)
 end
 
+@recipe function f(ts::TS, cols::T) where {T<:Union{Int, String, Symbol}}
+    (ts, [cols])
+end
 
 ######################
 # Joins
