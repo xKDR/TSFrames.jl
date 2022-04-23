@@ -23,6 +23,7 @@ export TS,
     JoinRight,
     apply,
     cbind,
+    describe,
     diff,
     getindex,
     index,
@@ -40,6 +41,7 @@ export TS,
     rbind,
     show,
     size,
+    summary,
     rollapply,
     vcat
 
@@ -314,7 +316,23 @@ function Base.show(io::IO, ts::TS)
 end
 Base.show(ts::TS) = show(stdout, ts)
 
+"""
+# Summary statistics
 
+`describe(ts::TS)`
+
+Compute summary statistics of `ts`. The output is a `DataFrame`
+containing standard statistics along with number of missing values and
+data types of columns.
+
+# Examples
+```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
+julia> using Random;
+julia> random(x) = rand(MersenneTwister(123), x..);
+julia> ts = TS(random(([1, 2, 3, 4, missing], 10)))
+julia> describe(ts)
+```
+"""
 function describe(io::IO, ts::TS)
     DataFrames.describe(ts.coredata)
 end
