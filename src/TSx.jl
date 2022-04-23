@@ -94,6 +94,20 @@ julia> using Random;
 julia> random(x) = rand(MersenneTwister(123), x);
 
 julia> df = DataFrame(x1 = random(10))
+10×1 DataFrame
+ Row │ x1
+     │ Float64
+─────┼───────────
+   1 │ 0.768448
+   2 │ 0.940515
+   3 │ 0.673959
+   4 │ 0.395453
+   5 │ 0.313244
+   6 │ 0.662555
+   7 │ 0.586022
+   8 │ 0.0521332
+   9 │ 0.26864
+  10 │ 0.108871
 
 julia> ts = TS(df)   # generates index
 (10 x 1) TS with Int64 Index
@@ -161,6 +175,20 @@ julia> ts = TS(df)   # uses existing `Index` column
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10));
 
 julia> df = DataFrame(dates = dates, x1 = random(10))
+10×2 DataFrame
+ Row │ dates       x1
+     │ Date        Float64
+─────┼───────────────────────
+   1 │ 2017-01-01  0.768448
+   2 │ 2017-01-02  0.940515
+   3 │ 2017-01-03  0.673959
+   4 │ 2017-01-04  0.395453
+   5 │ 2017-01-05  0.313244
+   6 │ 2017-01-06  0.662555
+   7 │ 2017-01-07  0.586022
+   8 │ 2017-01-08  0.0521332
+   9 │ 2017-01-09  0.26864
+  10 │ 2017-01-10  0.108871
 
 julia> ts = TS(df, :dates)
 (10 x 1) TS with Date Index
@@ -378,7 +406,8 @@ julia> using Random;
 
 julia> random(x) = rand(MersenneTwister(123), x);
 
-julia> ts = TS([random(10) random(10) random(10)])
+julia> ts = TS([random(10) random(10) random(10)]);
+julia> show(ts)
 
 # first row
 julia> ts[1]            |> print
@@ -388,7 +417,6 @@ julia> ts[1]            |> print
  Int64  Float64   Float64   Float64
 ─────────────────────────────────────
      1  0.768448  0.768448  0.768448
-
 
 # first five rows
 julia> ts[1:5]          |> print
@@ -402,7 +430,6 @@ julia> ts[1:5]          |> print
      3  0.673959  0.673959  0.673959
      4  0.395453  0.395453  0.395453
      5  0.313244  0.313244  0.313244
-
 
 # first five rows, second column
 julia> ts[1:5, 2]       |> print
@@ -419,28 +446,51 @@ julia> ts[1:5, 2]       |> print
 
 
 julia> ts[1:5, 2:3]     |> print
+(5 x 2) TS with Int64 Index
+
+ Index  x2        x3
+ Int64  Float64   Float64
+───────────────────────────
+     1  0.768448  0.768448
+     2  0.940515  0.940515
+     3  0.673959  0.673959
+     4  0.395453  0.395453
+     5  0.313244  0.313244
 
 # individual rows
 julia> ts[[1, 9]]       |> print
+(2 x 3) TS with Int64 Index
 
+ Index  x1        x2        x3
+ Int64  Float64   Float64   Float64
+─────────────────────────────────────
+     1  0.768448  0.768448  0.768448
+     9  0.26864   0.26864   0.26864
 
-# only select x1, return a TS
-julia> ts[:x1]          |> print
-
-julia> ts[[:x1, :x2]]   |> print
-
-# return x1 as Vector{T}
-julia> ts[:, :x1]          |> print
+julia> ts[:, :x1]  # returns a Vector
 
 
 julia> ts[:, [:x1, :x2]]   |> print
+(10 x 2) TS with Int64 Index
+
+ Index  x1         x2
+ Int64  Float64    Float64
+─────────────────────────────
+     1  0.768448   0.768448
+     2  0.940515   0.940515
+     3  0.673959   0.673959
+     4  0.395453   0.395453
+     5  0.313244   0.313244
+     6  0.662555   0.662555
+     7  0.586022   0.586022
+     8  0.0521332  0.0521332
+     9  0.26864    0.26864
+    10  0.108871   0.108871
 
 
 julia> dates = collect(Date(2007):Day(1):Date(2008, 2, 22));
-
-
 julia> ts = TS(random(length(dates)), dates);
-
+julia> show(ts[1:10])
 
 julia> ts[Date(2007, 01, 01)]           |> print
 (1 x 1) TS with Dates.Date Index
@@ -800,7 +850,8 @@ julia> random(x) = rand(MersenneTwister(123), x);
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10));
 
 julia> df = DataFrame(Index = dates, x1 = random(length(dates)))
-julia> ts = TS(df) |> print
+julia> ts = TS(df)
+julia> show(ts[1:10])
 
 julia> apply(ts, Month, first) |> print
 (15 x 1) TS with Date Index
@@ -841,7 +892,7 @@ julia> apply(ts, Month(2), first) |> print
  2018-03-01  0.87459
 
 
-julia> ts_weekly = apply(ts, Week, Statistics.std) # weekly standard deviation
+julia> ts_weekly = apply(ts, Week, Statistics.std); # weekly standard deviation
 julia> show(ts_weekly)
 
 julia> ts_weekly = apply(ts, Week, Statistics.std, last) # indexed by last date of the week
@@ -932,8 +983,7 @@ julia> random(x) = rand(MersenneTwister(123), x);
 
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10));
 
-
-julia> ts = TS(DataFrame(Index = dates, x1 = random(length(dates))))
+julia> ts = TS(DataFrame(Index = dates, x1 = random(length(dates))));
 julia> show(ts)
 (434 x 1) TS with Dates.Date Index
 
@@ -960,9 +1010,10 @@ julia> show(ts)
        418 rows omitted
 
 
-julia> lead(ts) |> print # Leads once
+julia> lead(ts)    |> print     # leads once
 
-julia> lead(ts, 2) # Leads by 2 values
+julia> lead(ts, 2) |> print     # leads by 2 values
+
 
 ```
 """
@@ -1175,31 +1226,34 @@ using Int indexes, String(s), or Symbol(s).
 
 # Example
 ```jldoctest; setup = :(using TSx, DataFrames, Dates, Plots, Random, Statistics)
+julia> using Random;
+julia> random(x) = rand(MersenneTwister(123), x);
 julia> dates = Date("2022-01-01"):Month(1):Date("2022-01-01")+Month(11);
 
 julia> df = DataFrame(Index = dates,
-        val1 = randn(12),
-        val2 = randn(12),
-        val3 = randn(12));
+        val1 = random(12),
+        val2 = random(12),
+        val3 = random(12));
 
-julia> TS(df)           |> print
-(12 x 3) TS with Date Index
+julia> ts = TS(df)
+julia> show(ts)
+(12 x 3) TS with Dates.Date Index
 
- Index       val1       val2       val3
- Date        Float64    Float64    Float64
-──────────────────────────────────────────────
- 2022-01-01  -2.2798    -0.801856  -0.696722
- 2022-02-01  -0.266063   0.268206   0.743648
- 2022-03-01   1.01839    1.64479   -0.296677
- 2022-04-01   2.05753   -1.21628    0.339607
- 2022-05-01   0.967545   1.21421    0.893949
- 2022-06-01   0.191933  -0.56957   -1.0605
- 2022-07-01  -1.73478    0.283089   0.360917
- 2022-08-01  -0.305464  -1.55139    0.0505422
- 2022-09-01  -2.40175    0.503355   0.743701
- 2022-10-01  -0.273021   1.41333   -0.0682414
- 2022-11-01   0.469246  -0.765097  -0.0119999
- 2022-12-01  -1.12906    0.625611   1.72409
+ Index       val1        val2        val3
+ Date        Float64     Float64     Float64
+────────────────────────────────────────────────
+ 2022-01-01  -0.319954    0.974594   -0.552977
+ 2022-02-01  -0.0386735  -0.171675    0.779539
+ 2022-03-01   1.67678    -1.75251     0.820462
+ 2022-04-01   1.69702    -0.0130037   1.0507
+ 2022-05-01   0.992128    0.76957    -1.28008
+ 2022-06-01  -0.315461   -0.543976   -0.117256
+ 2022-07-01  -1.18952    -1.12867    -0.0829082
+ 2022-08-01   0.159595    0.450044   -0.231828
+ 2022-09-01   0.501436    0.265327   -0.948532
+ 2022-10-01  -2.10516    -1.11489     0.285194
+ 2022-11-01  -0.781082   -1.20202    -0.639953
+ 2022-12-01  -0.169184    1.34879     1.33361
 
 
 julia> using Plots
@@ -1346,6 +1400,21 @@ julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,30));
 
 julia> ts2 = TS(random(length(dates)), dates);
 julia> show(ts2)
+(10 x 1) TS with Int64 Index
+
+ Index  x1
+ Int64  Float64
+──────────────────
+     1  0.768448
+     2  0.940515
+     3  0.673959
+     4  0.395453
+     5  0.313244
+     6  0.662555
+     7  0.586022
+     8  0.0521332
+     9  0.26864
+    10  0.108871
 (30 x 1) TS with Dates.Date Index
 
  Index       x1
