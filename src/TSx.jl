@@ -347,7 +347,9 @@ Base.show(ts::TS) = show(stdout, ts)
 """
 # Summary statistics
 
-`describe(ts::TS)`
+```julia
+describe(ts::TS)
+```
 
 Compute summary statistics of `ts`. The output is a `DataFrame`
 containing standard statistics along with number of missing values and
@@ -723,8 +725,11 @@ end
 # Number of rows
 """
 # Size methods
-`nrow(ts::TS)`
-`nr(ts::TS)`
+
+```julia
+nrow(ts::TS)
+nr(ts::TS)
+```
 
 Return the number of rows of `ts`. `nr` is an alias for `nrow`.
 
@@ -747,7 +752,9 @@ nr = TSx.nrow
 """
 # Size methods
 
-`ncol(ts::TS)`
+```julia
+ncol(ts::TS)
+```
 
 Return the number of columns of `ts`. `nc` is an alias for `ncol`.
 
@@ -773,7 +780,10 @@ nc = TSx.ncol
 # Size of
 """
 # Size methods
-`size(ts::TS)`
+```julia
+size(ts::TS)
+```
+
 Return the number of rows and columns of `ts` as a tuple.
 
 # Examples
@@ -791,6 +801,11 @@ end
 # Return index column
 """
 # Index column
+
+```julia
+index(ts::TS)
+```
+
 Return the index vector from the `coredata` DataFrame.
 
 # Examples
@@ -843,7 +858,9 @@ end
 
 """
 # Column names
-`names(ts::TS)`
+```julia
+names(ts::TS)
+```
 
 Return a `Vector{String}` containing column names of the TS object,
 excludes index.
@@ -863,10 +880,16 @@ end
 # convert to period
 """
 # Apply/Period conversion
-`apply(ts::TS, period::Union{T,Type{T}},
+```julia
+apply(ts::TS,
+      period::Union{T,Type{T}},
       fun::V,
       index_at::Function=first)
-    where {T<:Union{DatePeriod,TimePeriod}, V<:Function}`
+     where {
+           T <: Union{DatePeriod,TimePeriod},
+           V <: Function
+           }
+```
 
 Apply `fun` to `ts` object based on `period` and return correctly
 indexed rows. This method is used for doing aggregation over a time
@@ -1004,7 +1027,9 @@ end
 
 """
 # Lagging
-`lag(ts::TS, lag_value::Int = 1)`
+```julia
+lag(ts::TS, lag_value::Int = 1)
+```
 
 Lag the `ts` object by the specified `lag_value`. The rows corresponding
 to lagged values will be rendered as `missing`. Negative values of lag are
@@ -1081,7 +1106,9 @@ end
 
 """
 # Leading
-`lead(ts::TS, lead_value::Int = 1)`
+```julia
+lead(ts::TS, lead_value::Int = 1)
+```
 
 Similar to lag, this method leads the `ts` object by `lead_value`. The
 lead rows are inserted with `missing`. Negative values of lead are
@@ -1166,7 +1193,9 @@ end
 
 """
 # Differencing
-`diff(ts::TS, periods::Int = 1)`
+```julia
+diff(ts::TS, periods::Int = 1)
+```
 
 Return the discrete difference of successive row elements.
 Default is the element in the next row. `periods` defines the number
@@ -1249,7 +1278,10 @@ end
 
 """
 # Percent Change
-`pctchange(ts::TS, periods::Int = 1)`
+
+```julia
+pctchange(ts::TS, periods::Int = 1)
+```
 
 Return the percentage change between successive row elements.
 Default is the element in the next row. `periods` defines the number
@@ -1336,7 +1368,9 @@ end
 """
 # Log Function
 
-`log(ts::TS, complex::Bool = false)`
+```julia
+log(ts::TS, complex::Bool = false)
+```
 
 This method computes the log value of non-index columns in the TS
 object.
@@ -1397,7 +1431,9 @@ end
 """
 # Rolling Functions
 
-`rollapply(fun::Function, ts::TS, column::Any, windowsize::Int)`
+```julia
+rollapply(fun::Function, ts::TS, column::Any, windowsize::Int)
+```
 
 Apply a function to a column of `ts` for each continuous set of rows
 of size `windowsize`. `column` could be any of the `DataFrame` column
@@ -1483,10 +1519,13 @@ end
 ######################
 
 """
-# Plottting
-`plot(ts::TS, cols::Vector{Int} = collect(1:TSx.ncol(ts)))`
-`plot(ts::TS, cols::Vector{T}) where {T<:Union{String, Symbol}}`
-`plot(ts::TS, cols::T) where {T<:Union{Int, String, Symbol}}`
+# Plotting
+
+```julia
+plot(ts::TS, cols::Vector{Int} = collect(1:TSx.ncol(ts)))
+plot(ts::TS, cols::Vector{T}) where {T<:Union{String, Symbol}}
+plot(ts::TS, cols::T) where {T<:Union{Int, String, Symbol}}
+```
 
 Plots a TS object with the index on the x-axis and selected `cols` on
 the y-axis. By default, plot all the columns. Columns can be selected
@@ -1726,8 +1765,9 @@ julia> show(ts2)
 
 
 # calls `JoinAll` method
-julia> join(ts1, ts2)
-
+julia> join(ts1, ts2);
+# alias
+julia> cbind(ts1, ts2);
 ```
 """
 function Base.join(ts1::TS, ts2::TS)
@@ -1757,7 +1797,11 @@ end
 cbind = join
 
 """
+# Row-merging (vcat/rbind)
+
+```julia
 vcat(ts1::TS, ts2::TS; colmerge::Symbol=:union)
+```
 
 Concatenate rows of two TS objects, append `ts2` to `ts1`.
 
