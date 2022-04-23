@@ -1018,7 +1018,6 @@ function pctchange(ts::TS, periods::Int = 1)
     TS(ddf, :Index)
 end
 
-
 """
 # Log Function
 
@@ -1027,28 +1026,22 @@ end
 This method computes the log value of non-index columns in the TS
 object.
 
-If the `complex` argument is `true` the function returns the log of
-negative numbers as complex numbers.  Using this coerces the log of
-positive values as complex numbers with the imaginary component equal
-to 0.
+# Examples
+```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
+julia> using Random
+julia> random(x) = rand(MersenneTwister(123), x...);
+julia> ts = TS(random(([1, 2, 3, 4, missing], 10)))
+julia> show(ts)
+julia> log(ts)
+```
 """
-function log(ts::TS, complex::Bool = false) # FIXME: log doesn't work with Missing, takes log of Index too
-    ts_new = ts
-    if complex == true
-        for col in names(ts_new.coredata)
-            if eltype(ts_new.coredata[!,col]) <: Union{Missing, Number}
-                ts_new.coredata[!,col] = Base.log.(Complex.((ts_new.coredata[!,col])))
-            end
-        end
-    else
-        for col in names(ts_new.coredata)
-            if eltype(ts_new.coredata[!,col]) <: Union{Missing, Number}
-                ts_new.coredata[!,col] = Base.log.((ts_new.coredata[!,col]))
-            end
-        end
-    end
-    return TSx.TS(ts_new.coredata)
+function Base.log(ts::TS)
+    df = select(ts.coredata, :Index,
+                Not(:Index) .=> (x -> log.(x))
+                => colname -> string(colname, "_log"))
+    TS(df)
 end
+
 
 ######################
 # Rolling Function
