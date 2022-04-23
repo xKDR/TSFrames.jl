@@ -1,7 +1,7 @@
 using TSx
 using Documenter
 
-DocMeta.setdocmeta!(TSx, :DocTestSetup, :(using TSx, DataFrames, Random); recursive=true)
+DocMeta.setdocmeta!(TSx, :DocTestSetup, :(using TSx, DataFrames, Dates, Statistics); recursive=true)
 
 makedocs(;
     modules=[TSx],
