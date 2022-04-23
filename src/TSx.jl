@@ -410,7 +410,7 @@ julia> ts = TS([random(10) random(10) random(10)])
 julia> show(ts)
 
 # first row
-julia> ts[1]            |> print
+julia> ts[1]
 (1 x 3) TS with Int64 Index
 
  Index  x1        x2        x3
@@ -419,7 +419,7 @@ julia> ts[1]            |> print
      1  0.768448  0.768448  0.768448
 
 # first five rows
-julia> ts[1:5]          |> print
+julia> ts[1:5]
 (5 x 3) TS with Int64 Index
 
  Index  x1        x2        x3
@@ -432,7 +432,7 @@ julia> ts[1:5]          |> print
      5  0.313244  0.313244  0.313244
 
 # first five rows, second column
-julia> ts[1:5, 2]       |> print
+julia> ts[1:5, 2]
 (5 x 1) TS with Int64 Index
 
  Index  x2
@@ -445,7 +445,7 @@ julia> ts[1:5, 2]       |> print
      5  0.313244
 
 
-julia> ts[1:5, 2:3]     |> print
+julia> ts[1:5, 2:3]
 (5 x 2) TS with Int64 Index
 
  Index  x2        x3
@@ -458,7 +458,7 @@ julia> ts[1:5, 2:3]     |> print
      5  0.313244  0.313244
 
 # individual rows
-julia> ts[[1, 9]]       |> print
+julia> ts[[1, 9]]
 (2 x 3) TS with Int64 Index
 
  Index  x1        x2        x3
@@ -481,7 +481,7 @@ julia> ts[:, :x1]            # returns a Vector
  0.10887074134844155
 
 
-julia> ts[:, [:x1, :x2]]   |> print
+julia> ts[:, [:x1, :x2]]
 (10 x 2) TS with Int64 Index
 
  Index  x1         x2
@@ -518,7 +518,7 @@ julia> show(ts[1:10])
  2007-01-09  0.26864
  2007-01-10  0.108871
 
-julia> ts[Date(2007, 01, 01)]           |> print
+julia> ts[Date(2007, 01, 01)]
 (1 x 1) TS with Dates.Date Index
 
  Index       x1
@@ -527,7 +527,7 @@ julia> ts[Date(2007, 01, 01)]           |> print
  2007-01-01  0.768448
 
 
-julia> ts[Date(2007)]           |> print
+julia> ts[Date(2007)]
 (1 x 1) TS with Dates.Date Index
 
  Index       x1
@@ -536,7 +536,7 @@ julia> ts[Date(2007)]           |> print
  2007-01-01  0.768448
 
 
-julia> ts[Year(2007)]           |> print
+julia> ts[Year(2007)]
 (365 x 1) TS with Dates.Date Index
 
  Index       x1
@@ -568,7 +568,7 @@ julia> ts[Year(2007), Month(11)];
 julia> ts[Year(2007), Quarter(2)];
 
 
-julia> ts["2007-01-01"]         |> print
+julia> ts["2007-01-01"]
 (1 x 1) TS with Date Index
 
  Index       x1       
@@ -577,7 +577,7 @@ julia> ts["2007-01-01"]         |> print
  2007-01-01  0.768448
 
 
-julia> ts[1, :x1]               |> print
+julia> ts[1, :x1]
 (1 x 1) TS with Dates.Date Index
 
  Index       x1
@@ -906,7 +906,7 @@ julia> show(ts[1:10])
  2017-01-09  0.26864
  2017-01-10  0.108871
 
-julia> apply(ts, Month, first) |> print
+julia> apply(ts, Month, first)
 (15 x 1) TS with Date Index
 
  Index       x1_first
@@ -929,7 +929,7 @@ julia> apply(ts, Month, first) |> print
  2018-03-01  0.87459
 
 # alternate months
-julia> apply(ts, Month(2), first) |> print
+julia> apply(ts, Month(2), first)
 (8 x 1) TS with Date Index
 
  Index       x1_first
@@ -1122,7 +1122,7 @@ julia> show(ts)
        418 rows omitted
 
 
-julia> lead(ts)[1:10]    |> print     # leads once
+julia> lead(ts)[1:10]        # leads once
 (10 x 1) TS with Date Index
 
  Index       x1
@@ -1139,7 +1139,7 @@ julia> lead(ts)[1:10]    |> print     # leads once
  2017-01-09  0.108871
  2017-01-10  0.163666
 
-julia> lead(ts, 2)[1:10] |> print     # leads by 2 values
+julia> lead(ts, 2)[1:10]     # leads by 2 values
 (10 x 1) TS with Date Index
 
  Index       x1
@@ -1183,7 +1183,7 @@ julia> random(x) = rand(MersenneTwister(123), x);
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10));
 
 julia> ts = TS(random(length(dates)), dates);
-julia> ts[1:10]         |> print
+julia> ts[1:10]
 (10 x 1) TS with Date Index
 
  Index       x1
@@ -1200,7 +1200,7 @@ julia> ts[1:10]         |> print
  2017-01-09  0.26864
  2017-01-10  0.108871
 
-julia> diff(ts)[1:10]   |> print        # difference over successive rows
+julia> diff(ts)[1:10]        # difference over successive rows
 (10 x 1) TS with Date Index
 
  Index       x1
@@ -1217,7 +1217,7 @@ julia> diff(ts)[1:10]   |> print        # difference over successive rows
  2017-01-09        0.216506
  2017-01-10       -0.159769
 
-julia> diff(ts, 3)[1:10]   |> print           # difference over the third row
+julia> diff(ts, 3)[1:10]     # difference over the third row
 (10 x 1) TS with Date Index
 
  Index       x1
@@ -1284,7 +1284,7 @@ julia> show(ts)
  2017-01-10  0.108871
 
 # Pctchange over successive rows
-julia> pctchange(ts) |> print
+julia> pctchange(ts)
 (10 x 1) TS with Date Index
 
  Index       x1
@@ -1303,7 +1303,7 @@ julia> pctchange(ts) |> print
 
 
 # Pctchange over the third row
-julia> pctchange(ts, 3) |> print
+julia> pctchange(ts, 3)
 (10 x 1) TS with Date Index
 
  Index       x1
@@ -1433,7 +1433,7 @@ julia> show(ts)
  2022-12-01     11
  2023-01-01     12
 
-julia> rollapply(sum, ts, :x1, 10) |> print
+julia> rollapply(sum, ts, :x1, 10)
 (3 x 1) TS with Dates.Date Index
 
  Index       x1_rolling_sum
@@ -1443,7 +1443,7 @@ julia> rollapply(sum, ts, :x1, 10) |> print
  2022-12-01            65.0
  2023-01-01            75.0
 
-julia> rollapply(Statistics.mean, ts, 1, 5) |> print
+julia> rollapply(Statistics.mean, ts, 1, 5)
 (8 x 1) TS with Dates.Date Index
 
  Index       x1_rolling_mean
@@ -1526,13 +1526,13 @@ julia> show(ts)
 
 julia> using Plots
 
-julia> plot(ts);
+julia> # plot(ts)
 
 # plot first 6 rows with selected columns
-julia> plot(ts[1:6], [:val1, :val3]);
+julia> # plot(ts[1:6], [:val1, :val3]);
 
 # plot columns 1 and 2 on a specified window size
-julia> plot(ts, [1, 2], size=(600, 400));
+julia> # plot(ts, [1, 2], size=(600, 400));
 ```
 """
 @recipe function f(ts::TS, cols::Vector{Int} = collect(1:TSx.ncol(ts)))
@@ -1726,7 +1726,7 @@ julia> show(ts2)
 
 
 # calls `JoinAll` method
-julia> join(ts1, ts2)           |> print
+julia> join(ts1, ts2)
 
 ```
 """
@@ -1835,7 +1835,7 @@ julia> show(ts2)
           4 rows omitted
 
 
-julia> vcat(ts1, ts2)           |> print
+julia> vcat(ts1, ts2)
 (30 x 3) TS with Date Index
 
  Index       x1          x2              y1
@@ -1872,7 +1872,7 @@ julia> vcat(ts1, ts2)           |> print
  2017-01-29   0.0231765  missing               0.712526
  2017-01-30   0.516704   missing               0.216855
 
-julia> vcat(ts1, ts2; colmerge=:intersect)           |> print
+julia> vcat(ts1, ts2; colmerge=:intersect)
 (30 x 1) TS with Date Index
 
  Index       x1
