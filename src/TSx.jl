@@ -314,6 +314,15 @@ function Base.show(io::IO, ts::TS)
 end
 Base.show(ts::TS) = show(stdout, ts)
 
+
+function describe(io::IO, ts::TS)
+    DataFrames.describe(ts.coredata)
+end
+
+function Base.summary(io::IO, ts::TS)
+    println("(", nr(ts), " x ", nc(ts), ") TS")
+end
+
 #######################
 # Indexing
 #######################
