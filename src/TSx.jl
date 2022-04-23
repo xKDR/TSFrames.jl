@@ -883,8 +883,8 @@ julia> random(x) = rand(MersenneTwister(123), x);
 
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10));
 
-
-julia> ts = TS(DataFrame(Index = dates, x1 = random(length(dates)))) |> print
+julia> ts = TS(DataFrame(Index = dates, x1 = random(length(dates))));
+julia> show(ts)
 (10 x 1) TS with Dates.Date Index
 
  Index       x1
@@ -933,7 +933,8 @@ julia> random(x) = rand(MersenneTwister(123), x);
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10));
 
 
-julia> ts = TS(DataFrame(Index = dates, x1 = random(length(dates)))) |> print
+julia> ts = TS(DataFrame(Index = dates, x1 = random(length(dates))))
+julia> show(ts)
 (434 x 1) TS with Dates.Date Index
 
  Index       x1
@@ -1323,7 +1324,8 @@ julia> join(ts1, ts2, JoinRight);
 
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10));
 
-julia> ts1 = TS(random(length(dates)), dates) |> print
+julia> ts1 = TS(random(length(dates)), dates)
+julia> show(ts1)
 (10 x 1) TS with Dates.Date Index
 
  Index       x1
@@ -1342,7 +1344,8 @@ julia> ts1 = TS(random(length(dates)), dates) |> print
 
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,30));
 
-julia> ts2 = TS(random(length(dates)), dates) |> print
+julia> ts2 = TS(random(length(dates)), dates);
+julia> show(ts2)
 (30 x 1) TS with Dates.Date Index
 
  Index       x1
@@ -1432,7 +1435,7 @@ julia> dates1 = collect(Date(2017,1,1):Day(1):Date(2017,1,10));
 
 julia> dates2 = collect(Date(2017,1,11):Day(1):Date(2017,1,30));
 
-julia> ts1 = TS([randn(length(dates1)) randn(length(dates1))], dates1) |> print
+julia> ts1 = TS([randn(length(dates1)) randn(length(dates1))], dates1);
 julia> show(ts1)
 (10 x 1) TS with Dates.Date Index
 
