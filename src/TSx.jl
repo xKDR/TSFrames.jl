@@ -7,6 +7,8 @@ import Base.diff
 import Base.filter
 import Base.getindex
 import Base.join
+import Base.lastindex
+import Base.length
 import Base.log
 import Base.names
 import Base.print
@@ -33,7 +35,9 @@ export TS,
     index,
     join,
     lag,
+    lastindex,
     lead,
+    length,
     names,
     nr,
     nrow,
@@ -957,6 +961,14 @@ function nrow(ts::TS)
 end
 # alias
 nr = TSx.nrow
+
+function Base.lastindex(ts::TS)
+    lastindex(index(ts))
+end
+
+function Base.length(ts::TS)
+    TSx.nrow(ts)
+end
 
 # Number of columns
 """
