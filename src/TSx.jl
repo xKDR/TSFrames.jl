@@ -1767,17 +1767,10 @@ argument of `DataFrames.vcat`.
 
 Currently, `DataFrames.vcat` supports four types of column-merge strategies:
 
-1. `:setequal`: only merge if both objects have same column names, use
-the order of columns in `ts1`.
-
-2. `:orderequal`: only merge if both objects have same column names
-and columns are in the same order.
-
-3. `:intersect`: only merge the columns which are common to both
-objects, ignore the rest.
-
-4. `:union`: merge even if columns differ, the resulting object has
-all the columns filled with `missing`, if necessary.
+1. `:setequal`: only merge if both objects have same column names, use the order of columns in `ts1`.
+2. `:orderequal`: only merge if both objects have same column names and columns are in the same order.
+3. `:intersect`: only merge the columns which are common to both objects, ignore the rest.
+4. `:union`: merge even if columns differ, the resulting object has all the columns filled with `missing`, if necessary.
 
 # Examples
 ```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
