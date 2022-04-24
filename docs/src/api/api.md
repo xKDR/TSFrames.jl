@@ -4,7 +4,7 @@ CurrentModule = TSx
 
 # TSx API reference
 
-Documentation for [TSx](https://github.com/xKDR/TSx.jl).
+API reference of [TSx](https://github.com/xKDR/TSx.jl).
 
 ```@index
 ```
