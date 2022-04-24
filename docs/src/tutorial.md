@@ -286,6 +286,25 @@ julia> TSx.describe(ts)
 
 ```
 
+
+## Plotting
+
+A TS object can be plotted using the `plot()` function of the `Plots`
+package. The plotting functionality is provided by `RecipesBase`
+package so all the flexibility and functionality of the `Plots`
+package is available for users.
+
+```@example
+using Plots
+using TSx
+
+ts = TS(rand(100))
+
+plot(ts)
+
+plot(ts, size=(600,400))
+```
+
 ## Applying a function over a period
 
 The `apply` method allows you to aggregate the TS object over a period
