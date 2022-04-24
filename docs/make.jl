@@ -15,7 +15,7 @@ makedocs(;
     ),
     pages=[
         "Introduction" => "index.md",
-        "Tutorial" => "tutorial.md",
+        "User guide" => "user_guide.md",
         "API reference" => [
             "TS type" => "api/types.md",
             # "Subsetting" => "api/subsetting.md",
@@ -27,7 +27,7 @@ makedocs(;
             # "Plotting" => "api/plots.md",
             # "Displays" => "api/display.md",
             # "Utilities" => "api/utils.md",
-            "All methods" => "api/api.md",
+            # "All methods" => "api/api.md",
         ],
         # "Finance demo" => "demo_finance.md",
         # "Detailed guide to TSx" => "detailed_guide.md",

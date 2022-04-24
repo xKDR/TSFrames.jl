@@ -14,7 +14,7 @@ functionalities as well. Integrations with other packages in the Julia
 ecosystem which are supported by `DataFrames.jl` come to `TSx` at no
 cost.
 
-To start using `TSx.jl` head to the [Tutorial page](tutorial.md).
+To start using `TSx.jl` head to the [User guide](user_guide.md).
 
 ## API reference
 
