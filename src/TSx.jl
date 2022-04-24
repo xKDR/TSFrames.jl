@@ -468,9 +468,9 @@ function (Matrix)(ts::TS)
 end
 
 """
-# Subsetting/Indexing
+# Indexing
 
-`TS` can be subset using row and column indices. The row selector
+`TS` can be indexed using row and column indices. The row selector
 could be an integer, a range, an array or it could also be a `Date`
 object or an ISO-formatted date string ("2007-04-10"). There are
 methods to subset on year, year-month, and year-quarter. The latter
@@ -944,7 +944,7 @@ julia> subset(TS(1:20, -9:10), -4, 5)
 
 """
 function subset(ts::TS, from::T, to::T) where {T<:Union{Int, TimeType}}
-    TS(subset(ts.coredata, :Index => x -> x .>= from .&& x .<= to))
+    TS(DataFrames.subset(ts.coredata, :Index => x -> x .>= from .&& x .<= to))
 end
 
 
