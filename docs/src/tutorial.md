@@ -3,9 +3,6 @@
 This page describes how to use the TSx package for timeseries data
 handling.
 
-```@index
-```
-
 ## Installation
 
 ```julia
@@ -84,28 +81,7 @@ julia> df = CSV.read(filename, DataFrame)
    7 │ 2007-01-07   8.67409
    8 │ 2007-01-08   9.75221
    9 │ 2007-01-09   8.76406
-  10 │ 2007-01-10  10.8087
-  11 │ 2007-01-11   9.74481
-  12 │ 2007-01-12  11.0995
-  13 │ 2007-01-13   9.54143
-  14 │ 2007-01-14  11.167
-  15 │ 2007-01-15  10.144
-  16 │ 2007-01-16  11.1019
-  17 │ 2007-01-17  10.5315
-  18 │ 2007-01-18  10.0811
-  19 │ 2007-01-19  12.5888
-  20 │ 2007-01-20  10.2757
   ⋮  │     ⋮          ⋮
- 413 │ 2008-02-17  10.8087
- 414 │ 2008-02-18   9.74481
- 415 │ 2008-02-19  11.0995
- 416 │ 2008-02-20   9.54143
- 417 │ 2008-02-21  11.167
- 418 │ 2008-02-22  10.144
- 419 │ 2008-02-23  11.1019
- 420 │ 2008-02-24  10.5315
- 421 │ 2008-02-25  10.0811
- 422 │ 2008-02-26  12.5888
  423 │ 2008-02-27  10.2757
  424 │ 2008-02-28  10.6202
  425 │ 2008-02-29  10.6328
@@ -115,10 +91,11 @@ julia> df = CSV.read(filename, DataFrame)
  429 │ 2008-03-04   8.26072
  430 │ 2008-03-05   9.04647
  431 │ 2008-03-06   8.85252
-            392 rows omitted
+            413 rows omitted
+
 
 julia> ts = TS(df)
-(431 x 1) TS with Dates.Date Index
+(431 x 1) TS with Date Index
 
  Index       value
  Date        Float64
@@ -133,28 +110,7 @@ julia> ts = TS(df)
  2007-01-08   9.75221
  2007-01-09   8.76406
  2007-01-10  10.8087
- 2007-01-11   9.74481
- 2007-01-12  11.0995
- 2007-01-13   9.54143
- 2007-01-14  11.167
- 2007-01-15  10.144
- 2007-01-16  11.1019
- 2007-01-17  10.5315
- 2007-01-18  10.0811
- 2007-01-19  12.5888
- 2007-01-20  10.2757
      ⋮          ⋮
- 2008-02-16   8.76406
- 2008-02-17  10.8087
- 2008-02-18   9.74481
- 2008-02-19  11.0995
- 2008-02-20   9.54143
- 2008-02-21  11.167
- 2008-02-22  10.144
- 2008-02-23  11.1019
- 2008-02-24  10.5315
- 2008-02-25  10.0811
- 2008-02-26  12.5888
  2008-02-27  10.2757
  2008-02-28  10.6202
  2008-02-29  10.6328
@@ -164,7 +120,8 @@ julia> ts = TS(df)
  2008-03-04   8.26072
  2008-03-05   9.04647
  2008-03-06   8.85252
-      391 rows omitted
+      412 rows omitted
+
 ```
 
 In the above example you load a CSV file bundled with TSx package,
@@ -329,9 +286,7 @@ julia> TSx.describe(ts)
 
 ```
 
-## Timeseries data mainpulation
-
-### Applying a function over a period
+## Applying a function over a period
 
 The `apply` method allows you to aggregate the TS object over a period
 type (`Dates.Period`(@ref)) and return the output of applying the
@@ -426,7 +381,7 @@ julia> apply(ts, Week, Statistics.std, last)
 
 ```
 
-### Row and column binding with other objects
+## Joins: Row and column binding with other objects
 
 TSx provides methods to join two TS objects by columns: `join` (alias:
 `cbind`) or by rows: `vcat` (alias: `rbind`). Both the methods provide
@@ -443,39 +398,30 @@ julia> dates = collect(Date(2007,1,1):Day(1):Date(2007,1,30));
 julia> ts2 = TS(rand(length(dates)), dates)
 (30 x 1) TS with Date Index
 
- Index       x1
- Date        Float64
+ Index       x1        
+ Date        Float64   
 ───────────────────────
- 2007-01-01  0.441924
- 2007-01-02  0.140323
- 2007-01-03  0.71753
- 2007-01-04  0.762919
- 2007-01-05  0.210845
- 2007-01-06  0.3652
- 2007-01-07  0.924636
- 2007-01-08  0.864424
- 2007-01-09  0.730909
- 2007-01-10  0.985619
- 2007-01-11  0.556146
- 2007-01-12  0.482831
- 2007-01-13  0.365106
- 2007-01-14  0.732164
- 2007-01-15  0.264424
- 2007-01-16  0.291362
- 2007-01-17  0.983965
- 2007-01-18  0.566147
- 2007-01-19  0.521702
- 2007-01-20  0.711861
- 2007-01-21  0.682508
- 2007-01-22  0.74898
- 2007-01-23  0.705237
- 2007-01-24  0.516239
- 2007-01-25  0.0973474
- 2007-01-26  0.344292
- 2007-01-27  0.434619
- 2007-01-28  0.622751
- 2007-01-29  0.0986784
- 2007-01-30  0.15385
+ 2007-01-01  0.125811
+ 2007-01-02  0.06005
+ 2007-01-03  0.324745
+ 2007-01-04  0.873089
+ 2007-01-05  0.781964
+ 2007-01-06  0.570593
+ 2007-01-07  0.770224
+ 2007-01-08  0.295923
+ 2007-01-09  0.363075
+ 2007-01-10  0.985884
+     ⋮           ⋮
+ 2007-01-22  0.222852
+ 2007-01-23  0.818168
+ 2007-01-24  0.718452
+ 2007-01-25  0.863064
+ 2007-01-26  0.0572773
+ 2007-01-27  0.282689
+ 2007-01-28  0.547679
+ 2007-01-29  0.380771
+ 2007-01-30  0.945756
+        11 rows omitted
 
 
 # cbind/join on Index column
@@ -588,7 +534,7 @@ julia> vcat(ts, ts3)
 ```
 
 
-### Rolling apply
+## Rolling window operations
 
 The `rollapply` applies a function over a fixed-size rolling window on
 the dataset. In the example below, we compute the 10-day average of
@@ -626,7 +572,7 @@ julia> rollapply(Statistics.mean, ts, :value, 10)
 ```
 
 
-### Rolling difference, percent change
+## Computing rolling difference and percent change
 
 Similar to `apply` and `rollapply` there are specific methods to
 compute rolling differences and percent changes of a `TS` object. The
@@ -694,7 +640,7 @@ julia> pctchange(ts)
 
 ```
 
-### Computing log of data values
+## Computing log of data values
 
 The `log` method computes the log of each data value. The method
 throws an error if it encounters a negative number in the data. This
@@ -732,7 +678,7 @@ julia> log(ts)
 
 ```
 
-### Creating lagged/leading series
+## Creating lagged/leading series
 
 `lag()` and `lead()` provide ways to lag or lead a series respectively
 by a fixed value, inserting `missing` where required.
@@ -900,6 +846,5 @@ julia> ts.coredata |> CSV.write("/tmp/demo_ts.csv")
 
 ## API reference
 
-```@contents
-Pages = ["api.md"]
+```@index
 ```
