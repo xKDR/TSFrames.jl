@@ -15,10 +15,9 @@ makedocs(;
     ),
     pages=[
         "Introduction" => "index.md",
+        "Basic demo of TSx" => "demo_finance.md",
         "User guide" => "user_guide.md",
         "API reference" => "api.md",
-        # "Finance demo" => "demo_finance.md",
-
     ],
     doctest=false,               # TODO: switch to true in the version after v0.1.0
     strict=false,                # TODO: switch to true in the version after v0.1.0
