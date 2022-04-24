@@ -396,8 +396,8 @@ julia> ts_weekly = apply(ts, Week, Statistics.std)
 julia> apply(ts, Week, Statistics.std, last)
 (62 x 1) TS with Date Index
 
- Index       value_std 
- Date        Float64   
+ Index       value_std
+ Date        Float64
 ───────────────────────
  2007-01-07   1.52077
  2007-01-14   0.910942
@@ -424,6 +424,166 @@ julia> apply(ts, Week, Statistics.std, last)
 ```
 
 ### Row and column binding with other objects
+
+TSx provides methods to join two TS objects by columns: `join` (alias:
+`cbind`) or by rows: `vcat` (alias: `rbind`). Both the methods provide
+some basic intelligence while doing the merge. `join` merges two
+datasets based on the `Index` values of both objects. Depending on the
+join strategy employed the final object may only contain index values
+only from the left object (using `JoinLeft`), the right object (using
+`JoinRight`), intersection of both objects (using `JoinBoth`), or a
+union of both objects (`JoinAll`) while inserting `missing` values
+where index values are missing from any of the other object.
+
+```julia
+julia> dates = collect(Date(2007,1,1):Day(1):Date(2007,1,30));
+julia> ts2 = TS(rand(length(dates)), dates)
+(30 x 1) TS with Date Index
+
+ Index       x1
+ Date        Float64
+───────────────────────
+ 2007-01-01  0.441924
+ 2007-01-02  0.140323
+ 2007-01-03  0.71753
+ 2007-01-04  0.762919
+ 2007-01-05  0.210845
+ 2007-01-06  0.3652
+ 2007-01-07  0.924636
+ 2007-01-08  0.864424
+ 2007-01-09  0.730909
+ 2007-01-10  0.985619
+ 2007-01-11  0.556146
+ 2007-01-12  0.482831
+ 2007-01-13  0.365106
+ 2007-01-14  0.732164
+ 2007-01-15  0.264424
+ 2007-01-16  0.291362
+ 2007-01-17  0.983965
+ 2007-01-18  0.566147
+ 2007-01-19  0.521702
+ 2007-01-20  0.711861
+ 2007-01-21  0.682508
+ 2007-01-22  0.74898
+ 2007-01-23  0.705237
+ 2007-01-24  0.516239
+ 2007-01-25  0.0973474
+ 2007-01-26  0.344292
+ 2007-01-27  0.434619
+ 2007-01-28  0.622751
+ 2007-01-29  0.0986784
+ 2007-01-30  0.15385
+
+
+# cbind/join on Index column
+julia> join(ts, ts2, JoinAll)
+(431 x 2) TS with Date Index
+
+ Index       value     x1
+ Date        Float64?  Float64?
+──────────────────────────────────────
+ 2007-01-01  10.1248         0.441924
+ 2007-01-02  10.3424         0.140323
+ 2007-01-03   7.83777        0.71753
+ 2007-01-04   9.87616        0.762919
+ 2007-01-05  12.4548         0.210845
+ 2007-01-06   8.63084        0.3652
+ 2007-01-07   8.67409        0.924636
+ 2007-01-08   9.75221        0.864424
+ 2007-01-09   8.76406        0.730909
+ 2007-01-10  10.8087         0.985619
+     ⋮          ⋮            ⋮
+ 2008-02-27  10.2757   missing
+ 2008-02-28  10.6202   missing
+ 2008-02-29  10.6328   missing
+ 2008-03-01  10.5008   missing
+ 2008-03-02   7.88032  missing
+ 2008-03-03   9.95546  missing
+ 2008-03-04   8.26072  missing
+ 2008-03-05   9.04647  missing
+ 2008-03-06   8.85252  missing
+                      412 rows omitted
+
+```
+
+`vcat` also works similarly but merges two datasets by rows. This
+method also uses certain strategies to check for certain conditions
+before doing the merge, throwing an error if the conditions are not
+satisfied. `setequal` merges only if both objects have same column
+names, `orderequal` merges only if both objects have same column names
+and columns are in the same order, `intersect` merges only the columns
+which are common to both objects, and `union` which merges even if the
+columns differ between the two objects, the resulting object has the
+columns filled with `missing`, if necessary.
+
+For `vcat`, if the values of `Index` are same in the two objects then
+all the index values along with values in other columns are kept in
+the resulting object. So, a `vcat` operation may result in duplicate
+`Index` values and the results from other operations may differ or
+even throw unknown errors.
+
+```julia
+julia> dates = collect(Date(2008,4,1):Day(1):Date(2008,4,30));
+julia> ts3 = TS(DataFrame(values=rand(length(dates)), Index=dates))
+(30 x 1) TS with Date Index
+
+ Index       values
+ Date        Float64
+───────────────────────
+ 2008-04-01  0.738621
+ 2008-04-02  0.142737
+ 2008-04-03  0.760334
+ 2008-04-04  0.742455
+ 2008-04-05  0.689045
+ 2008-04-06  0.310307
+ 2008-04-07  0.839686
+ 2008-04-08  0.736732
+ 2008-04-09  0.24704
+ 2008-04-10  0.850607
+     ⋮           ⋮
+ 2008-04-22  0.780828
+ 2008-04-23  0.179
+ 2008-04-24  0.226587
+ 2008-04-25  0.710613
+ 2008-04-26  0.507179
+ 2008-04-27  0.761281
+ 2008-04-28  0.0944633
+ 2008-04-29  0.253298
+ 2008-04-30  0.995585
+        11 rows omitted
+
+
+# do the merge
+julia> vcat(ts, ts3)
+(461 x 2) TS with Date Index
+
+ Index       value          values
+ Date        Float64?       Float64?
+────────────────────────────────────────────
+ 2007-01-01       10.1248   missing
+ 2007-01-02       10.3424   missing
+ 2007-01-03        7.83777  missing
+ 2007-01-04        9.87616  missing
+ 2007-01-05       12.4548   missing
+ 2007-01-06        8.63084  missing
+ 2007-01-07        8.67409  missing
+ 2007-01-08        9.75221  missing
+ 2007-01-09        8.76406  missing
+ 2007-01-10       10.8087   missing
+     ⋮             ⋮               ⋮
+ 2008-04-22  missing              0.780828
+ 2008-04-23  missing              0.179
+ 2008-04-24  missing              0.226587
+ 2008-04-25  missing              0.710613
+ 2008-04-26  missing              0.507179
+ 2008-04-27  missing              0.761281
+ 2008-04-28  missing              0.0944633
+ 2008-04-29  missing              0.253298
+ 2008-04-30  missing              0.995585
+                            442 rows omitted
+
+```
+
 
 ### Rolling apply
 
