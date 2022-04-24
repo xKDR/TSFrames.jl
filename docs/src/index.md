@@ -15,7 +15,8 @@ ecosystem which are supported by
 [DataFrames.jl](https://github.com/JuliaData/DataFrames.jl) come to
 `TSx` at little cost.
 
-To start using `TSx.jl` head to the [User guide](user_guide.md).
+To start using `TSx.jl` take a look at the [basic demo](demo_finance.md)
+and then head to the [User guide](user_guide.md).
 
 ## User guide
 
