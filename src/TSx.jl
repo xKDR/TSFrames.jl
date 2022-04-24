@@ -457,6 +457,7 @@ julia> convert(Matrix, ts)
  0.26864    0.26864
  0.108871   0.108871
 
+```
 """
 function Base.convert(::Type{Matrix}, ts::TS)
     Matrix(ts.coredata[!, Not(:Index)])
@@ -1122,10 +1123,7 @@ apply(ts::TS,
       period::Union{T,Type{T}},
       fun::V,
       index_at::Function=first)
-     where {
-           T <: Union{DatePeriod,TimePeriod},
-           V <: Function
-           }
+     where {T <: Union{DatePeriod,TimePeriod}, V <: Function}
 ```
 
 Apply `fun` to `ts` object based on `period` and return correctly
