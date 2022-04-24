@@ -400,8 +400,15 @@ function _convert(::Type{String}, date::Date)
     Dates.format(date, "yyyy-mm-dd")
 end
 
+
 """
 # Conversion of non-Index data to Matrix
+
+Data in non-index columns of a TS object can be converted into a
+`Matrix` type for further numerical analysis using `Matrix()` and
+`convert()` methods.
+
+# Examples
 
 ```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
 julia> using Random;
