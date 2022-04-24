@@ -39,6 +39,9 @@ export TS,
     lead,
     length,
     names,
+    first,
+    head,
+    tail,
     nr,
     nrow,
     nc,
@@ -1111,10 +1114,26 @@ julia> names(TS([1:10 11:20]))
  "x2"
 ```
 """
+            
 function names(ts::TS)
     names(ts.coredata[!, Not(:Index)])
 end
 
+function first(ts::TS)
+    TS(DataFrames.first(ts.coredata))
+end
+            
+            
+function head(ts::TS, n::Int = 10)
+    TS(DataFrames.first(ts.coredata, n))
+end
+                
+function tail(ts::TS, n::Int = 10)
+    TS(DataFrames.last(ts.coredata, n))
+end
+                    
+                    
+                    
 # convert to period
 """
 # Apply/Period conversion
@@ -1131,7 +1150,7 @@ indexed rows. This method is used for doing aggregation over a time
 period or to convert `ts` into an object of lower frequency (ex. from
 daily series to monthly).
 
-`period` is any of `Period` types in the `Dates` module. Conversion
+`period` is any of `Periirstod` types in the `Dates` module. Conversion
 from lower to a higher frequency will throw an error as interpolation
 isn't currently handled by this method.
 
