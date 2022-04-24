@@ -62,67 +62,16 @@ as a `DataFrame` and then operate on it. You can easily convert a
 `DataFrame` to a `TS` object.
 
 ```@repl e1
-julia> using CSV, DataFrames
+using CSV, DataFrames, TSx
 
-julia> filename = joinpath(dirname(pathof(TSx)),
-           "..", "docs", "src", "assets", "sample_daily.csv")
+filename = joinpath(dirname(pathof(TSx)),
+    "..", "docs", "src", "assets", "sample_daily.csv");
 
-julia> df = CSV.read(filename, DataFrame)
-431×2 DataFrame
- Row │ date        value
-     │ Date        Float64
-─────┼──────────────────────
-   1 │ 2007-01-01  10.1248
-   2 │ 2007-01-02  10.3424
-   3 │ 2007-01-03   7.83777
-   4 │ 2007-01-04   9.87616
-   5 │ 2007-01-05  12.4548
-   6 │ 2007-01-06   8.63084
-   7 │ 2007-01-07   8.67409
-   8 │ 2007-01-08   9.75221
-   9 │ 2007-01-09   8.76406
-  ⋮  │     ⋮          ⋮
- 423 │ 2008-02-27  10.2757
- 424 │ 2008-02-28  10.6202
- 425 │ 2008-02-29  10.6328
- 426 │ 2008-03-01  10.5008
- 427 │ 2008-03-02   7.88032
- 428 │ 2008-03-03   9.95546
- 429 │ 2008-03-04   8.26072
- 430 │ 2008-03-05   9.04647
- 431 │ 2008-03-06   8.85252
-            413 rows omitted
+df = CSV.read(filename, DataFrame);
+show(df)
 
-
-julia> ts = TS(df)
-(431 x 1) TS with Date Index
-
- Index       value
- Date        Float64
-──────────────────────
- 2007-01-01  10.1248
- 2007-01-02  10.3424
- 2007-01-03   7.83777
- 2007-01-04   9.87616
- 2007-01-05  12.4548
- 2007-01-06   8.63084
- 2007-01-07   8.67409
- 2007-01-08   9.75221
- 2007-01-09   8.76406
- 2007-01-10  10.8087
-     ⋮          ⋮
- 2008-02-27  10.2757
- 2008-02-28  10.6202
- 2008-02-29  10.6328
- 2008-03-01  10.5008
- 2008-03-02   7.88032
- 2008-03-03   9.95546
- 2008-03-04   8.26072
- 2008-03-05   9.04647
- 2008-03-06   8.85252
-      412 rows omitted
-
-julia> nothing; # hide
+ts = TS(df);
+show(ts)
 ```
 
 In the above example you load a CSV file bundled with TSx package,
@@ -137,11 +86,59 @@ of rows, columns, and a `Tuple` of row and column numbers. A
 `length(::TS)` method is also provided for convenience which returns
 the number of rows of it's argument.
 
+```julia
+julia> nr(ts)
+431
+
+julia> nc(ts)
+1
+
+julia> size(ts)
+(431, 1)
+
+julia> length(ts)
+431
+
+```
+
 Names of data columns can be fetched using the `names(ts)` method
 which returns a `Vector{String}` object. The `Index` column can be
 fetched as an object of `Vector` type by using the `index(ts)` method,
 it can also be fetched directly using the underlying `coredata`
 property of TS: `ts.coredata[!, :Index]`.
+
+```julia
+julia> names(ts)
+1-element Vector{String}:
+ "value"
+
+julia> index(ts)
+431-element Vector{Date}:
+ 2007-01-01
+ 2007-01-02
+ 2007-01-03
+ 2007-01-04
+ 2007-01-05
+ 2007-01-06
+ 2007-01-07
+ 2007-01-08
+ 2007-01-09
+ 2007-01-10
+ 2007-01-11
+ ⋮
+ 2008-02-25
+ 2008-02-26
+ 2008-02-27
+ 2008-02-28
+ 2008-02-29
+ 2008-03-01
+ 2008-03-02
+ 2008-03-03
+ 2008-03-04
+ 2008-03-05
+ 2008-03-06
+
+```
 
 Another simpler way to read a CSV directly into a TS object is by
 using pipes.
@@ -296,8 +293,8 @@ package so all the flexibility and functionality of the `Plots`
 package is available for users.
 
 ```@repl e1
-julia> using Plots
-julia> plot(ts, size=(600,400); legend=false)
+using Plots
+plot(ts, size=(600,400); legend=false)
 ```
 
 ## Applying a function over a period
