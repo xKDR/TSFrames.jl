@@ -370,6 +370,13 @@ julia> using Random;
 julia> random(x) = rand(MersenneTwister(123), x...);
 julia> ts = TS(random(([1, 2, 3, 4, missing], 10)))
 julia> describe(ts)
+2×7 DataFrame
+ Row │ variable  mean     min    median   max    nmissing  eltype                
+     │ Symbol    Float64  Int64  Float64  Int64  Int64     Type                  
+─────┼───────────────────────────────────────────────────────────────────────────
+   1 │ Index        5.5       1      5.5     10         0  Int64
+   2 │ x1           2.75      2      3.0      4         2  Union{Missing, Int64}
+
 ```
 """
 function describe(io::IO, ts::TS)
