@@ -3,6 +3,9 @@
 This page describes how to use the TSx package for timeseries data
 handling.
 
+```@index
+```
+
 ## Installation
 
 ```julia
