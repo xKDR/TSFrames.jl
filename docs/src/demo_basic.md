@@ -587,12 +587,316 @@ julia> vcat(ts, ts3)
 
 ### Rolling apply
 
-### Rolling differences and percent change
+The `rollapply` applies a function over a fixed-size rolling window on
+the dataset. In the example below, we compute the 10-day average of
+dataset values on a rolling basis.
+
+```julia
+julia> rollapply(Statistics.mean, ts, :value, 10)
+(422 x 1) TS with Date Index
+
+ Index       value_rolling_mean
+ Date        Float64
+────────────────────────────────
+ 2007-01-10             9.72658
+ 2007-01-11             9.68858
+ 2007-01-12             9.76428
+ 2007-01-13             9.93465
+ 2007-01-14            10.0637
+ 2007-01-15             9.83266
+ 2007-01-16            10.0798
+ 2007-01-17            10.2655
+ 2007-01-18            10.2984
+ 2007-01-19            10.6809
+     ⋮               ⋮
+ 2008-02-27            10.6276
+ 2008-02-28            10.7151
+ 2008-02-29            10.6685
+ 2008-03-01            10.7644
+ 2008-03-02            10.4357
+ 2008-03-03            10.4169
+ 2008-03-04            10.1327
+ 2008-03-05             9.98425
+ 2008-03-06             9.86139
+                403 rows omitted
+
+```
+
+
+### Rolling difference, percent change
+
+Similar to `apply` and `rollapply` there are specific methods to
+compute rolling differences and percent changes of a `TS` object. The
+`diff` method computes mathematical difference of values in adjacent
+rows, inserting `missing` in the first row. `pctchange` computes the
+percentage change between adjacent rows.
+
+```julia
+julia> diff(ts)
+^P(431 x 1) TS with Date Index
+
+ Index       value
+ Date        Float64?
+─────────────────────────────
+ 2007-01-01  missing
+ 2007-01-02        0.217575
+ 2007-01-03       -2.50463
+ 2007-01-04        2.03838
+ 2007-01-05        2.57865
+ 2007-01-06       -3.82397
+ 2007-01-07        0.0432507
+ 2007-01-08        1.07813
+ 2007-01-09       -0.988155
+ 2007-01-10        2.0446
+     ⋮              ⋮
+ 2008-02-27       -2.31316
+ 2008-02-28        0.344553
+ 2008-02-29        0.0126078
+ 2008-03-01       -0.131995
+ 2008-03-02       -2.62052
+ 2008-03-03        2.07514
+ 2008-03-04       -1.69474
+ 2008-03-05        0.785754
+ 2008-03-06       -0.193954
+             412 rows omitted
+
+
+julia> pctchange(ts)
+(431 x 1) TS with Date Index
+
+ Index       value
+ Date        Float64?
+──────────────────────────────
+ 2007-01-01  missing
+ 2007-01-02        0.0214893
+ 2007-01-03       -0.242171
+ 2007-01-04        0.260072
+ 2007-01-05        0.261099
+ 2007-01-06       -0.307028
+ 2007-01-07        0.00501119
+ 2007-01-08        0.124293
+ 2007-01-09       -0.101326
+ 2007-01-10        0.233293
+     ⋮              ⋮
+ 2008-02-27       -0.183747
+ 2008-02-28        0.0335309
+ 2008-02-29        0.00118715
+ 2008-03-01       -0.0124139
+ 2008-03-02       -0.249554
+ 2008-03-03        0.263332
+ 2008-03-04       -0.170232
+ 2008-03-05        0.0951193
+ 2008-03-06       -0.0214398
+              412 rows omitted
+
+```
+
+### Computing log of data values
+
+The `log` method computes the log of each data value. The method
+throws an error if it encounters a negative number in the data. This
+method retains `missing` values in the resulting object if they were
+present in the input.
+
+```julia
+julia> log(ts)
+(431 x 1) TS with Date Index
+
+ Index       value_log
+ Date        Float64
+───────────────────────
+ 2007-01-01    2.31499
+ 2007-01-02    2.33625
+ 2007-01-03    2.05895
+ 2007-01-04    2.29012
+ 2007-01-05    2.52211
+ 2007-01-06    2.15534
+ 2007-01-07    2.16034
+ 2007-01-08    2.27749
+ 2007-01-09    2.17066
+ 2007-01-10    2.38035
+     ⋮           ⋮
+ 2008-02-27    2.32978
+ 2008-02-28    2.36276
+ 2008-02-29    2.36395
+ 2008-03-01    2.35146
+ 2008-03-02    2.06437
+ 2008-03-03    2.29812
+ 2008-03-04    2.11151
+ 2008-03-05    2.20238
+ 2008-03-06    2.1807
+       412 rows omitted
+
+```
 
 ### Creating lagged/leading series
 
+`lag()` and `lead()` provide ways to lag or lead a series respectively
+by a fixed value, inserting `missing` where required.
+
+```julia
+julia> lag(ts, 2)
+(431 x 1) TS with Date Index
+
+ Index       value
+ Date        Float64?
+───────────────────────────
+ 2007-01-01  missing
+ 2007-01-02  missing
+ 2007-01-03       10.1248
+ 2007-01-04       10.3424
+ 2007-01-05        7.83777
+ 2007-01-06        9.87616
+ 2007-01-07       12.4548
+ 2007-01-08        8.63084
+ 2007-01-09        8.67409
+ 2007-01-10        9.75221
+     ⋮             ⋮
+ 2008-02-27       10.0811
+ 2008-02-28       12.5888
+ 2008-02-29       10.2757
+ 2008-03-01       10.6202
+ 2008-03-02       10.6328
+ 2008-03-03       10.5008
+ 2008-03-04        7.88032
+ 2008-03-05        9.95546
+ 2008-03-06        8.26072
+           412 rows omitted
+
+
+julia> lead(ts, 2)
+(431 x 1) TS with Date Index
+
+ Index       value
+ Date        Float64?
+───────────────────────────
+ 2007-01-01        7.83777
+ 2007-01-02        9.87616
+ 2007-01-03       12.4548
+ 2007-01-04        8.63084
+ 2007-01-05        8.67409
+ 2007-01-06        9.75221
+ 2007-01-07        8.76406
+ 2007-01-08       10.8087
+ 2007-01-09        9.74481
+ 2007-01-10       11.0995
+     ⋮             ⋮
+ 2008-02-27       10.6328
+ 2008-02-28       10.5008
+ 2008-02-29        7.88032
+ 2008-03-01        9.95546
+ 2008-03-02        8.26072
+ 2008-03-03        9.04647
+ 2008-03-04        8.85252
+ 2008-03-05  missing
+ 2008-03-06  missing
+           412 rows omitted
+
+```
+
 ## Converting to Matrix and DataFrame
 
-## Writing output
+You can easily convert a TS object into a `Matrix` or fetch the
+`DataFrame` for doing operations which are outside of the TSx scope.
+
+```julia
+# convert column 1 to a vector of floats
+julia> ts[:, 1]
+431-element Vector{Float64}:
+ 10.1248338098958
+ 10.3424091138411
+  7.83777413591419
+  9.87615632977506
+ 12.4548084674329
+  8.63083527336206
+  8.67408599632254
+  9.75221297863206
+  8.76405813698277
+ 10.8086548113129
+  9.74480982888519
+  ⋮
+ 10.0811113869023
+ 12.5888345885963
+ 10.2756782417694
+ 10.6202311288555
+ 10.6328389451372
+ 10.5008434702989
+  7.88032001621439
+  9.95545794087256
+  8.2607203222573
+  9.04647411362002
+  8.85251977208324
+
+
+# convert entire TS into a Matrix
+julia> Matrix(ts)
+431×1 Matrix{Float64}:
+ 10.1248338098958
+ 10.3424091138411
+  7.83777413591419
+  9.87615632977506
+ 12.4548084674329
+  8.63083527336206
+  8.67408599632254
+  9.75221297863206
+  8.76405813698277
+ 10.8086548113129
+  9.74480982888519
+  ⋮
+ 10.0811113869023
+ 12.5888345885963
+ 10.2756782417694
+ 10.6202311288555
+ 10.6328389451372
+ 10.5008434702989
+  7.88032001621439
+  9.95545794087256
+  8.2607203222573
+  9.04647411362002
+  8.85251977208324
+
+
+# use the underlying DataFrame for other operations
+julia> select(ts.coredata, :value, DataFrames.nrow)
+431×2 DataFrame
+ Row │ value     nrow
+     │ Float64   Int64
+─────┼─────────────────
+   1 │ 10.1248     431
+   2 │ 10.3424     431
+   3 │  7.83777    431
+   4 │  9.87616    431
+   5 │ 12.4548     431
+   6 │  8.63084    431
+   7 │  8.67409    431
+   8 │  9.75221    431
+   9 │  8.76406    431
+  ⋮  │    ⋮        ⋮
+ 423 │ 10.2757     431
+ 424 │ 10.6202     431
+ 425 │ 10.6328     431
+ 426 │ 10.5008     431
+ 427 │  7.88032    431
+ 428 │  9.95546    431
+ 429 │  8.26072    431
+ 430 │  9.04647    431
+ 431 │  8.85252    431
+       413 rows omitted
+
+```
+## Writing TS into a CSV file
+
+Writing a TS object into a CSV file can be done easily by using the
+underlying `coredata` property. This `DataFrame` can be passed to
+the `CSV.write` method for writing into a file.
+
+```julia
+julia> ts.coredata |> CSV.write("/tmp/demo_ts.csv")
+"/tmp/demo_ts.csv"
+```
 
 ## API reference
+
+```@contents
+Pages = ["api.md"]
+```
