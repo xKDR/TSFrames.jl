@@ -27,7 +27,7 @@ makedocs(;
         #     "Plotting" => "plots.md",
         #     "Displays" => "display.md",
         #     "Utilities" => "utils.md"
-        ],
+        # ],
         # "Finance demo" => "demo_finance.md",
         # "Detailed guide to TSx" => "detailed_guide.md",
         "API reference" => "api.md",
