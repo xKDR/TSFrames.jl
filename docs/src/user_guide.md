@@ -61,7 +61,7 @@ applications you would want to read in a CSV file or download a dataset
 as a `DataFrame` and then operate on it. You can easily convert a
 `DataFrame` to a `TS` object.
 
-```julia
+```@repl e1
 julia> using CSV, DataFrames
 
 julia> filename = joinpath(dirname(pathof(TSx)),
@@ -122,6 +122,7 @@ julia> ts = TS(df)
  2008-03-06   8.85252
       412 rows omitted
 
+julia> nothing; # hide
 ```
 
 In the above example you load a CSV file bundled with TSx package,
@@ -294,15 +295,9 @@ package. The plotting functionality is provided by `RecipesBase`
 package so all the flexibility and functionality of the `Plots`
 package is available for users.
 
-```@example
-using Plots
-using TSx
-
-ts = TS(rand(100))
-
-plot(ts)
-
-plot(ts, size=(600,400))
+```@repl e1
+julia> using Plots
+julia> plot(ts, size=(600,400); legend=false)
 ```
 
 ## Applying a function over a period
@@ -404,21 +399,23 @@ julia> apply(ts, Week, Statistics.std, last)
 
 TSx provides methods to join two TS objects by columns: `join` (alias:
 `cbind`) or by rows: `vcat` (alias: `rbind`). Both the methods provide
-some basic intelligence while doing the merge. `join` merges two
-datasets based on the `Index` values of both objects. Depending on the
-join strategy employed the final object may only contain index values
-only from the left object (using `JoinLeft`), the right object (using
-`JoinRight`), intersection of both objects (using `JoinBoth`), or a
-union of both objects (`JoinAll`) while inserting `missing` values
-where index values are missing from any of the other object.
+some basic intelligence while doing the merge.
+
+`join` merges two datasets based on the `Index` values of both
+objects. Depending on the join strategy employed the final object may
+only contain index values only from the left object (using
+`JoinLeft`), the right object (using `JoinRight`), intersection of
+both objects (using `JoinBoth`), or a union of both objects
+(`JoinAll`) while inserting `missing` values where index values are
+missing from any of the other object.
 
 ```julia
 julia> dates = collect(Date(2007,1,1):Day(1):Date(2007,1,30));
 julia> ts2 = TS(rand(length(dates)), dates)
 (30 x 1) TS with Date Index
 
- Index       x1        
- Date        Float64   
+ Index       x1
+ Date        Float64
 ───────────────────────
  2007-01-01  0.125811
  2007-01-02  0.06005
@@ -475,14 +472,16 @@ julia> join(ts, ts2, JoinAll)
 ```
 
 `vcat` also works similarly but merges two datasets by rows. This
-method also uses certain strategies to check for certain conditions
-before doing the merge, throwing an error if the conditions are not
-satisfied. `setequal` merges only if both objects have same column
-names, `orderequal` merges only if both objects have same column names
-and columns are in the same order, `intersect` merges only the columns
-which are common to both objects, and `union` which merges even if the
-columns differ between the two objects, the resulting object has the
-columns filled with `missing`, if necessary.
+method also uses certain strategies provided via `colmerge` argument
+to check for certain conditions before doing the merge, throwing an
+error if the conditions are not satisfied.
+
+`colmerge` can be passed `setequal` which merges only if both objects
+have same column names, `orderequal` which merges only if both objects
+have same column names and columns are in the same order, `intersect`
+merges only the columns which are common to both objects, and `union`
+which merges even if the columns differ between the two objects, the
+resulting object has the columns filled with `missing`, if necessary.
 
 For `vcat`, if the values of `Index` are same in the two objects then
 all the index values along with values in other columns are kept in
@@ -859,11 +858,5 @@ underlying `coredata` property. This `DataFrame` can be passed to
 the `CSV.write` method for writing into a file.
 
 ```julia
-julia> ts.coredata |> CSV.write("/tmp/demo_ts.csv")
-"/tmp/demo_ts.csv"
-```
-
-## API reference
-
-```@index
+julia> ts.coredata |> CSV.write("/tmp/demo_ts.csv");
 ```
