@@ -1120,16 +1120,16 @@ function names(ts::TS)
 end
 
 function first(ts::TS)
-    TSx.TS(DataFrames.first(ts.coredata))
+    TS(DataFrames.first(ts.coredata))
 end
             
             
 function head(ts::TS, n::Int = 10)
-    TSx.TS(DataFrames.first(ts.coredata, n))
+    TS(DataFrames.first(ts.coredata, n))
 end
                 
 function tail(ts::TS, n::Int = 10)
-    TSx.TS(DataFrames.last(ts.coredata, n))
+    TS(DataFrames.last(ts.coredata, n))
 end
                     
                     
