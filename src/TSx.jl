@@ -375,6 +375,7 @@ julia> describe(ts)
 function describe(io::IO, ts::TS)
     DataFrames.describe(ts.coredata)
 end
+TSx.describe(ts::TS) = TSx.describe(stdout, ts)
 
 function Base.summary(io::IO, ts::TS)
     println("(", nr(ts), " x ", nc(ts), ") TS")
