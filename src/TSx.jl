@@ -371,8 +371,8 @@ julia> random(x) = rand(MersenneTwister(123), x...);
 julia> ts = TS(random(([1, 2, 3, 4, missing], 10)))
 julia> describe(ts)
 2×7 DataFrame
- Row │ variable  mean     min    median   max    nmissing  eltype                
-     │ Symbol    Float64  Int64  Float64  Int64  Int64     Type                  
+ Row │ variable  mean     min    median   max    nmissing  eltype
+     │ Symbol    Float64  Int64  Float64  Int64  Int64     Type
 ─────┼───────────────────────────────────────────────────────────────────────────
    1 │ Index        5.5       1      5.5     10         0  Int64
    2 │ x1           2.75      2      3.0      4         2  Union{Missing, Int64}
@@ -410,8 +410,8 @@ julia> ts = TS([random(10) random(10)])
 julia> show(ts)
 (10 x 2) TS with Int64 Index
 
- Index  x1         x2        
- Int64  Float64    Float64   
+ Index  x1         x2
+ Int64  Float64    Float64
 ─────────────────────────────
      1  0.768448   0.768448
      2  0.940515   0.940515
@@ -581,8 +581,8 @@ julia> ts = TS(random(length(dates)), dates)
 julia> show(ts[1:10])
 (10 x 1) TS with Date Index
 
- Index       x1        
- Date        Float64   
+ Index       x1
+ Date        Float64
 ───────────────────────
  2007-01-01  0.768448
  2007-01-02  0.940515
@@ -642,8 +642,8 @@ julia> ts[Year(2007)]
 julia> ts[Year(2007), Month(11)]
 (30 x 1) TS with Date Index
 
- Index       x1        
- Date        Float64   
+ Index       x1
+ Date        Float64
 ───────────────────────
  2007-11-01  0.214132
  2007-11-02  0.672281
@@ -683,8 +683,8 @@ julia> ts[Year(2007), Quarter(2)];
 julia> ts["2007-01-01"]
 (1 x 1) TS with Date Index
 
- Index       x1       
- Date        Float64  
+ Index       x1
+ Date        Float64
 ──────────────────────
  2007-01-01  0.768448
 
@@ -701,8 +701,8 @@ julia> ts[1, :x1]
 julia> ts[1, "x1"]
 (1 x 1) TS with Date Index
 
- Index       x1       
- Date        Float64  
+ Index       x1
+ Date        Float64
 ──────────────────────
  2007-01-01  0.768448
 
@@ -847,8 +847,8 @@ julia> ts = TS(random(length(dates)), dates)
 julia> show(ts)
 (40 x 1) TS with Date Index
 
- Index       x1        
- Date        Float64   
+ Index       x1
+ Date        Float64
 ───────────────────────
  2022-02-01  0.768448
  2022-02-08  0.940515
@@ -894,8 +894,8 @@ julia> show(ts)
 julia> subset(ts, Date(2022, 03), Date(2022, 07))
 (18 x 1) TS with Date Index
 
- Index       x1        
- Date        Float64   
+ Index       x1
+ Date        Float64
 ───────────────────────
  2022-03-01  0.313244
  2022-03-08  0.662555
@@ -919,8 +919,8 @@ julia> subset(ts, Date(2022, 03), Date(2022, 07))
 julia> subset(TS(1:20, -9:10), -4, 5)
 (10 x 1) TS with Int64 Index
 
- Index  x1    
- Int64  Int64 
+ Index  x1
+ Int64  Int64
 ──────────────
     -4      6
     -3      7
@@ -1948,8 +1948,8 @@ julia> show(ts2)
 julia> join(ts1, ts2)
 (30 x 2) TS with Date Index
 
- Index       x1               x1_1      
- Date        Float64?         Float64?  
+ Index       x1               x1_1
+ Date        Float64?         Float64?
 ────────────────────────────────────────
  2017-01-01        0.768448   0.768448
  2017-01-02        0.940515   0.940515
@@ -1980,8 +1980,8 @@ julia> cbind(ts1, ts2);
 julia> join(ts1, ts2, JoinBoth)
 (10 x 2) TS with Date Index
 
- Index       x1         x1_1      
- Date        Float64    Float64   
+ Index       x1         x1_1
+ Date        Float64    Float64
 ──────────────────────────────────
  2017-01-01  0.768448   0.768448
  2017-01-02  0.940515   0.940515
@@ -1999,8 +1999,8 @@ julia> join(ts1, ts2, JoinBoth)
 julia> join(ts1, ts2, JoinLeft)
 (10 x 2) TS with Date Index
 
- Index       x1         x1_1      
- Date        Float64    Float64?  
+ Index       x1         x1_1
+ Date        Float64    Float64?
 ──────────────────────────────────
  2017-01-01  0.768448   0.768448
  2017-01-02  0.940515   0.940515
@@ -2018,8 +2018,8 @@ julia> join(ts1, ts2, JoinLeft)
 julia> join(ts1, ts2, JoinRight)
 (30 x 2) TS with Date Index
 
- Index       x1               x1_1      
- Date        Float64?         Float64   
+ Index       x1               x1_1
+ Date        Float64?         Float64
 ────────────────────────────────────────
  2017-01-01        0.768448   0.768448
  2017-01-02        0.940515   0.940515
