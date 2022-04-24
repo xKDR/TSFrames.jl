@@ -292,7 +292,7 @@ package. The plotting functionality is provided by `RecipesBase`
 package so all the flexibility and functionality of the `Plots`
 package is available for users.
 
-```@repl e1
+```@example e1
 using Plots
 plot(ts, size=(600,400); legend=false)
 ```
