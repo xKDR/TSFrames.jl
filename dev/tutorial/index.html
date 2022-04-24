@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Tutorial · TSx.jl</title><script data-outdated-warner src="../assets/warner.js"></script><link rel="canonical" href="https://xKDR.github.io/TSx.jl/tutorial/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.044/juliamono.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">TSx.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Introduction</a></li><li class="is-active"><a class="tocitem" href>Tutorial</a><ul class="internal"><li><a class="tocitem" href="#Installation"><span>Installation</span></a></li><li><a class="tocitem" href="#Constructing-TS-objects"><span>Constructing TS objects</span></a></li><li><a class="tocitem" href="#Indexing-and-subsetting"><span>Indexing and subsetting</span></a></li><li><a class="tocitem" href="#Summary-statistics"><span>Summary statistics</span></a></li><li><a class="tocitem" href="#Timeseries-data-mainpulation"><span>Timeseries data mainpulation</span></a></li><li><a class="tocitem" href="#Converting-to-Matrix-and-DataFrame"><span>Converting to Matrix and DataFrame</span></a></li><li><a class="tocitem" href="#Writing-TS-into-a-CSV-file"><span>Writing TS into a CSV file</span></a></li><li><a class="tocitem" href="#API-reference"><span>API reference</span></a></li></ul></li><li><a class="tocitem" href="../api/">API reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Tutorial</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Tutorial</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/xKDR/TSx.jl/blob/master/docs/src/tutorial.md#" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Tutorial"><a class="docs-heading-anchor" href="#Tutorial">Tutorial</a><a id="Tutorial-1"></a><a class="docs-heading-anchor-permalink" href="#Tutorial" title="Permalink"></a></h1><p>This page describes how to use the TSx package for timeseries data handling.</p><ul><li><a href="../api/#TSx.TS"><code>TSx.TS</code></a></li><li><a href="../api/#Base.convert-Tuple{Type{Matrix}, TS}"><code>Base.convert</code></a></li><li><a href="../api/#Base.getindex-Tuple{TS, Int64}"><code>Base.getindex</code></a></li><li><a href="../api/#Base.join-Tuple{TS, TS}"><code>Base.join</code></a></li><li><a href="../api/#Base.log-Tuple{TS}"><code>Base.log</code></a></li><li><a href="../api/#Base.names-Tuple{TS}"><code>Base.names</code></a></li><li><a href="../api/#Base.size-Tuple{TS}"><code>Base.size</code></a></li><li><a href="../api/#Base.vcat-Tuple{TS, TS}"><code>Base.vcat</code></a></li><li><a href="../api/#RecipesBase.apply_recipe"><code>RecipesBase.apply_recipe</code></a></li><li><a href="../api/#TSx.apply-Union{Tuple{V}, Tuple{T}, Tuple{TS, Union{Type{T}, T}, V}, Tuple{TS, Union{Type{T}, T}, V, Function}} where {T&lt;:Union{Dates.DatePeriod, Dates.TimePeriod}, V&lt;:Function}"><code>TSx.apply</code></a></li><li><a href="../api/#TSx.describe-Tuple{IO, TS}"><code>TSx.describe</code></a></li><li><a href="../api/#TSx.index-Tuple{TS}"><code>TSx.index</code></a></li><li><a href="../api/#TSx.lag"><code>TSx.lag</code></a></li><li><a href="../api/#TSx.lead"><code>TSx.lead</code></a></li><li><a href="../api/#TSx.ncol-Tuple{TS}"><code>TSx.ncol</code></a></li><li><a href="../api/#TSx.nrow-Tuple{TS}"><code>TSx.nrow</code></a></li><li><a href="../api/#TSx.rollapply-Tuple{Function, TS, Any, Int64}"><code>TSx.rollapply</code></a></li><li><a href="../api/#TSx.subset-Union{Tuple{T}, Tuple{TS, T, T}} where T&lt;:Union{Int64, Dates.TimeType}"><code>TSx.subset</code></a></li></ul><h2 id="Installation"><a class="docs-heading-anchor" href="#Installation">Installation</a><a id="Installation-1"></a><a class="docs-heading-anchor-permalink" href="#Installation" title="Permalink"></a></h2><pre><code class="language-julia hljs">julia&gt; using Pkg
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Tutorial · TSx.jl</title><script data-outdated-warner src="../assets/warner.js"></script><link rel="canonical" href="https://xKDR.github.io/TSx.jl/tutorial/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.044/juliamono.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">TSx.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Introduction</a></li><li class="is-active"><a class="tocitem" href>Tutorial</a><ul class="internal"><li><a class="tocitem" href="#Installation"><span>Installation</span></a></li><li><a class="tocitem" href="#Constructing-TS-objects"><span>Constructing TS objects</span></a></li><li><a class="tocitem" href="#Indexing-and-subsetting"><span>Indexing and subsetting</span></a></li><li><a class="tocitem" href="#Summary-statistics"><span>Summary statistics</span></a></li><li><a class="tocitem" href="#Applying-a-function-over-a-period"><span>Applying a function over a period</span></a></li><li><a class="tocitem" href="#Joins:-Row-and-column-binding-with-other-objects"><span>Joins: Row and column binding with other objects</span></a></li><li><a class="tocitem" href="#Rolling-window-operations"><span>Rolling window operations</span></a></li><li><a class="tocitem" href="#Computing-rolling-difference-and-percent-change"><span>Computing rolling difference and percent change</span></a></li><li><a class="tocitem" href="#Computing-log-of-data-values"><span>Computing log of data values</span></a></li><li><a class="tocitem" href="#Creating-lagged/leading-series"><span>Creating lagged/leading series</span></a></li><li><a class="tocitem" href="#Converting-to-Matrix-and-DataFrame"><span>Converting to Matrix and DataFrame</span></a></li><li><a class="tocitem" href="#Writing-TS-into-a-CSV-file"><span>Writing TS into a CSV file</span></a></li><li><a class="tocitem" href="#API-reference"><span>API reference</span></a></li></ul></li><li><a class="tocitem" href="../api/">API reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Tutorial</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Tutorial</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/xKDR/TSx.jl/blob/master/docs/src/tutorial.md#" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Tutorial"><a class="docs-heading-anchor" href="#Tutorial">Tutorial</a><a id="Tutorial-1"></a><a class="docs-heading-anchor-permalink" href="#Tutorial" title="Permalink"></a></h1><p>This page describes how to use the TSx package for timeseries data handling.</p><h2 id="Installation"><a class="docs-heading-anchor" href="#Installation">Installation</a><a id="Installation-1"></a><a class="docs-heading-anchor-permalink" href="#Installation" title="Permalink"></a></h2><pre><code class="language-julia hljs">julia&gt; using Pkg
 julia&gt; Pkg.add(url=&quot;https://github.com/xKDR/TSx.jl&quot;)</code></pre><h2 id="Constructing-TS-objects"><a class="docs-heading-anchor" href="#Constructing-TS-objects">Constructing TS objects</a><a id="Constructing-TS-objects-1"></a><a class="docs-heading-anchor-permalink" href="#Constructing-TS-objects" title="Permalink"></a></h2><p>After installing TSx you need to load the package in Julia environment. Then, create a basic <code>TS</code> object.</p><pre><code class="language-julia hljs">julia&gt; using TSx
 
 julia&gt; ts = TS(1:10)
@@ -53,28 +53,7 @@ julia&gt; df = CSV.read(filename, DataFrame)
    7 │ 2007-01-07   8.67409
    8 │ 2007-01-08   9.75221
    9 │ 2007-01-09   8.76406
-  10 │ 2007-01-10  10.8087
-  11 │ 2007-01-11   9.74481
-  12 │ 2007-01-12  11.0995
-  13 │ 2007-01-13   9.54143
-  14 │ 2007-01-14  11.167
-  15 │ 2007-01-15  10.144
-  16 │ 2007-01-16  11.1019
-  17 │ 2007-01-17  10.5315
-  18 │ 2007-01-18  10.0811
-  19 │ 2007-01-19  12.5888
-  20 │ 2007-01-20  10.2757
   ⋮  │     ⋮          ⋮
- 413 │ 2008-02-17  10.8087
- 414 │ 2008-02-18   9.74481
- 415 │ 2008-02-19  11.0995
- 416 │ 2008-02-20   9.54143
- 417 │ 2008-02-21  11.167
- 418 │ 2008-02-22  10.144
- 419 │ 2008-02-23  11.1019
- 420 │ 2008-02-24  10.5315
- 421 │ 2008-02-25  10.0811
- 422 │ 2008-02-26  12.5888
  423 │ 2008-02-27  10.2757
  424 │ 2008-02-28  10.6202
  425 │ 2008-02-29  10.6328
@@ -84,10 +63,11 @@ julia&gt; df = CSV.read(filename, DataFrame)
  429 │ 2008-03-04   8.26072
  430 │ 2008-03-05   9.04647
  431 │ 2008-03-06   8.85252
-            392 rows omitted
+            413 rows omitted
+
 
 julia&gt; ts = TS(df)
-(431 x 1) TS with Dates.Date Index
+(431 x 1) TS with Date Index
 
  Index       value
  Date        Float64
@@ -102,28 +82,7 @@ julia&gt; ts = TS(df)
  2007-01-08   9.75221
  2007-01-09   8.76406
  2007-01-10  10.8087
- 2007-01-11   9.74481
- 2007-01-12  11.0995
- 2007-01-13   9.54143
- 2007-01-14  11.167
- 2007-01-15  10.144
- 2007-01-16  11.1019
- 2007-01-17  10.5315
- 2007-01-18  10.0811
- 2007-01-19  12.5888
- 2007-01-20  10.2757
      ⋮          ⋮
- 2008-02-16   8.76406
- 2008-02-17  10.8087
- 2008-02-18   9.74481
- 2008-02-19  11.0995
- 2008-02-20   9.54143
- 2008-02-21  11.167
- 2008-02-22  10.144
- 2008-02-23  11.1019
- 2008-02-24  10.5315
- 2008-02-25  10.0811
- 2008-02-26  12.5888
  2008-02-27  10.2757
  2008-02-28  10.6202
  2008-02-29  10.6328
@@ -133,7 +92,8 @@ julia&gt; ts = TS(df)
  2008-03-04   8.26072
  2008-03-05   9.04647
  2008-03-06   8.85252
-      391 rows omitted</code></pre><p>In the above example you load a CSV file bundled with TSx package, store it into a DataFrame <code>df</code> and then convert <code>df</code> into a <code>TS</code> object <code>ts</code>. The top line of the <code>ts</code> object tells you the number of rows (<code>431</code> here) and the number of columns (<code>1</code>) along with the <code>Type</code> of <code>Index</code> (<code>Dates.Date</code> in the above example).</p><p>You can also fetch the number of rows and columns by using <code>nr(ts)</code>, <code>nc(ts)</code>, and <code>size(ts)</code> methods. Respectively, they fetch the number of rows, columns, and a <code>Tuple</code> of row and column numbers. A <code>length(::TS)</code> method is also provided for convenience which returns the number of rows of it&#39;s argument.</p><p>Names of data columns can be fetched using the <code>names(ts)</code> method which returns a <code>Vector{String}</code> object. The <code>Index</code> column can be fetched as an object of <code>Vector</code> type by using the <code>index(ts)</code> method, it can also be fetched directly using the underlying <code>coredata</code> property of TS: <code>ts.coredata[!, :Index]</code>.</p><p>Another simpler way to read a CSV directly into a TS object is by using pipes.</p><pre><code class="language-julia hljs">julia&gt; ts = CSV.File(filename) |&gt; DataFrame |&gt; TS</code></pre><h2 id="Indexing-and-subsetting"><a class="docs-heading-anchor" href="#Indexing-and-subsetting">Indexing and subsetting</a><a id="Indexing-and-subsetting-1"></a><a class="docs-heading-anchor-permalink" href="#Indexing-and-subsetting" title="Permalink"></a></h2><p>One of the primary features of a timeseries package is to provide ways to index or subset a dataset using convenient interfaces. TSx makes it easier to index a <code>TS</code> object by providing multiple intuitive <code>getindex</code> methods which work by just using the regular square parenthese (<code>[ ]</code>).</p><pre><code class="language-julia hljs"># first row
+      412 rows omitted
+</code></pre><p>In the above example you load a CSV file bundled with TSx package, store it into a DataFrame <code>df</code> and then convert <code>df</code> into a <code>TS</code> object <code>ts</code>. The top line of the <code>ts</code> object tells you the number of rows (<code>431</code> here) and the number of columns (<code>1</code>) along with the <code>Type</code> of <code>Index</code> (<code>Dates.Date</code> in the above example).</p><p>You can also fetch the number of rows and columns by using <code>nr(ts)</code>, <code>nc(ts)</code>, and <code>size(ts)</code> methods. Respectively, they fetch the number of rows, columns, and a <code>Tuple</code> of row and column numbers. A <code>length(::TS)</code> method is also provided for convenience which returns the number of rows of it&#39;s argument.</p><p>Names of data columns can be fetched using the <code>names(ts)</code> method which returns a <code>Vector{String}</code> object. The <code>Index</code> column can be fetched as an object of <code>Vector</code> type by using the <code>index(ts)</code> method, it can also be fetched directly using the underlying <code>coredata</code> property of TS: <code>ts.coredata[!, :Index]</code>.</p><p>Another simpler way to read a CSV directly into a TS object is by using pipes.</p><pre><code class="language-julia hljs">julia&gt; ts = CSV.File(filename) |&gt; DataFrame |&gt; TS</code></pre><h2 id="Indexing-and-subsetting"><a class="docs-heading-anchor" href="#Indexing-and-subsetting">Indexing and subsetting</a><a id="Indexing-and-subsetting-1"></a><a class="docs-heading-anchor-permalink" href="#Indexing-and-subsetting" title="Permalink"></a></h2><p>One of the primary features of a timeseries package is to provide ways to index or subset a dataset using convenient interfaces. TSx makes it easier to index a <code>TS</code> object by providing multiple intuitive <code>getindex</code> methods which work by just using the regular square parenthese (<code>[ ]</code>).</p><pre><code class="language-julia hljs"># first row
 julia&gt; ts[1]
 (1 x 1) TS with Dates.Date Index
 
@@ -239,7 +199,7 @@ julia&gt; ts[Year(2007), Quarter(2)];
 ─────┼───────────────────────────────────────────────────────────────────────────
    1 │ Index              2007-01-01  2007-08-04  2008-03-06         0  Date
    2 │ value     9.98177  7.83777     10.1248     12.5888            0  Float64
-</code></pre><h2 id="Timeseries-data-mainpulation"><a class="docs-heading-anchor" href="#Timeseries-data-mainpulation">Timeseries data mainpulation</a><a id="Timeseries-data-mainpulation-1"></a><a class="docs-heading-anchor-permalink" href="#Timeseries-data-mainpulation" title="Permalink"></a></h2><h3 id="Applying-a-function-over-a-period"><a class="docs-heading-anchor" href="#Applying-a-function-over-a-period">Applying a function over a period</a><a id="Applying-a-function-over-a-period-1"></a><a class="docs-heading-anchor-permalink" href="#Applying-a-function-over-a-period" title="Permalink"></a></h3><p>The <code>apply</code> method allows you to aggregate the TS object over a period type (<code>Dates.Period</code>(@ref)) and return the output of applying the function on each period. For example, to convert frequency of daily timeseries to monthly you may use <code>first()</code>, <code>last()</code>, or <code>Statistics.mean()</code> functions and the period as <code>Dates.Month</code>.</p><pre><code class="language-julia hljs">julia&gt; using Statistics
+</code></pre><h2 id="Applying-a-function-over-a-period"><a class="docs-heading-anchor" href="#Applying-a-function-over-a-period">Applying a function over a period</a><a id="Applying-a-function-over-a-period-1"></a><a class="docs-heading-anchor-permalink" href="#Applying-a-function-over-a-period" title="Permalink"></a></h2><p>The <code>apply</code> method allows you to aggregate the TS object over a period type (<code>Dates.Period</code>(@ref)) and return the output of applying the function on each period. For example, to convert frequency of daily timeseries to monthly you may use <code>first()</code>, <code>last()</code>, or <code>Statistics.mean()</code> functions and the period as <code>Dates.Month</code>.</p><pre><code class="language-julia hljs">julia&gt; using Statistics
 
 # convert to monthly series using the last value for each month
 julia&gt; ts_monthly = apply(ts, Month, last)
@@ -322,43 +282,34 @@ julia&gt; apply(ts, Week, Statistics.std, last)
  2008-03-02   1.37616
  2008-03-06   0.702384
         43 rows omitted
-</code></pre><h3 id="Row-and-column-binding-with-other-objects"><a class="docs-heading-anchor" href="#Row-and-column-binding-with-other-objects">Row and column binding with other objects</a><a id="Row-and-column-binding-with-other-objects-1"></a><a class="docs-heading-anchor-permalink" href="#Row-and-column-binding-with-other-objects" title="Permalink"></a></h3><p>TSx provides methods to join two TS objects by columns: <code>join</code> (alias: <code>cbind</code>) or by rows: <code>vcat</code> (alias: <code>rbind</code>). Both the methods provide some basic intelligence while doing the merge. <code>join</code> merges two datasets based on the <code>Index</code> values of both objects. Depending on the join strategy employed the final object may only contain index values only from the left object (using <code>JoinLeft</code>), the right object (using <code>JoinRight</code>), intersection of both objects (using <code>JoinBoth</code>), or a union of both objects (<code>JoinAll</code>) while inserting <code>missing</code> values where index values are missing from any of the other object.</p><pre><code class="language-julia hljs">julia&gt; dates = collect(Date(2007,1,1):Day(1):Date(2007,1,30));
+</code></pre><h2 id="Joins:-Row-and-column-binding-with-other-objects"><a class="docs-heading-anchor" href="#Joins:-Row-and-column-binding-with-other-objects">Joins: Row and column binding with other objects</a><a id="Joins:-Row-and-column-binding-with-other-objects-1"></a><a class="docs-heading-anchor-permalink" href="#Joins:-Row-and-column-binding-with-other-objects" title="Permalink"></a></h2><p>TSx provides methods to join two TS objects by columns: <code>join</code> (alias: <code>cbind</code>) or by rows: <code>vcat</code> (alias: <code>rbind</code>). Both the methods provide some basic intelligence while doing the merge. <code>join</code> merges two datasets based on the <code>Index</code> values of both objects. Depending on the join strategy employed the final object may only contain index values only from the left object (using <code>JoinLeft</code>), the right object (using <code>JoinRight</code>), intersection of both objects (using <code>JoinBoth</code>), or a union of both objects (<code>JoinAll</code>) while inserting <code>missing</code> values where index values are missing from any of the other object.</p><pre><code class="language-julia hljs">julia&gt; dates = collect(Date(2007,1,1):Day(1):Date(2007,1,30));
 julia&gt; ts2 = TS(rand(length(dates)), dates)
 (30 x 1) TS with Date Index
 
- Index       x1
- Date        Float64
+ Index       x1        
+ Date        Float64   
 ───────────────────────
- 2007-01-01  0.441924
- 2007-01-02  0.140323
- 2007-01-03  0.71753
- 2007-01-04  0.762919
- 2007-01-05  0.210845
- 2007-01-06  0.3652
- 2007-01-07  0.924636
- 2007-01-08  0.864424
- 2007-01-09  0.730909
- 2007-01-10  0.985619
- 2007-01-11  0.556146
- 2007-01-12  0.482831
- 2007-01-13  0.365106
- 2007-01-14  0.732164
- 2007-01-15  0.264424
- 2007-01-16  0.291362
- 2007-01-17  0.983965
- 2007-01-18  0.566147
- 2007-01-19  0.521702
- 2007-01-20  0.711861
- 2007-01-21  0.682508
- 2007-01-22  0.74898
- 2007-01-23  0.705237
- 2007-01-24  0.516239
- 2007-01-25  0.0973474
- 2007-01-26  0.344292
- 2007-01-27  0.434619
- 2007-01-28  0.622751
- 2007-01-29  0.0986784
- 2007-01-30  0.15385
+ 2007-01-01  0.125811
+ 2007-01-02  0.06005
+ 2007-01-03  0.324745
+ 2007-01-04  0.873089
+ 2007-01-05  0.781964
+ 2007-01-06  0.570593
+ 2007-01-07  0.770224
+ 2007-01-08  0.295923
+ 2007-01-09  0.363075
+ 2007-01-10  0.985884
+     ⋮           ⋮
+ 2007-01-22  0.222852
+ 2007-01-23  0.818168
+ 2007-01-24  0.718452
+ 2007-01-25  0.863064
+ 2007-01-26  0.0572773
+ 2007-01-27  0.282689
+ 2007-01-28  0.547679
+ 2007-01-29  0.380771
+ 2007-01-30  0.945756
+        11 rows omitted
 
 
 # cbind/join on Index column
@@ -447,7 +398,7 @@ julia&gt; vcat(ts, ts3)
  2008-04-29  missing              0.253298
  2008-04-30  missing              0.995585
                             442 rows omitted
-</code></pre><h3 id="Rolling-apply"><a class="docs-heading-anchor" href="#Rolling-apply">Rolling apply</a><a id="Rolling-apply-1"></a><a class="docs-heading-anchor-permalink" href="#Rolling-apply" title="Permalink"></a></h3><p>The <code>rollapply</code> applies a function over a fixed-size rolling window on the dataset. In the example below, we compute the 10-day average of dataset values on a rolling basis.</p><pre><code class="language-julia hljs">julia&gt; rollapply(Statistics.mean, ts, :value, 10)
+</code></pre><h2 id="Rolling-window-operations"><a class="docs-heading-anchor" href="#Rolling-window-operations">Rolling window operations</a><a id="Rolling-window-operations-1"></a><a class="docs-heading-anchor-permalink" href="#Rolling-window-operations" title="Permalink"></a></h2><p>The <code>rollapply</code> applies a function over a fixed-size rolling window on the dataset. In the example below, we compute the 10-day average of dataset values on a rolling basis.</p><pre><code class="language-julia hljs">julia&gt; rollapply(Statistics.mean, ts, :value, 10)
 (422 x 1) TS with Date Index
 
  Index       value_rolling_mean
@@ -474,7 +425,7 @@ julia&gt; vcat(ts, ts3)
  2008-03-05             9.98425
  2008-03-06             9.86139
                 403 rows omitted
-</code></pre><h3 id="Rolling-difference,-percent-change"><a class="docs-heading-anchor" href="#Rolling-difference,-percent-change">Rolling difference, percent change</a><a id="Rolling-difference,-percent-change-1"></a><a class="docs-heading-anchor-permalink" href="#Rolling-difference,-percent-change" title="Permalink"></a></h3><p>Similar to <code>apply</code> and <code>rollapply</code> there are specific methods to compute rolling differences and percent changes of a <code>TS</code> object. The <code>diff</code> method computes mathematical difference of values in adjacent rows, inserting <code>missing</code> in the first row. <code>pctchange</code> computes the percentage change between adjacent rows.</p><pre><code class="language-julia hljs">julia&gt; diff(ts)
+</code></pre><h2 id="Computing-rolling-difference-and-percent-change"><a class="docs-heading-anchor" href="#Computing-rolling-difference-and-percent-change">Computing rolling difference and percent change</a><a id="Computing-rolling-difference-and-percent-change-1"></a><a class="docs-heading-anchor-permalink" href="#Computing-rolling-difference-and-percent-change" title="Permalink"></a></h2><p>Similar to <code>apply</code> and <code>rollapply</code> there are specific methods to compute rolling differences and percent changes of a <code>TS</code> object. The <code>diff</code> method computes mathematical difference of values in adjacent rows, inserting <code>missing</code> in the first row. <code>pctchange</code> computes the percentage change between adjacent rows.</p><pre><code class="language-julia hljs">julia&gt; diff(ts)
 ^P(431 x 1) TS with Date Index
 
  Index       value
@@ -530,7 +481,7 @@ julia&gt; pctchange(ts)
  2008-03-05        0.0951193
  2008-03-06       -0.0214398
               412 rows omitted
-</code></pre><h3 id="Computing-log-of-data-values"><a class="docs-heading-anchor" href="#Computing-log-of-data-values">Computing log of data values</a><a id="Computing-log-of-data-values-1"></a><a class="docs-heading-anchor-permalink" href="#Computing-log-of-data-values" title="Permalink"></a></h3><p>The <code>log</code> method computes the log of each data value. The method throws an error if it encounters a negative number in the data. This method retains <code>missing</code> values in the resulting object if they were present in the input.</p><pre><code class="language-julia hljs">julia&gt; log(ts)
+</code></pre><h2 id="Computing-log-of-data-values"><a class="docs-heading-anchor" href="#Computing-log-of-data-values">Computing log of data values</a><a id="Computing-log-of-data-values-1"></a><a class="docs-heading-anchor-permalink" href="#Computing-log-of-data-values" title="Permalink"></a></h2><p>The <code>log</code> method computes the log of each data value. The method throws an error if it encounters a negative number in the data. This method retains <code>missing</code> values in the resulting object if they were present in the input.</p><pre><code class="language-julia hljs">julia&gt; log(ts)
 (431 x 1) TS with Date Index
 
  Index       value_log
@@ -557,7 +508,7 @@ julia&gt; pctchange(ts)
  2008-03-05    2.20238
  2008-03-06    2.1807
        412 rows omitted
-</code></pre><h3 id="Creating-lagged/leading-series"><a class="docs-heading-anchor" href="#Creating-lagged/leading-series">Creating lagged/leading series</a><a id="Creating-lagged/leading-series-1"></a><a class="docs-heading-anchor-permalink" href="#Creating-lagged/leading-series" title="Permalink"></a></h3><p><code>lag()</code> and <code>lead()</code> provide ways to lag or lead a series respectively by a fixed value, inserting <code>missing</code> where required.</p><pre><code class="language-julia hljs">julia&gt; lag(ts, 2)
+</code></pre><h2 id="Creating-lagged/leading-series"><a class="docs-heading-anchor" href="#Creating-lagged/leading-series">Creating lagged/leading series</a><a id="Creating-lagged/leading-series-1"></a><a class="docs-heading-anchor-permalink" href="#Creating-lagged/leading-series" title="Permalink"></a></h2><p><code>lag()</code> and <code>lead()</code> provide ways to lag or lead a series respectively by a fixed value, inserting <code>missing</code> where required.</p><pre><code class="language-julia hljs">julia&gt; lag(ts, 2)
 (431 x 1) TS with Date Index
 
  Index       value
@@ -696,4 +647,4 @@ julia&gt; select(ts.coredata, :value, DataFrames.nrow)
  431 │  8.85252    431
        413 rows omitted
 </code></pre><h2 id="Writing-TS-into-a-CSV-file"><a class="docs-heading-anchor" href="#Writing-TS-into-a-CSV-file">Writing TS into a CSV file</a><a id="Writing-TS-into-a-CSV-file-1"></a><a class="docs-heading-anchor-permalink" href="#Writing-TS-into-a-CSV-file" title="Permalink"></a></h2><p>Writing a TS object into a CSV file can be done easily by using the underlying <code>coredata</code> property. This <code>DataFrame</code> can be passed to the <code>CSV.write</code> method for writing into a file.</p><pre><code class="language-julia hljs">julia&gt; ts.coredata |&gt; CSV.write(&quot;/tmp/demo_ts.csv&quot;)
-&quot;/tmp/demo_ts.csv&quot;</code></pre><h2 id="API-reference"><a class="docs-heading-anchor" href="#API-reference">API reference</a><a id="API-reference-1"></a><a class="docs-heading-anchor-permalink" href="#API-reference" title="Permalink"></a></h2><ul><li><a href="../api/#TSx-API-reference">TSx API reference</a></li></ul></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Introduction</a><a class="docs-footer-nextpage" href="../api/">API reference »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.16 on <span class="colophon-date" title="Sunday 24 April 2022 12:13">Sunday 24 April 2022</span>. Using Julia version 1.7.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+&quot;/tmp/demo_ts.csv&quot;</code></pre><h2 id="API-reference"><a class="docs-heading-anchor" href="#API-reference">API reference</a><a id="API-reference-1"></a><a class="docs-heading-anchor-permalink" href="#API-reference" title="Permalink"></a></h2><ul><li><a href="../api/#TSx.TS"><code>TSx.TS</code></a></li><li><a href="../api/#Base.convert-Tuple{Type{Matrix}, TS}"><code>Base.convert</code></a></li><li><a href="../api/#Base.getindex-Tuple{TS, Int64}"><code>Base.getindex</code></a></li><li><a href="../api/#Base.join-Tuple{TS, TS}"><code>Base.join</code></a></li><li><a href="../api/#Base.log-Tuple{TS}"><code>Base.log</code></a></li><li><a href="../api/#Base.names-Tuple{TS}"><code>Base.names</code></a></li><li><a href="../api/#Base.size-Tuple{TS}"><code>Base.size</code></a></li><li><a href="../api/#Base.vcat-Tuple{TS, TS}"><code>Base.vcat</code></a></li><li><a href="../api/#RecipesBase.apply_recipe"><code>RecipesBase.apply_recipe</code></a></li><li><a href="../api/#TSx.apply-Union{Tuple{V}, Tuple{T}, Tuple{TS, Union{Type{T}, T}, V}, Tuple{TS, Union{Type{T}, T}, V, Function}} where {T&lt;:Union{Dates.DatePeriod, Dates.TimePeriod}, V&lt;:Function}"><code>TSx.apply</code></a></li><li><a href="../api/#TSx.describe-Tuple{IO, TS}"><code>TSx.describe</code></a></li><li><a href="../api/#TSx.index-Tuple{TS}"><code>TSx.index</code></a></li><li><a href="../api/#TSx.lag"><code>TSx.lag</code></a></li><li><a href="../api/#TSx.lead"><code>TSx.lead</code></a></li><li><a href="../api/#TSx.ncol-Tuple{TS}"><code>TSx.ncol</code></a></li><li><a href="../api/#TSx.nrow-Tuple{TS}"><code>TSx.nrow</code></a></li><li><a href="../api/#TSx.rollapply-Tuple{Function, TS, Any, Int64}"><code>TSx.rollapply</code></a></li><li><a href="../api/#TSx.subset-Union{Tuple{T}, Tuple{TS, T, T}} where T&lt;:Union{Int64, Dates.TimeType}"><code>TSx.subset</code></a></li></ul></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Introduction</a><a class="docs-footer-nextpage" href="../api/">API reference »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.16 on <span class="colophon-date" title="Sunday 24 April 2022 12:29">Sunday 24 April 2022</span>. Using Julia version 1.7.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
