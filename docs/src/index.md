@@ -11,10 +11,17 @@ from the [R](https://www.r-project.org/) world.
 TSx wraps a familiar syntax for timeseries operations over `DataFrame`
 type, thereby, providing the user with full set of `DataFrame`
 functionalities as well. Integrations with other packages in the Julia
-ecosystem which are supported by `DataFrames.jl` come to `TSx` at no
-cost.
+ecosystem which are supported by
+[DataFrames.jl](https://github.com/JuliaData/DataFrames.jl) come to
+`TSx` at little cost.
 
 To start using `TSx.jl` head to the [User guide](user_guide.md).
+
+## User guide
+
+```@contents
+Pages = ["user_guide.md"]
+```
 
 ## API reference
 
