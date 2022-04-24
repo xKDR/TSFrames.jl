@@ -14,12 +14,6 @@ functionalities as well. Integrations with other packages in the Julia
 ecosystem which are supported by `DataFrames.jl` come to `TSx` at no
 cost.
 
-<!-- TSx allows you to perform timeseries specific data operations on top -->
-<!-- of a `DataFrame`. This brings you the power of DataFrames.jl as well -->
-<!-- in case you want to perform operations on the TS object which TSx.jl -->
-<!-- doesn't provide. -->
-
-
 To start using `TSx.jl` head to the [Tutorial page](tutorial.md).
 
 ## API reference
