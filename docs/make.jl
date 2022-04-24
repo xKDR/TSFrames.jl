@@ -16,21 +16,22 @@ makedocs(;
     pages=[
         "Introduction" => "index.md",
         "Tutorial" => "tutorial.md",
-        # "Functionality" => [
-        #     "TS type" => "types.md",
-        #     "Subsetting" => "subsetting.md",
-        #     "Apply methods and period conversion" => "apply.md",
-        #     "Time shifting" => "timeshift.md",
-        #     "Iterated differences and percentages" => "diff.md",
-        #     "Column and row binding (Joins)" => "join.md",
-        #     "Logarithm" => "log.md",
-        #     "Plotting" => "plots.md",
-        #     "Displays" => "display.md",
-        #     "Utilities" => "utils.md"
-        # ],
+        "API reference" => [
+            "TS type" => "api/types.md",
+            # "Subsetting" => "api/subsetting.md",
+            # "Apply methods" => "api/apply.md",
+            # "Time shifting" => "api/timeshift.md",
+            # "Iterated differences and percentages" => "api/diff.md",
+            # "Column and row binding (Joins)" => "api/joins.md",
+            # "Logarithm" => "api/log.md",
+            # "Plotting" => "api/plots.md",
+            # "Displays" => "api/display.md",
+            # "Utilities" => "api/utils.md",
+            "All methods" => "api/api.md",
+        ],
         # "Finance demo" => "demo_finance.md",
         # "Detailed guide to TSx" => "detailed_guide.md",
-        "API reference" => "api.md",
+
     ],
     doctest=false,               # TODO: switch to true in the version after v0.1.0
     strict=false,                # TODO: switch to true in the version after v0.1.0
