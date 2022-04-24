@@ -15,7 +15,7 @@ makedocs(;
     ),
     pages=[
         "Introduction" => "index.md",
-        "Getting started" => "demo_basic.md",
+        "Tutorial" => "tutorial.md",
         "Functionality" => [
             "TS type" => "types.md",
             "Subsetting" => "subsetting.md",
@@ -29,6 +29,7 @@ makedocs(;
             "Utilities" => "utils.md"
         ],
         "Finance demo" => "demo_finance.md",
+        "Detailed guide to TSx" => "detailed_guide.md",
         "API reference" => "api.md",
     ],
     doctest=false,               # TODO: switch to true in the version after v0.1.0
