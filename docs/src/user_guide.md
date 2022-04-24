@@ -1,4 +1,4 @@
-# Tutorial
+# User guide
 
 This page describes how to use the TSx package for timeseries data
 handling.
