@@ -61,7 +61,7 @@ show(ibm_aapl_weekly)
 
 ```@example e1
 ibm_aapl_weekly_returns = diff(log(ibm_aapl_weekly))
-rename!(ibm_aapl_weekly_returns, [:Index, :IBM, :AAPL])
+rename!(ibm_aapl_weekly_returns.coredata, [:Index, :IBM, :AAPL])
 show(ibm_aapl_weekly_returns)
 ```
 
@@ -69,12 +69,11 @@ show(ibm_aapl_weekly_returns)
 
 ```@example e1
 ibm_std = std(skipmissing(ibm_aapl_weekly_returns[:, :IBM]))
-aapl_std = std(skipmissing(ibm_aapl_weekly_returns[:, :AAPL]))
-
 println("Weekly standard deviation of IBM: ", ibm_std)
 ```
 
 ```@example e1
+aapl_std = std(skipmissing(ibm_aapl_weekly_returns[:, :AAPL]))
 println("Weekly standard deviation of AAPL: ", aapl_std)
 ```
 
