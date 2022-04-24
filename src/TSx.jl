@@ -1887,27 +1887,6 @@ julia> using Random;
 
 julia> random(x) = rand(MersenneTwister(123), x);
 
-julia> ts1 = TS(random(10), 1:10)
-
-
-julia> ts2 = TS(random(10), 1:10)
-
-
-julia> join(ts1, ts2, JoinAll)
-
-
-julia> join(ts1, ts2);
-
-
-julia> join(ts1, ts2, JoinBoth);
-
-
-julia> join(ts1, ts2, JoinLeft);
-
-
-julia> join(ts1, ts2, JoinRight);
-
-
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10));
 
 julia> ts1 = TS(random(length(dates)), dates)
@@ -1932,36 +1911,6 @@ julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,30));
 
 julia> ts2 = TS(random(length(dates)), dates);
 julia> show(ts2)
-(10 x 1) TS with Int64 Index
-
- Index  x1
- Int64  Float64
-──────────────────
-     1  0.768448
-     2  0.940515
-     3  0.673959
-     4  0.395453
-     5  0.313244
-     6  0.662555
-     7  0.586022
-     8  0.0521332
-     9  0.26864
-    10  0.108871
-(10 x 1) TS with Int64 Index
-
- Index  x1
- Int64  Float64
-──────────────────
-     1  0.768448
-     2  0.940515
-     3  0.673959
-     4  0.395453
-     5  0.313244
-     6  0.662555
-     7  0.586022
-     8  0.0521332
-     9  0.26864
-    10  0.108871
 (30 x 1) TS with Dates.Date Index
 
  Index       x1
@@ -1987,10 +1936,106 @@ julia> show(ts2)
         14 rows omitted
 
 
-# calls `JoinAll` method
-julia> join(ts1, ts2);
-# alias
+# join on all index values
+# equivalent to `join(ts1, ts2, JoinAll)` call
+julia> join(ts1, ts2)
+(30 x 2) TS with Date Index
+
+ Index       x1               x1_1      
+ Date        Float64?         Float64?  
+────────────────────────────────────────
+ 2017-01-01        0.768448   0.768448
+ 2017-01-02        0.940515   0.940515
+ 2017-01-03        0.673959   0.673959
+ 2017-01-04        0.395453   0.395453
+ 2017-01-05        0.313244   0.313244
+ 2017-01-06        0.662555   0.662555
+ 2017-01-07        0.586022   0.586022
+ 2017-01-08        0.0521332  0.0521332
+ 2017-01-09        0.26864    0.26864
+ 2017-01-10        0.108871   0.108871
+     ⋮              ⋮             ⋮
+ 2017-01-22  missing          0.291978
+ 2017-01-23  missing          0.281066
+ 2017-01-24  missing          0.792931
+ 2017-01-25  missing          0.20923
+ 2017-01-26  missing          0.918165
+ 2017-01-27  missing          0.614255
+ 2017-01-28  missing          0.802665
+ 2017-01-29  missing          0.555668
+ 2017-01-30  missing          0.940782
+                         11 rows omitted
+
+# alias to `join()`
 julia> cbind(ts1, ts2);
+
+# join only the common index values
+julia> join(ts1, ts2, JoinBoth)
+(10 x 2) TS with Date Index
+
+ Index       x1         x1_1      
+ Date        Float64    Float64   
+──────────────────────────────────
+ 2017-01-01  0.768448   0.768448
+ 2017-01-02  0.940515   0.940515
+ 2017-01-03  0.673959   0.673959
+ 2017-01-04  0.395453   0.395453
+ 2017-01-05  0.313244   0.313244
+ 2017-01-06  0.662555   0.662555
+ 2017-01-07  0.586022   0.586022
+ 2017-01-08  0.0521332  0.0521332
+ 2017-01-09  0.26864    0.26864
+ 2017-01-10  0.108871   0.108871
+
+
+# keep index values of `ts1`
+julia> join(ts1, ts2, JoinLeft)
+(10 x 2) TS with Date Index
+
+ Index       x1         x1_1      
+ Date        Float64    Float64?  
+──────────────────────────────────
+ 2017-01-01  0.768448   0.768448
+ 2017-01-02  0.940515   0.940515
+ 2017-01-03  0.673959   0.673959
+ 2017-01-04  0.395453   0.395453
+ 2017-01-05  0.313244   0.313244
+ 2017-01-06  0.662555   0.662555
+ 2017-01-07  0.586022   0.586022
+ 2017-01-08  0.0521332  0.0521332
+ 2017-01-09  0.26864    0.26864
+ 2017-01-10  0.108871   0.108871
+
+
+# keep index values of `ts2`
+julia> join(ts1, ts2, JoinRight)
+(30 x 2) TS with Date Index
+
+ Index       x1               x1_1      
+ Date        Float64?         Float64   
+────────────────────────────────────────
+ 2017-01-01        0.768448   0.768448
+ 2017-01-02        0.940515   0.940515
+ 2017-01-03        0.673959   0.673959
+ 2017-01-04        0.395453   0.395453
+ 2017-01-05        0.313244   0.313244
+ 2017-01-06        0.662555   0.662555
+ 2017-01-07        0.586022   0.586022
+ 2017-01-08        0.0521332  0.0521332
+ 2017-01-09        0.26864    0.26864
+ 2017-01-10        0.108871   0.108871
+     ⋮              ⋮             ⋮
+ 2017-01-22  missing          0.291978
+ 2017-01-23  missing          0.281066
+ 2017-01-24  missing          0.792931
+ 2017-01-25  missing          0.20923
+ 2017-01-26  missing          0.918165
+ 2017-01-27  missing          0.614255
+ 2017-01-28  missing          0.802665
+ 2017-01-29  missing          0.555668
+ 2017-01-30  missing          0.940782
+                         11 rows omitted
+
 ```
 """
 function Base.join(ts1::TS, ts2::TS)
