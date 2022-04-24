@@ -16,14 +16,14 @@ aapl_df = CSV.read(filename_aapl, DataFrame);
 
 ## Create TS objects
 
-```julia label
+```@example label
 ibm_ts = TS(ibm_df, :Date)
 aapl_ts = TS(aapl_df, :Date)
 ```
 
 ## Subset both the stocks for 6 months data
 
-```julia label
+```@example label
 date_from = Date(2021, 06, 01);
 date_to = Date(2021, 12, 31);
 
@@ -33,7 +33,7 @@ aapl = TSx.subset(aapl_ts, date_from, date_to)
 
 ## Combine adjusted closing prices into one object
 
-```julia label
+```@example label
 ibm_aapl = TSx.join(ibm[:, ["Adj Close"]], aapl[:, ["Adj Close"]], JoinAll)
     # rename the columns using DataFrame API (making sure `Index` is the first col)
 rename!(ibm_aapl.coredata, [:Index, :IBM, :AAPL])
@@ -41,7 +41,7 @@ rename!(ibm_aapl.coredata, [:Index, :IBM, :AAPL])
 
 ## Compute weekly returns
 
-```juila label
+```@example label
 ibm_aapl_weekly = apply(ibm_aapl, Week, last, last)
 ibm_aapl_weekly_returns = diff(log(ibm_aapl_weekly))
 rename!(ibm_aapl_weekly_returns, [:Index, :IBM, :AAPL])
@@ -49,7 +49,7 @@ rename!(ibm_aapl_weekly_returns, [:Index, :IBM, :AAPL])
 
 ## Compute standard deviation of weekly returns
 
-```julia label
+```@example label
 ibm_std = std(skipmissing(ibm_aapl_weekly_returns[:, :IBM]))
 aapl_std = std(skipmissing(ibm_aapl_weekly_returns[:, :AAPL]))
 
@@ -59,7 +59,7 @@ println("Weekly standard deviation of AAPL: ", aapl_std)
 
 ## Scatter plot of AAPL and IBM
 
-```julia label
+```@example label
 plot(ibm_aapl_weekly_returns[:, :AAPL],
     ibm_aapl_weekly_returns[:, :IBM],
     seriestype = :scatter;
