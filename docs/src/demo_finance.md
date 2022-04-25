@@ -65,7 +65,7 @@ further analysis. We use `TSx.join` to create two columns containing
 adjusted closing prices of both the stocks. The join happens by
 comparing the `Index` values (dates) of the two objects. The resulting
 object contains two columns with exactly the same dates for which both
-the objects have data, all the other rows are ommitted from the
+the objects have data, all the other rows are omitted from the
 result.
 
 ```@example e1
