@@ -1118,18 +1118,80 @@ julia> names(TS([1:10 11:20]))
  "x2"
 ```
 """
-            
+
 function names(ts::TS)
     names(ts.coredata[!, Not(:Index)])
 end
+            
+"""
+# First Row
+```julia
+first(ts::TS)
+```
+Returns the first row of the TS object as a TS object.
+ 
+# Head
+```julia
+head(ts::TS, n::Int = 10)
+```
+Returns the first 10 rows of the TS object as a TS object.
+`n` can be changed to any number.
+            
+# Tail
+```julia
+tail(ts::TS, n::Int = 10)
+```
+Returns the last 10 rows of the TS object as a TS object.
+`n` can be changed to any number.
+            
+# Examples
+```jldoctest; setup = :(using TSx, DataFrames, Dates, Random)
+julia> dates = Date("2022-02-01"):Month(1):Date("2022-02-01")+Month(9)
+julia> df = DataFrame(date = dates, x1 = randn(length(dates));
+julia> ts = TS(df)
+julia> first(ts)
+(10 x 1) TS with Dates.Date Index
 
+ Index       x1
+ Date        Float64
+───────────────────────
+ 2022-02-01  0.768448
+(1 x 1) TS with Dates.Date Index
+
+ Index       x1
+ Date        Float64
+───────────────────────
+ 2022-02-01  0.768448
+            
+julia> head(ts,5)
+(5 x 1) TS with Dates.Date Index
+
+ Index       x1
+ Date        Float64
+───────────────────────
+ 2022-02-01  0.768448
+ 2022-03-01  0.940515
+ 2022-04-01  0.673959
+ 2022-05-01  0.395453
+ 2022-06-01  0.313244
+            
+julia> tail(ts, 3)
+(3 x 1) TS with Dates.Date Index
+
+ Index       x1
+ Date        Float64
+───────────────────────
+ 2022-09-01  0.0521332
+ 2022-10-01  0.26864
+ 2022-11-01  0.108871
+```
+"""
 function first(ts::TS)
-    TS(DataFrames.first(ts.coredata))
+    TS(Base.first(ts.coredata,1))
 end
-            
-            
+
 function head(ts::TS, n::Int = 10)
-    TS(DataFrames.first(ts.coredata, n))
+    TS(Base.first(ts.coredata, n))
 end
                 
 function tail(ts::TS, n::Int = 10)
