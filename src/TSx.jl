@@ -777,6 +777,10 @@ function Base.getindex(ts::TS, i::UnitRange, j::Int)
     return TS(ts.coredata[i, Cols(:Index, j+1)])
 end
 
+function Base.getindex(ts::TS, i::UnitRange, j::Symbol)
+    return TS(ts.coredata[i, Cols(:Index, j)])
+end
+
 function Base.getindex(ts::TS, i::Int, j::UnitRange)
     return TS(ts.coredata[[i], Cols(:Index, 1 .+(j))])
 end
