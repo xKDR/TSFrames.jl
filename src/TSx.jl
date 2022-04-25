@@ -519,8 +519,8 @@ julia> ts[1:5]
      4  0.395453  0.395453  0.395453
      5  0.313244  0.313244  0.313244
 
-# first five rows, second column
-julia> ts[1:5, 2]
+# first five rows, x2 column
+julia> ts[1:5, :x2]
 (5 x 1) TS with Int64 Index
 
  Index  x2
