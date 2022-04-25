@@ -113,7 +113,7 @@ julia> ts_weekly = apply(ts, Week, last, last)
 ### Plotting
 ```julia
 julia> using Plots
-julia> plot(ts_weekly_closing)
+julia> plot(ts_weekly[:, [:Close_last]])
 ```
 
 ![](./docs/src/assets/ts-plot.svg)
