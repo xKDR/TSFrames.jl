@@ -22,21 +22,18 @@ import Base.vcat
 import Dates.Period
 
 export TS,
-    JoinBoth,
-    JoinAll,
-    JoinLeft,
-    JoinRight,
+    # merge and join functions
+    JoinBoth, JoinInner, JoinAll, JoinOuter, JoinLeft, JoinRight, join, cbind, rbind, vcat,
+    #
     Matrix,
     apply,
     convert,
-    cbind,
     describe,
     diff,
     first,
     getindex,
     head,
     index,
-    join,
     lag,
     lastindex,
     lead,
@@ -51,15 +48,13 @@ export TS,
     ncol,
     pctchange,
     plot,
-    log,
-    rbind,
+    log,    
     show,
     size,
     subset,
     summary,
     tail,
-    rollapply,
-    vcat
+    rollapply
 
 include("TS.jl")
 include("utils.jl")
