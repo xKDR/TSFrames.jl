@@ -230,13 +230,13 @@ function Base.join(ts1::TS, ts2::TS, ::Type{JoinBoth})
     result = DataFrames.innerjoin(ts1.coredata, ts2.coredata, on = :Index, makeunique=true)
     return TS(result)
 end
-Base.join(ts1::TS, ts2::TS, ::Type{JoinInner}) = Base.join(ts1::TS, ts2::TS, ::Type{JoinBoth})
+Base.join(ts1::TS, ts2::TS, ::Type{JoinInner}) = Base.join(ts1, ts2, JoinBoth)
 
 function Base.join(ts1::TS, ts2::TS, ::Type{JoinAll})
     result = DataFrames.outerjoin(ts1.coredata, ts2.coredata, on = :Index, makeunique=true)
     return TS(result)
 end
-Base.join(ts1::TS, ts2::TS, ::Type{JoinOuter}) = Base.join(ts1::TS, ts2::TS, ::Type{JoinAll})
+Base.join(ts1::TS, ts2::TS, ::Type{JoinOuter}) = Base.join(ts1, ts2, JoinAll)
 
 function Base.join(ts1::TS, ts2::TS, ::Type{JoinLeft})
     result = DataFrames.leftjoin(ts1.coredata, ts2.coredata, on = :Index, makeunique=true)
