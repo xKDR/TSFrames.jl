@@ -1,6 +1,10 @@
+struct JoinInner    # inner
+end
 struct JoinBoth    # inner
 end
-struct JoinAll    # inner
+struct JoinAll    # outer
+end
+struct JoinOuter    # outer
 end
 struct JoinLeft     # left
 end
@@ -20,7 +24,8 @@ column names amongst the TS objects.
 
 The following join types are supported:
 
-`join(ts1::TS, ts2::TS, ::Type{JoinBoth})`
+`join(ts1::TS, ts2::TS, ::Type{JoinInner})` and
+`join(ts1::TS, ts2::TS, ::Type{JoinBoth})`:
 
 a.k.a. inner join, takes the intersection of the indexes of `ts1` and
 `ts2`, and then merges the columns of both the objects. The resulting
@@ -28,6 +33,7 @@ object will only contain rows which are present in both the objects'
 indexes. The function will rename columns in the final object if
 they had same names in the TS objects.
 
+`join(ts1::TS, ts2::TS, ::Type{JoinOuter})` and 
 `join(ts1::TS, ts2::TS, ::Type{JoinAll})`:
 
 a.k.a. outer join, takes the union of the indexes of `ts1` and `ts2`
@@ -47,7 +53,7 @@ associated with matching index rows on the right. The operation
 inserts `missing` values where in the unmatched rows of the right
 object.
 
-`join(ts1::TS, ts2::TS, ::Type{JoinRight})`
+`join(ts1::TS, ts2::TS, ::Type{JoinRight})`:
 
 Right join, similar to left join but works in the opposite
 direction. The final object contains all the rows from the right
@@ -224,11 +230,13 @@ function Base.join(ts1::TS, ts2::TS, ::Type{JoinBoth})
     result = DataFrames.innerjoin(ts1.coredata, ts2.coredata, on = :Index, makeunique=true)
     return TS(result)
 end
+Base.join(ts1::TS, ts2::TS, ::Type{JoinInner}) = Base.join(ts1::TS, ts2::TS, ::Type{JoinBoth})
 
 function Base.join(ts1::TS, ts2::TS, ::Type{JoinAll})
     result = DataFrames.outerjoin(ts1.coredata, ts2.coredata, on = :Index, makeunique=true)
     return TS(result)
 end
+Base.join(ts1::TS, ts2::TS, ::Type{JoinOuter}) = Base.join(ts1::TS, ts2::TS, ::Type{JoinAll})
 
 function Base.join(ts1::TS, ts2::TS, ::Type{JoinLeft})
     result = DataFrames.leftjoin(ts1.coredata, ts2.coredata, on = :Index, makeunique=true)
@@ -239,5 +247,6 @@ function Base.join(ts1::TS, ts2::TS, ::Type{JoinRight})
     result = DataFrames.rightjoin(ts1.coredata, ts2.coredata, on = :Index, makeunique=true)
     return TS(result)
 end
+
 # alias
 cbind = join
