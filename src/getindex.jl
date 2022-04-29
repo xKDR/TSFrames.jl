@@ -56,19 +56,14 @@ julia> ts[1:5]
      4  0.395453  0.395453  0.395453
      5  0.313244  0.313244  0.313244
 
-# first five rows, x2 column
+# first five rows, x2 column; returns a vector
 julia> ts[1:5, :x2]
-(5 x 1) TS with Int64 Index
-
- Index  x2
- Int64  Float64
-─────────────────
-     1  0.768448
-     2  0.940515
-     3  0.673959
-     4  0.395453
-     5  0.313244
-
+5-element Vector{Float64}:
+ 0.7684476751965699
+ 0.940515000715187
+ 0.6739586945680673
+ 0.3954531123351086
+ 0.3132439558075186
 
 julia> ts[1:5, 2:3]
 (5 x 2) TS with Int64 Index
@@ -429,7 +424,7 @@ function Base.getindex(ts::TS, ::Colon, j::AbstractVector{Int})
     ts[1:TSx.nrow(ts), j]
 end
 
-function Base.getindex(ts::TS, ::Colon, j::AbstractVector{Union{String, Symbol}})
+function Base.getindex(ts::TS, ::Colon, j::AbstractVector{T} where {T<:Union{String, Symbol}}
     ts[1:TSx.nrow(ts), j]
 end
 ###
