@@ -128,3 +128,8 @@ examples and functionality. The API reference is available on the
 
 All or any contributions are welcome, small or large. Please feel free
 to fork the repository and submit a Pull Request.
+
+## Acknowledgements
+
+We gratefully acknowledge the JuliaLab at MIT for financial support
+for this project.
