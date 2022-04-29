@@ -125,11 +125,21 @@ julia> show(ts_weekly[1:10])
 ```
 """
 function apply(ts::TS, period::Union{T,Type{T}}, fun::V, index_at::Function=first) where {T<:Union{DatePeriod,TimePeriod}, V<:Function}
-    sdf = transform(ts.coredata, :Index => i -> Dates.floor.(i, period))
-    gd = groupby(sdf, :Index_function)
+    local tmp_col::String = get_tmp_colname(names(ts.coredata))
+    sdf = transform(ts.coredata, :Index => (i -> Dates.floor.(i, period)) => tmp_col)
+    gd = groupby(sdf, tmp_col)
     df = combine(gd,
                  :Index => index_at => :Index,
-                 Not(["Index", "Index_function"]) .=> fun,
+                 Not(["Index", tmp_col]) .=> fun,
                  keepkeys=false)
     TS(df, :Index)
+end
+
+function get_tmp_colname(cols::AbstractVector{String})
+    idx = 0
+    init = "tmp0191"
+    while string(init, idx) in cols
+        idx += 1
+    end
+    return string(init, idx)
 end
