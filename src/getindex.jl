@@ -19,8 +19,8 @@ two subset `coredata` by matching on the index column.
 Column selector could be an integer or any other selector which
 `DataFrame` indexing supports. You can use a Symbols to fetch specific
 columns (ex: `ts[:x1]`, `ts[[:x1, :x2]]`). For fetching column values
-as `Vector` or `Matrix`, use `Colon`: `ts[:, :x1]` and `ts[:, [:x1,
-:x2]]`.
+as `Vector`, use `Colon` with column name: `ts[:, :x1]`. For Matrix
+output, use the constructor: `Matrix(ts)`.
 
 For fetching the index column vector use the `index()` method.
 
@@ -334,38 +334,38 @@ function Base.getindex(ts::TS, i::Int, j::String)
     return TS(ts.coredata[[i], Cols("Index", j)])
 end
 
-function Base.getindex(ts::TS, i::Vector{Int}, j::Int)
+function Base.getindex(ts::TS, i::AbstractVector{Int}, j::Int)
     TS(ts.coredata[i, Cols(:Index, j+1)]) # increment: account for Index
 end
 
-function Base.getindex(ts::TS, i::Vector{Int}, j::UnitRange)
+function Base.getindex(ts::TS, i::AbstractVector{Int}, j::UnitRange)
     ts[i, collect(j)]
 end
 
-function Base.getindex(ts::TS, i::UnitRange, j::Vector{Int})
+function Base.getindex(ts::TS, i::UnitRange, j::AbstractVector{Int})
     ts[collect(i), j]
 end
 
-function Base.getindex(ts::TS, i::Int, j::Vector{Int})
+function Base.getindex(ts::TS, i::Int, j::AbstractVector{Int})
     TS(ts.coredata[[i], Cols(:Index, j.+1)]) # increment: account for Index
 end
 
-function Base.getindex(ts::TS, i::Vector{Int}, j::Vector{Int})
+function Base.getindex(ts::TS, i::AbstractVector{Int}, j::AbstractVector{Int})
     TS(ts.coredata[i, Cols(:Index, j.+1)]) # increment: account for Index
 end
 
-function Base.getindex(ts::TS, i::Int, j::Vector{T}) where {T<:Union{String, Symbol}}
+function Base.getindex(ts::TS, i::Int, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
     TS(ts.coredata[[i], Cols(:Index, j)])
 end
 
 ## Column indexing with Colon
 # returns a TS object
-function Base.getindex(ts::TS, ::Colon, j::Vector{Int})
+function Base.getindex(ts::TS, ::Colon, j::AbstractVector{Int})
     TS(select(ts.coredata, :Index, j.+1), :Index)  # increment: account for Index
 end
 
 # returns a TS object
-function Base.getindex(ts::TS, ::Colon, j::Vector{T}) where {T<:Union{String, Symbol}}
+function Base.getindex(ts::TS, ::Colon, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
     TS(select(ts.coredata, :Index, j), :Index)  # increment: account for Index
 end
 
