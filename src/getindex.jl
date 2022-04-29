@@ -18,7 +18,7 @@ two subset `coredata` by matching on the index column.
 
 Column selector could be an integer or any other selector which
 `DataFrame` indexing supports. You can use a Symbols to fetch specific
-columns (ex: `ts[:x1]`, `ts[[:x1, :x2]]`). For fetching column values
+columns (ex: `ts[[:x1, :x2]]`). For fetching column values
 as `Vector`, use `Colon` with column name: `ts[:, :x1]`. For Matrix
 output, use the constructor: `Matrix(ts)`.
 
@@ -310,6 +310,7 @@ function Base.getindex(ts::TS, dt::AbstractVector{TimeType}, j::AbstractVector{I
     idx = map(d -> findfirst(x -> x == d, index(ts)), dt)
     if length(idx) == 0
         return nothing
+    end
     ts[idx, j]
 end
 
