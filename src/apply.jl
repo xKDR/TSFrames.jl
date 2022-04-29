@@ -127,17 +127,9 @@ julia> show(ts_weekly[1:10])
 function apply(ts::TS, period::Union{T,Type{T}}, fun::V, index_at::Function=first) where {T<:Union{DatePeriod,TimePeriod}, V<:Function}
     sdf = transform(ts.coredata, :Index => i -> Dates.floor.(i, period))
     gd = groupby(sdf, :Index_function)
-
-    ## Columns to exclude from operation.
-    # Note: Not() does not support more
-    # than one Symbol so we have to find Int indexes.
-    ##
-    n = findfirst(r -> r == "Index", names(gd))
-    r = findfirst(r -> r == "Index_function", names(gd))
-
     df = combine(gd,
                  :Index => index_at => :Index,
-                 names(gd)[Not(n, r)] .=> fun,
+                 Not(["Index", "Index_function"]) .=> fun,
                  keepkeys=false)
     TS(df, :Index)
 end
