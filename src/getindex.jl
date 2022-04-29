@@ -257,24 +257,129 @@ julia> ts[1, "x1"]
 
 ```
 """
+###
+## Row-Column interfaces
+###
+
+### Inputs: row scalar, column scalar; Output: scalar
+function Base.getindex(ts::TS, i::Int, j::Int)
+    ts.coredata[i, j+1]
+end
+
+function Base.getindex(ts::TS, i::Int, j::Union{Symbol, String})
+    return ts.coredata[i, j]
+end
+###
+
+### Inputs: row scalar, column vector; Output: TS
+function Base.getindex(ts::TS, i::Int, j::AbstractVector{Int})
+    TS(ts.coredata[[i], Cols(:Index, j.+1)]) # increment: account for Index
+end
+
+function Base.getindex(ts::TS, i::Int, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
+    TS(ts.coredata[[i], Cols(:Index, j)])
+end
+###
+
+### Inputs: row scalar, column range; Output: TS
+function Base.getindex(ts::TS, i::Int, j::UnitRange)
+    return TS(ts.coredata[[i], Cols(:Index, 1 .+(j))])
+end
+###
+
+### Inputs: row vector, column scalar; Output: vector
+function Base.getindex(ts::TS, i::AbstractVector{Int}, j::Int)
+    ts.coredata[i, j+1] # increment: account for Index
+end
+
+function Base.getindex(ts::TS, i::AbstractVector{Int}, j::Union{String, Symbol})
+    ts.coredata[i, j]
+end
+###
+
+### Inputs: row vector, column vector; Output: TS
+function Base.getindex(ts::TS, i::AbstractVector{Int}, j::AbstractVector{Int})
+    TS(ts.coredata[i, Cols(:Index, j.+1)]) # increment: account for Index
+end
+
+function Base.getindex(ts::TS, i::AbstractVector{Int}, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
+    TS(ts.coredata[i, Cols(:Index, j)])
+end
+
+function Base.getindex(ts::TS, dt::AbstractVector{TimeType}, j::AbstractVector{Int})
+    idx = map(d -> findfirst(x -> x == d, index(ts)), dt)
+    if length(idx) == 0
+        return nothing
+    ts[idx, j]
+end
+
+function Base.getindex(ts::TS, dt::AbstractVector{TimeType}, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
+    idx = map(d -> findfirst(x -> x == d, index(ts)), dt)
+    ts[idx, j]
+end
+###
+
+### Inputs: row vector, column range; Output: TS
+function Base.getindex(ts::TS, i::AbstractVector{Int}, j::UnitRange)
+    ts[i, collect(j)]
+end
+
+function Base.getindex(ts::TS, dt::AbstractVector{TimeType}, j::UnitRange)
+    ts[dt, collect(j)]
+end
+###
+
+
+### Inputs: row range, column scalar: return a vector
+function Base.getindex(ts::TS, i::UnitRange, j::Int)
+    ts[collect(i), j]
+end
+
+function Base.getindex(ts::TS, i::UnitRange, j::Union{String, Symbol})
+    ts[collect(i), j]
+end
+###
+
+### Inputs: row range, column vector: return TS
+function Base.getindex(ts::TS, i::UnitRange, j::AbstractVector{Int})
+    ts[collect(i), j]
+end
+
+function Base.getindex(ts::TS, i::UnitRange, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
+    ts[collect(i), j]
+end
+###
+
+### Inputs: row range, column range: return TS
+function Base.getindex(ts::TS, i::UnitRange, j::UnitRange)
+    ts[collect(i), collect(j)]
+end
+
+
+###
+## Row indexing interfaces
+###
+
 function Base.getindex(ts::TS, i::Int)
-    TS(ts.coredata[[i], :])
+    ts[i, 1:TSx.ncol(ts)]
 end
 
-# By row-range
-function Base.getindex(ts::TS, r::UnitRange)
-    TS(ts.coredata[collect(r), :])
+function Base.getindex(ts::TS, i::UnitRange)
+    ts[i, 1:TSx.ncol(ts)]
 end
 
-# By row-array
-function Base.getindex(ts::TS, a::AbstractVector{Int64})
-    TS(ts.coredata[a, :])
+function Base.getindex(ts::TS, i::AbstractVector{Int64})
+    ts[i, 1:TSx.ncol(ts)]
 end
 
-# By date
-function Base.getindex(ts::TS, d::Date)
-    sdf = filter(x -> x.Index == d, ts.coredata)
-    TS(sdf)
+function Base.getindex(ts::TS, dt::AbstractVector{TimeType})
+    ts[dates, 1:TSx.ncol(ts)]
+    idx = map(d -> findfirst(x -> x == d, index(ts)), dt)
+    ts[idx]
+end
+
+function Base.getindex(ts::TS, d::TimeType)
+    ts[[d], 1:TSx.ncol(ts)]
 end
 
 # By period
@@ -304,77 +409,32 @@ end
 # function Base.getindex(ts::TS, r::StepRange{T, V}) where {T<:TimeType, V<:Period}
 # end
 
-# By row-column
-function Base.getindex(ts::TS, i::Int, j::Int)
-    TS(ts.coredata[[i], Cols(:Index, j+1)])
-end
-
-# By row-range, column
-function Base.getindex(ts::TS, i::UnitRange, j::Int)
-    return TS(ts.coredata[i, Cols(:Index, j+1)])
-end
-
-function Base.getindex(ts::TS, i::UnitRange, j::Symbol)
-    return TS(ts.coredata[i, Cols(:Index, j)])
-end
-
-function Base.getindex(ts::TS, i::Int, j::UnitRange)
-    return TS(ts.coredata[[i], Cols(:Index, 1 .+(j))])
-end
-
-function Base.getindex(ts::TS, i::UnitRange, j::UnitRange)
-    return TS(ts.coredata[i, Cols(:Index, 1 .+(j))])
-end
-
-function Base.getindex(ts::TS, i::Int, j::Symbol)
-    return TS(ts.coredata[[i], Cols(:Index, j)])
-end
-
-function Base.getindex(ts::TS, i::Int, j::String)
-    return TS(ts.coredata[[i], Cols("Index", j)])
-end
-
-function Base.getindex(ts::TS, i::AbstractVector{Int}, j::Int)
-    TS(ts.coredata[i, Cols(:Index, j+1)]) # increment: account for Index
-end
-
-function Base.getindex(ts::TS, i::AbstractVector{Int}, j::UnitRange)
-    ts[i, collect(j)]
-end
-
-function Base.getindex(ts::TS, i::UnitRange, j::AbstractVector{Int})
-    ts[collect(i), j]
-end
-
-function Base.getindex(ts::TS, i::Int, j::AbstractVector{Int})
-    TS(ts.coredata[[i], Cols(:Index, j.+1)]) # increment: account for Index
-end
-
-function Base.getindex(ts::TS, i::AbstractVector{Int}, j::AbstractVector{Int})
-    TS(ts.coredata[i, Cols(:Index, j.+1)]) # increment: account for Index
-end
-
-function Base.getindex(ts::TS, i::Int, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
-    TS(ts.coredata[[i], Cols(:Index, j)])
-end
-
+###
 ## Column indexing with Colon
-# returns a TS object
-function Base.getindex(ts::TS, ::Colon, j::AbstractVector{Int})
-    TS(select(ts.coredata, :Index, j.+1), :Index)  # increment: account for Index
-end
+###
 
-# returns a TS object
-function Base.getindex(ts::TS, ::Colon, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
-    TS(select(ts.coredata, :Index, j), :Index)  # increment: account for Index
-end
-
-# returns a Vector
+### Inputs: row colon, column scalar: return vector
 function Base.getindex(ts::TS, ::Colon, j::Int)
-    ts.coredata[!, j+1]
+    ts[1:TSx.nrow(ts), j]
 end
 
-# returns a Vector
-function Base.getindex(ts::TS, ::Colon, j::T) where {T<:Union{String, Symbol}}
-    ts.coredata[!, j]
+function Base.getindex(ts::TS, ::Colon, j::Union{String, Symbol})
+    ts[1:TSx.nrow(ts), j]
 end
+###
+
+### Inputs: row colon, column vector: return TS
+function Base.getindex(ts::TS, ::Colon, j::AbstractVector{Int})
+    ts[1:TSx.nrow(ts), j]
+end
+
+function Base.getindex(ts::TS, ::Colon, j::AbstractVector{Union{String, Symbol}})
+    ts[1:TSx.nrow(ts), j]
+end
+###
+
+### Inputs: row colon, column range: return TS
+function Base.getindex(ts::TS, i::Colon, j::UnitRange)
+    ts[1:TSx.nrow(ts), collect(j)]
+end
+###
