@@ -11,6 +11,7 @@ import Base.join
 import Base.lastindex
 import Base.length
 import Base.log
+import Base.Matrix
 import Base.names
 import Base.print
 import Base.==
@@ -65,13 +66,13 @@ include("TS.jl")
 include("utils.jl")
 
 include("apply.jl")
-include("convert.jl")
 include("diff.jl")
 include("getindex.jl")
 include("join.jl")
 include("lag.jl")
 include("lead.jl")
 include("log.jl")
+include("matrix.jl")
 include("pctchange.jl")
 include("plot.jl")
 include("rollapply.jl")
