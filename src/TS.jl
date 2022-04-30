@@ -278,3 +278,6 @@ function TS(coredata::AbstractArray{T,2}, index::AbstractVector{V}) where {T, V}
     df = DataFrame(coredata, :auto, copycols=true)
     TS(df, index)
 end
+
+# Create a TS from an existing TS does not error.
+TS(ts::TS) = ts
