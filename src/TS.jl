@@ -281,3 +281,6 @@ end
 
 # Create a TS from an existing TS does not error.
 TS(ts::TS) = ts
+
+# Base.copy
+Base.copy(ts::TS) = deepcopy(ts)
