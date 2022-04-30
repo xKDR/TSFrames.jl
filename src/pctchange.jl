@@ -2,22 +2,15 @@
 # Percent Change
 
 ```julia
-pctchange(ts::TS; periods::Int = 1, log = false)
+pctchange(ts::TS; periods::Int = 1)
 ```
 
 Return the percentage change between successive row elements.
 Default is the element in the next row. `periods` defines the number
-of rows to be shifted over, `1` being the default. The skipped rows are 
+of rows to be shifted over, `1` being the default. The skipped rows are
 rendered as `missing`.
 
-`log` is one of `false` (the default), `:log` and `:log10`. If `log == :log`, 
-the percentage change is computed as the logarithm of the change. If 
-`log == :log10`, the percentage change is computed as the logarithm of
-the change in base 10. Other values are ignored with a warning message.
-
-`pctchange` returns an error if: 
-    - the column type does not have the method `/`; or,
-    - the column type does not have the method `log` or `log10` when specified.
+`pctchange` returns an error if the column type does not have the method `/`.
 
 # Examples
 ```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
@@ -84,27 +77,13 @@ julia> pctchange(ts, 3)
 
 ```
 """
-function pctchange(ts::TS; periods::Int = 1, log::Any = false)
+function pctchange(ts::TS; periods::Int = 1)
     if periods <= 0
         error("periods must be a positive int")
     end
 
-    ddf = (ts.coredata[:, Not(:Index)] ./ TSx.lag(ts, periods).coredata[:, Not(:Index)])
-    
-    if log == false
-        ddf = ddf .- 1
-    elseif log == :log
-        ddf = Base.log.(ddf)
-    elseif log == :log10
-        ddf = Base.log10.(ddf)
-    else
-        @warn "log must be one of false, :log or :log10"
-    end
+    ddf = (ts.coredata[:, Not(:Index)] ./ TSx.lag(ts, periods).coredata[:, Not(:Index)]) .- 1
 
     insertcols!(ddf, 1, "Index" => ts.coredata[:, :Index])
     return TS(ddf, :Index)
 end
-
-# function pctchange(ts::TS, periods::Int = 1; log::Any = false) 
-#     return pctchange(ts; periods = periods, log = log)
-# end
