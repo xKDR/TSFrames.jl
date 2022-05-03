@@ -22,9 +22,12 @@ import Base.vcat
 import Dates.Period
 
 export TS,
-    # merge and join functions
-    JoinBoth, JoinInner, JoinAll, JoinOuter, JoinLeft, JoinRight, join, cbind, rbind, vcat,
-    #
+    JoinBoth,
+    JoinAll,
+    JoinInner,
+    JoinLeft,
+    JoinOuter,
+    JoinRight,
     Matrix,
     apply,
     convert,
