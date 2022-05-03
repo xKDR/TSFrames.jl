@@ -282,5 +282,36 @@ end
 # Create a TS from an existing TS does not error.
 TS(ts::TS) = ts
 
-# Base.copy
-Base.copy(ts::TS) = deepcopy(ts)
+    
+"""
+    copy(ts::TS; copycols::Bool=true)
+Copy time series `ts`.
+If `copycols=true` (the default), return a new `TS` holding
+copies of column vectors in `ts`, including the `Index` column.
+If `copycols=false`, return a new `TS` sharing column vectors with `ts`.
+"""
+function Base.copy(ts::TS; copycols::Bool=true)
+    return TS(copy(ts.coredata; copycols=copycols))
+end
+
+
+"""
+    similar(ts::TS, rows::Integer=nrow(df))
+Create a new `TS` with the same column names and column element types
+as `ts`. An optional second argument can be provided to request a number of rows
+that is different than the number of rows present in `ts`.
+"""
+function Base.similar(ts::TS, rows::Integer = size(ts, 1))
+    rows < 0 && throw(ArgumentError("the number of rows must be non-negative"))
+    return TS(similar(ts.coredata))
+end
+
+
+"""
+    empty(ts::TS)
+Create a new `TS` with the same column names and column element types
+as `ts` but with zero rows.
+"""
+Base.empty(ts::TS) = similar(ts, 0)
+
+
