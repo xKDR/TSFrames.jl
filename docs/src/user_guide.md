@@ -397,6 +397,35 @@ julia> apply(ts, Week, Statistics.std, last)
  2008-03-06   0.702384
         43 rows omitted
 
+# do not rename column
+julia> apply(ts, Week, Statistics.std, last, renamecols=false)
+(62 x 1) TS with Date Index
+
+ Index       value
+ Date        Float64
+──────────────────────
+ 2007-01-07  1.52077
+ 2007-01-14  0.910942
+ 2007-01-21  0.876362
+ 2007-01-28  1.08075
+ 2007-02-04  1.17684
+ 2007-02-11  1.40065
+ 2007-02-18  0.630415
+ 2007-02-25  1.38134
+ 2007-03-04  1.10601
+ 2007-03-11  1.51014
+     ⋮          ⋮
+ 2008-01-13  1.47589
+ 2008-01-20  0.923073
+ 2008-01-27  0.885798
+ 2008-02-03  1.16116
+ 2008-02-10  1.22311
+ 2008-02-17  1.40016
+ 2008-02-24  0.680589
+ 2008-03-02  1.37616
+ 2008-03-06  0.702384
+       43 rows omitted
+
 ```
 
 ## Joins: Row and column binding with other objects
@@ -830,8 +859,8 @@ julia> Matrix(ts)
 # use the underlying DataFrame for other operations
 julia> select(ts.coredata, :Index, :value, DataFrames.nrow)
 431×3 DataFrame
- Row │ Index       value     nrow  
-     │ Date        Float64   Int64 
+ Row │ Index       value     nrow
+     │ Date        Float64   Int64
 ─────┼─────────────────────────────
    1 │ 2007-01-01  10.1248     431
    2 │ 2007-01-02  10.3424     431
