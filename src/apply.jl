@@ -131,11 +131,7 @@ julia> show(ts_weekly[1:10])
 
 ```
 """
-function apply(ts::TS,
-               period::Union{T,Type{T}},
-               fun::V,
-               index_at::Function=first;
-               renamecols::Bool=true) where {T<:Union{DatePeriod,TimePeriod}, V<:Function}
+function apply(ts::TS, period::Union{T,Type{T}}, fun::V, index_at::Function=first; renamecols::Bool=true) where {T<:Union{DatePeriod,TimePeriod}, V<:Function}
 
     local tmp_col::String = get_tmp_colname(names(ts.coredata))
     sdf = transform(ts.coredata, :Index => (i -> Dates.floor.(i, period)) => tmp_col)
