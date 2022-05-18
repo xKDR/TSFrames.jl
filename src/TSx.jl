@@ -25,6 +25,8 @@ import Dates.Period
 export TS,
     JoinBoth,
     JoinAll,
+    JoinInner,
+    JoinOuter,
     JoinLeft,
     JoinRight,
     Matrix,
