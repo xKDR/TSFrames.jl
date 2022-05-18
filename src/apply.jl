@@ -4,7 +4,8 @@
 apply(ts::TS,
       period::Union{T,Type{T}},
       fun::V,
-      index_at::Function=first)
+      index_at::Function=first;
+      renamecols::Bool=true)
      where {T <: Union{DatePeriod,TimePeriod}, V <: Function}
 ```
 
@@ -21,6 +22,12 @@ By default, the method uses the first value of the index within the
 period to index the resulting aggregated object. This behaviour can be
 controlled by `index_at` argument which can take `first` or `last` as
 an input.
+
+# Keyword arguments
+* `renamecols::Bool=true`: whether to rename column names in the
+   resulting object. If `false`, the column name is automatically
+   generated based on the name of `fun` otherwise existing column
+   names are used.
 
 # Examples
 ```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
@@ -124,14 +131,16 @@ julia> show(ts_weekly[1:10])
 
 ```
 """
-function apply(ts::TS, period::Union{T,Type{T}}, fun::V, index_at::Function=first) where {T<:Union{DatePeriod,TimePeriod}, V<:Function}
+function apply(ts::TS, period::Union{T,Type{T}}, fun::V, index_at::Function=first; renamecols::Bool=true) where {T<:Union{DatePeriod,TimePeriod}, V<:Function}
+
     local tmp_col::String = get_tmp_colname(names(ts.coredata))
     sdf = transform(ts.coredata, :Index => (i -> Dates.floor.(i, period)) => tmp_col)
     gd = groupby(sdf, tmp_col)
     df = combine(gd,
                  :Index => index_at => :Index,
                  Not(["Index", tmp_col]) .=> fun,
-                 keepkeys=false)
+                 keepkeys=false,
+                 renamecols=renamecols)
     TS(df, :Index)
 end
 
