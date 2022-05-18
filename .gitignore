@@ -1,6 +1,12 @@
+# Editor
+.vscode
+
+# Julia tests cache
 *.jl.*.cov
 *.jl.cov
 *.jl.mem
+
+# Julia docs cache
 /Manifest.toml
 /docs/Manifest.toml
 /docs/build/
