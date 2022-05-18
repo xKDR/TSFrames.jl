@@ -296,7 +296,8 @@ end
 
 # Base.copy
 """
-# Base.copy
+# Copy
+
 ```julia
 copy(ts::TS; copycols::Bool=true)
 ```
@@ -329,7 +330,8 @@ Base.copy(ts::TS; copycols::Bool=true) = TS(copy(ts.coredata; copycols))
 
 # Base.similar
 """
-# Base.copy
+# Similar
+
 ```julia
 similar(ts::TS, rows::Integer=nrow(ts))
 ```
