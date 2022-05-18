@@ -2,14 +2,15 @@
 # Percent Change
 
 ```julia
-pctchange(ts::TS, periods::Int = 1)
+pctchange(ts::TS; periods::Int = 1)
 ```
 
 Return the percentage change between successive row elements.
 Default is the element in the next row. `periods` defines the number
-of rows to be shifted over. The skipped rows are rendered as `missing`.
+of rows to be shifted over, `1` being the default. The skipped rows are 
+rendered as `missing`.
 
-`pctchange` returns an error if column type does not have the method `/`.
+`pctchange` returns an error if the column type does not have the method `/`.
 
 # Examples
 ```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
@@ -76,13 +77,13 @@ julia> pctchange(ts, 3)
 
 ```
 """
-
-# Pctchange
-function pctchange(ts::TS, periods::Int = 1)
+function pctchange(ts::TS; periods::Int = 1)
     if periods <= 0
         error("periods must be a positive int")
     end
+
     ddf = (ts.coredata[:, Not(:Index)] ./ TSx.lag(ts, periods).coredata[:, Not(:Index)]) .- 1
+    
     insertcols!(ddf, 1, "Index" => ts.coredata[:, :Index])
-    TS(ddf, :Index)
+    return TS(ddf, :Index)
 end
