@@ -102,9 +102,50 @@ julia> subset(TS(1:20, -9:10), -4, 5)
      3     13
      4     14
      5     15
+
+julia> subset(ts,:,Date("2022-04-12"))
+(11 x 1) TS with Date Index
+
+ Index       x1        
+ Date        Float64   
+───────────────────────
+ 2022-02-01  0.768448
+ 2022-02-08  0.940515
+ 2022-02-15  0.673959
+ 2022-02-22  0.395453
+ 2022-03-01  0.313244
+ 2022-03-08  0.662555
+ 2022-03-15  0.586022
+ 2022-03-22  0.0521332
+ 2022-03-29  0.26864
+ 2022-04-05  0.108871
+ 2022-04-12  0.163666
+
+julia> subset(ts,Date("2022-9-27"),:)
+(6 x 1) TS with Date Index
+
+ Index       x1       
+ Date        Float64  
+──────────────────────
+ 2022-09-27  0.529253
+ 2022-10-04  0.031831
+ 2022-10-11  0.900681
+ 2022-10-18  0.940299
+ 2022-10-25  0.621379
+ 2022-11-01  0.348173
+
+
 ```
 
 """
 function subset(ts::TS, from::T, to::T) where {T<:Union{Int, TimeType}}
     TS(DataFrames.subset(ts.coredata, :Index => x -> x .>= from .&& x .<= to))
+end
+
+function subset(ts::TS, ::Colon, to::T) where {T<:Union{Int, TimeType}}
+    TS(DataFrames.subset(ts.coredata, :Index => x -> x .<= to))
+end
+
+function subset(ts::TS, from::T, ::Colon,) where {T<:Union{Int, TimeType}}
+    TS(DataFrames.subset(ts.coredata, :Index => x -> x .>= from))
 end
