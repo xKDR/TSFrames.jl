@@ -2,7 +2,7 @@
 # Percent Change
 
 ```julia
-pctchange(ts::TS, periods::Int = 1)
+pctchange(ts::TS; periods::Int = 1)
 ```
 
 Return the percentage change between successive row elements.
@@ -57,7 +57,7 @@ julia> pctchange(ts)
 
 
 # Pctchange over the third row
-julia> pctchange(ts, 3)
+julia> pctchange(ts; periods=3)
 (10 x 1) TS with Date Index
 
  Index       x1
@@ -78,7 +78,7 @@ julia> pctchange(ts, 3)
 """
 
 # Pctchange
-function pctchange(ts::TS, periods::Int = 1)
+function pctchange(ts::TS; periods::Int = 1)
     if periods <= 0
         error("periods must be a positive int")
     end
