@@ -30,6 +30,7 @@ export TS,
     JoinRight,
     Matrix,
     apply,
+    cbind, 
     convert,
     describe,
     diff,
@@ -37,6 +38,7 @@ export TS,
     getindex,
     head,
     index,
+    join,
     lag,
     lastindex,
     lead,
@@ -57,7 +59,9 @@ export TS,
     subset,
     summary,
     tail,
-    rollapply
+    rbind,
+    rollapply,
+    vcat
 
 include("TS.jl")
 include("utils.jl")
