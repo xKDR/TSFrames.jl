@@ -146,6 +146,6 @@ function subset(ts::TS, ::Colon, to::T) where {T<:Union{Int, TimeType}}
     TS(DataFrames.subset(ts.coredata, :Index => x -> x .<= to))
 end
 
-function subset(ts::TS, from::T, ::Colon,) where {T<:Union{Int, TimeType}}
+function subset(ts::TS, from::T, ::Colon) where {T<:Union{Int, TimeType}}
     TS(DataFrames.subset(ts.coredata, :Index => x -> x .>= from))
 end
