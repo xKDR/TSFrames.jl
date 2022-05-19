@@ -201,7 +201,7 @@ julia> ts = TS([random(10) random(10)], dates) # matrix object
 """
 struct TS
 
-    coredata::DataFrame
+    coredata :: DataFrame
 
     # From DataFrame, index number/name/symbol
     function TS(coredata::DataFrame, index::Union{String,Symbol,Int})
