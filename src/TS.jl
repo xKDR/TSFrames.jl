@@ -204,7 +204,7 @@ struct TS
     coredata :: DataFrame
 
     # From DataFrame, index number/name/symbol
-    function TS(coredata::DataFrame, index::Union{String,Symbol,Int})
+    function TS(coredata::DataFrame, index::Union{String, Symbol, Int})
         if (DataFrames.ncol(coredata) == 1)
             TS(coredata, collect(Base.OneTo(DataFrames.nrow(coredata))))
         end
@@ -219,7 +219,7 @@ struct TS
     end
 
     # From DataFrame, external index
-    function TS(coredata::DataFrame, index::AbstractVector{T}) where {T<:Union{Int,TimeType}}
+    function TS(coredata::DataFrame, index::AbstractVector{T}) where {T<:Union{Int, TimeType}}
         sorted_index = sort(index)
 
         cd = copy(coredata)
@@ -255,7 +255,7 @@ function TS(coredata::DataFrame, index::UnitRange{Int})
 end
 
 # From AbstractVector
-function TS(coredata::AbstractVector{T}, index::AbstractVector{V}) where {T,V}
+function TS(coredata::AbstractVector{T}, index::AbstractVector{V}) where {T, V}
     df = DataFrame([coredata], :auto)
     TS(df, index)
 end
@@ -274,7 +274,7 @@ function TS(coredata::AbstractArray{T,2}) where {T}
     TS(df, index_vals)
 end
 
-function TS(coredata::AbstractArray{T,2}, index::AbstractVector{V}) where {T,V}
+function TS(coredata::AbstractArray{T,2}, index::AbstractVector{V}) where {T, V}
     df = DataFrame(coredata, :auto, copycols=true)
     TS(df, index)
 end
