@@ -1,9 +1,9 @@
 DATA_SIZE = 360
-index_timetype = Date(2000, 1,1) + Day.(0:(DATA_SIZE - 1))
+index_timetype = Date(2000, 1, 1) + Day.(0:(DATA_SIZE-1))
 vec1 = randn(DATA_SIZE)
 vec2 = randn(DATA_SIZE)
 vec3 = randn(DATA_SIZE)
-df = DataFrame(Index = index_timetype, vec1 = vec1,vec2 = vec2, vec3 = vec3)
+df = DataFrame(Index=index_timetype, vec1=vec1, vec2=vec2, vec3=vec3)
 ts = TSx.TS(df, 1)
 
 functions = [mean, median, sum, minimum, maximum, std]
@@ -19,7 +19,7 @@ end
 for fun in functions
     colname = "vec1_rolling_$(fun)"
     res = @test TSx.rollapply(fun, ts, :vec1, 5).coredata[!, colname] == RollingFunctions.rolling(fun, df[!, :vec1], 5)
-    
+
 end
 
 for fun in functions

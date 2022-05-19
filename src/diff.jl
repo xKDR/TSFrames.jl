@@ -74,7 +74,7 @@ julia> diff(ts, 3)[1:10]     # difference over the third row
 """
 
 # Diff
-function diff(ts::TS, periods::Int = 1)
+function diff(ts::TS, periods::Int=1)
     if periods <= 0
         error("periods must be a postive int")
     end

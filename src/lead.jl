@@ -79,7 +79,7 @@ julia> lead(ts, 2)[1:10]     # leads by 2 values
 
 ```
 """
-function lead(ts::TS, lead_value::Int = 1)
+function lead(ts::TS, lead_value::Int=1)
     sdf = DataFrame(ShiftedArrays.lead.(eachcol(ts.coredata[!, Not(:Index)]), lead_value), TSx.names(ts))
     insertcols!(sdf, 1, :Index => ts.coredata[!, :Index])
     TS(sdf, :Index)

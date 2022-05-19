@@ -73,7 +73,7 @@ function rollapply(fun::Function, ts::TS, column::Any, windowsize::Int) # TODO: 
     col = Int(1)
     if typeof(column) <: Int
         col = copy(column)
-        col = col+1             # index is always 1
+        col = col + 1             # index is always 1
     else
         col = column
     end

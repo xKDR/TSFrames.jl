@@ -78,7 +78,7 @@ julia> pctchange(ts, 3)
 """
 
 # Pctchange
-function pctchange(ts::TS, periods::Int = 1)
+function pctchange(ts::TS, periods::Int=1)
     if periods <= 0
         error("periods must be a positive int")
     end

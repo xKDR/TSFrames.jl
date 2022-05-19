@@ -54,7 +54,7 @@ julia> # plot(ts[1:6], [:val1, :val3]);
 julia> # plot(ts, [1, 2], size=(600, 400));
 ```
 """
-@recipe function f(ts::TS, cols::Vector{Int} = collect(1:TSx.ncol(ts)))
+@recipe function f(ts::TS, cols::Vector{Int}=collect(1:TSx.ncol(ts)))
     seriestype := :line
     size --> (1200, 1200)
     xlabel --> :Index
@@ -64,12 +64,12 @@ julia> # plot(ts, [1, 2], size=(600, 400));
     (TSx.index(ts), Matrix(ts.coredata[!, cols.+1])) # increment to account for Index
 end
 
-@recipe function f(ts::TS, cols::Vector{T}) where {T<:Union{String, Symbol}}
+@recipe function f(ts::TS, cols::Vector{T}) where {T<:Union{String,Symbol}}
     colindices = [DataFrames.columnindex(ts.coredata, i) for i in cols]
     colindices .-= 1            # decrement to account for Index
     (ts, colindices)
 end
 
-@recipe function f(ts::TS, cols::T) where {T<:Union{Int, String, Symbol}}
+@recipe function f(ts::TS, cols::T) where {T<:Union{Int,String,Symbol}}
     (ts, [cols])
 end

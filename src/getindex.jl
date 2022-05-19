@@ -265,7 +265,7 @@ function Base.getindex(ts::TS, i::Int, j::Int)
     ts.coredata[i, j+1]
 end
 
-function Base.getindex(ts::TS, i::Int, j::Union{Symbol, String})
+function Base.getindex(ts::TS, i::Int, j::Union{Symbol,String})
     return ts.coredata[i, j]
 end
 
@@ -274,7 +274,7 @@ function Base.getindex(ts::TS, dt::T, j::Int) where {T<:TimeType}
     ts.coredata[idx, j+1]
 end
 
-function Base.getindex(ts::TS, dt::T, j::Union{String, Symbol}) where {T<:TimeType}
+function Base.getindex(ts::TS, dt::T, j::Union{String,Symbol}) where {T<:TimeType}
     idx = findfirst(x -> x == dt, index(ts))
     ts.coredata[idx, j]
 end
@@ -282,10 +282,10 @@ end
 
 ### Inputs: row scalar, column vector; Output: TS
 function Base.getindex(ts::TS, i::Int, j::AbstractVector{Int})
-    TS(ts.coredata[[i], Cols(:Index, j.+1)]) # increment: account for Index
+    TS(ts.coredata[[i], Cols(:Index, j .+ 1)]) # increment: account for Index
 end
 
-function Base.getindex(ts::TS, i::Int, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
+function Base.getindex(ts::TS, i::Int, j::AbstractVector{T}) where {T<:Union{String,Symbol}}
     TS(ts.coredata[[i], Cols(:Index, j)])
 end
 
@@ -294,7 +294,7 @@ function Base.getindex(ts::TS, dt::T, j::AbstractVector{Int}) where {T<:TimeType
     ts[idx, j]
 end
 
-function Base.getindex(ts::TS, dt::D, j::AbstractVector{T}) where {D<:TimeType, T<:Union{String, Symbol}}
+function Base.getindex(ts::TS, dt::D, j::AbstractVector{T}) where {D<:TimeType,T<:Union{String,Symbol}}
     idx = findfirst(x -> x == dt, index(ts))
     ts[idx, j]
 end
@@ -302,7 +302,7 @@ end
 
 ### Inputs: row scalar, column range; Output: TS
 function Base.getindex(ts::TS, i::Int, j::UnitRange)
-    return TS(ts.coredata[[i], Cols(:Index, 1 .+(j))])
+    return TS(ts.coredata[[i], Cols(:Index, 1 .+ (j))])
 end
 ###
 
@@ -311,7 +311,7 @@ function Base.getindex(ts::TS, i::AbstractVector{Int}, j::Int)
     ts.coredata[i, j+1] # increment: account for Index
 end
 
-function Base.getindex(ts::TS, i::AbstractVector{Int}, j::Union{String, Symbol})
+function Base.getindex(ts::TS, i::AbstractVector{Int}, j::Union{String,Symbol})
     ts.coredata[i, j]
 end
 
@@ -323,7 +323,7 @@ function Base.getindex(ts::TS, dt::AbstractVector{T}, j::Int) where {T<:TimeType
     ts[idx, j]
 end
 
-function Base.getindex(ts::TS, dt::AbstractVector{T}, j::Union{String, Symbol}) where {T<:TimeType}
+function Base.getindex(ts::TS, dt::AbstractVector{T}, j::Union{String,Symbol}) where {T<:TimeType}
     idx = map(d -> findfirst(x -> x == d, index(ts)), dt)
     if length(idx) == 0
         return nothing
@@ -334,10 +334,10 @@ end
 
 ### Inputs: row vector, column vector; Output: TS
 function Base.getindex(ts::TS, i::AbstractVector{Int}, j::AbstractVector{Int})
-    TS(ts.coredata[i, Cols(:Index, j.+1)]) # increment: account for Index
+    TS(ts.coredata[i, Cols(:Index, j .+ 1)]) # increment: account for Index
 end
 
-function Base.getindex(ts::TS, i::AbstractVector{Int}, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
+function Base.getindex(ts::TS, i::AbstractVector{Int}, j::AbstractVector{T}) where {T<:Union{String,Symbol}}
     TS(ts.coredata[i, Cols(:Index, j)])
 end
 
@@ -349,7 +349,7 @@ function Base.getindex(ts::TS, dt::AbstractVector{T}, j::AbstractVector{Int}) wh
     ts[idx, j]
 end
 
-function Base.getindex(ts::TS, dt::AbstractVector{D}, j::AbstractVector{T}) where {D<:TimeType, T<:Union{String, Symbol}}
+function Base.getindex(ts::TS, dt::AbstractVector{D}, j::AbstractVector{T}) where {D<:TimeType,T<:Union{String,Symbol}}
     idx = map(d -> findfirst(x -> x == d, index(ts)), dt)
     ts[idx, j]
 end
@@ -371,7 +371,7 @@ function Base.getindex(ts::TS, i::UnitRange, j::Int)
     ts[collect(i), j]
 end
 
-function Base.getindex(ts::TS, i::UnitRange, j::Union{String, Symbol})
+function Base.getindex(ts::TS, i::UnitRange, j::Union{String,Symbol})
     ts[collect(i), j]
 end
 ###
@@ -381,7 +381,7 @@ function Base.getindex(ts::TS, i::UnitRange, j::AbstractVector{Int})
     ts[collect(i), j]
 end
 
-function Base.getindex(ts::TS, i::UnitRange, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
+function Base.getindex(ts::TS, i::UnitRange, j::AbstractVector{T}) where {T<:Union{String,Symbol}}
     ts[collect(i), j]
 end
 ###
@@ -452,7 +452,7 @@ function Base.getindex(ts::TS, ::Colon, j::Int)
     ts[1:TSx.nrow(ts), j]
 end
 
-function Base.getindex(ts::TS, ::Colon, j::Union{String, Symbol})
+function Base.getindex(ts::TS, ::Colon, j::Union{String,Symbol})
     ts[1:TSx.nrow(ts), j]
 end
 ###
@@ -462,7 +462,7 @@ function Base.getindex(ts::TS, ::Colon, j::AbstractVector{Int})
     ts[1:TSx.nrow(ts), j]
 end
 
-function Base.getindex(ts::TS, ::Colon, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
+function Base.getindex(ts::TS, ::Colon, j::AbstractVector{T}) where {T<:Union{String,Symbol}}
     ts[1:TSx.nrow(ts), j]
 end
 ###

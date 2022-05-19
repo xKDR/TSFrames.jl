@@ -51,7 +51,8 @@ julia> log(ts)
 """
 function Base.log(ts::TS)
     df = select(ts.coredata, :Index,
-                Not(:Index) .=> (x -> log.(x))
-                => colname -> string(colname, "_log"))
+        Not(:Index) .=> (x -> log.(x))
+        =>
+            colname -> string(colname, "_log"))
     TS(df)
 end

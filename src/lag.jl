@@ -71,7 +71,7 @@ julia> lag(ts, 2) # lags by 2 values
 
 ```
 """
-function lag(ts::TS, lag_value::Int = 1)
+function lag(ts::TS, lag_value::Int=1)
     sdf = DataFrame(ShiftedArrays.lag.(eachcol(ts.coredata[!, Not(:Index)]), lag_value), TSx.names(ts))
     insertcols!(sdf, 1, :Index => ts.coredata[!, :Index])
     TS(sdf, :Index)

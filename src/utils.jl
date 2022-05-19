@@ -199,7 +199,7 @@ julia> names(TS([1:10 11:20]))
  "x2"
 ```
 """
-            
+
 function names(ts::TS)
     names(ts.coredata[!, Not(:Index)])
 end
@@ -226,7 +226,7 @@ julia> first(TS(1:10))
 ```
 """
 function Base.first(ts::TS)
-    TS(Base.first(ts.coredata,1))
+    TS(Base.first(ts.coredata, 1))
 end
 
 
@@ -257,7 +257,7 @@ julia> head(TS(1:100))
     10     10
 ```
 """
-function head(ts::TS, n::Int = 10)
+function head(ts::TS, n::Int=10)
     TS(Base.first(ts.coredata, n))
 end
 
@@ -289,6 +289,6 @@ julia> tail(TS(1:100))
    100    100
 ```
 """
-function tail(ts::TS, n::Int = 10)
+function tail(ts::TS, n::Int=10)
     TS(DataFrames.last(ts.coredata, n))
 end

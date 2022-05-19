@@ -221,22 +221,22 @@ function Base.join(ts1::TS, ts2::TS)
 end
 
 function Base.join(ts1::TS, ts2::TS, ::Type{JoinBoth})
-    result = DataFrames.innerjoin(ts1.coredata, ts2.coredata, on = :Index, makeunique=true)
+    result = DataFrames.innerjoin(ts1.coredata, ts2.coredata, on=:Index, makeunique=true)
     return TS(result)
 end
 
 function Base.join(ts1::TS, ts2::TS, ::Type{JoinAll})
-    result = DataFrames.outerjoin(ts1.coredata, ts2.coredata, on = :Index, makeunique=true)
+    result = DataFrames.outerjoin(ts1.coredata, ts2.coredata, on=:Index, makeunique=true)
     return TS(result)
 end
 
 function Base.join(ts1::TS, ts2::TS, ::Type{JoinLeft})
-    result = DataFrames.leftjoin(ts1.coredata, ts2.coredata, on = :Index, makeunique=true)
+    result = DataFrames.leftjoin(ts1.coredata, ts2.coredata, on=:Index, makeunique=true)
     return TS(result)
 end
 
 function Base.join(ts1::TS, ts2::TS, ::Type{JoinRight})
-    result = DataFrames.rightjoin(ts1.coredata, ts2.coredata, on = :Index, makeunique=true)
+    result = DataFrames.rightjoin(ts1.coredata, ts2.coredata, on=:Index, makeunique=true)
     return TS(result)
 end
 # alias

@@ -1,7 +1,7 @@
 DATA_SIZE = 360
 data_vector = randn(DATA_SIZE)
-index_timetype = Date(2007, 1,1) + Day.(0:(DATA_SIZE - 1))
-df_timetype_index = DataFrame(Index = index_timetype, data = data_vector)
+index_timetype = Date(2007, 1, 1) + Day.(0:(DATA_SIZE-1))
+df_timetype_index = DataFrame(Index=index_timetype, data=data_vector)
 ts_daily = TS(df_timetype_index, 1)
 ts_daily_matrix = TS(DataFrames.innerjoin(df_timetype_index, df_timetype_index, on=:Index, makeunique=true))
 
