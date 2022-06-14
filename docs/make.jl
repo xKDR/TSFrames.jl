@@ -1,7 +1,7 @@
 using TSx
 using Documenter
 
-DocMeta.setdocmeta!(TSx, :DocTestSetup, :(using TSx); recursive=true)
+DocMeta.setdocmeta!(TSx, :DocTestSetup, :(using TSx, DataFrames, Dates, Statistics); recursive=true)
 
 makedocs(;
     modules=[TSx],
@@ -14,8 +14,13 @@ makedocs(;
         assets=String[],
     ),
     pages=[
-        "Home" => "index.md",
+        "Introduction" => "index.md",
+        "Basic demo of TSx" => "demo_finance.md",
+        "User guide" => "user_guide.md",
+        "API reference" => "api.md",
     ],
+    doctest=false,               # TODO: switch to true in the version after v0.1.0
+    strict=false,                # TODO: switch to true in the version after v0.1.0
 )
 
 deploydocs(;
