@@ -2,6 +2,7 @@ module TSx
 
 using DataFrames, Dates, ShiftedArrays, RecipesBase, RollingFunctions
 
+import Base.copy
 import Base.convert
 import Base.diff
 import Base.filter
@@ -16,8 +17,9 @@ import Base.names
 import Base.print
 import Base.==
 import Base.show
-import Base.summary
+import Base.similar
 import Base.size
+import Base.summary
 import Base.vcat
 
 import Dates.Period
@@ -32,6 +34,7 @@ export TS,
     Matrix,
     apply,
     convert,
+    copy,
     cbind,
     describe,
     diff,
@@ -57,6 +60,7 @@ export TS,
     log,
     rbind,
     show,
+    similar,
     size,
     subset,
     summary,

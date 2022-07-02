@@ -199,7 +199,7 @@ julia> names(TS([1:10 11:20]))
  "x2"
 ```
 """
-            
+
 function names(ts::TS)
     names(ts.coredata[!, Not(:Index)])
 end
@@ -242,8 +242,8 @@ Returns the first `n` rows of `ts`.
 julia> head(TS(1:100))
 (10 x 1) TS with Int64 Index
 
- Index  x1    
- Int64  Int64 
+ Index  x1
+ Int64  Int64
 ──────────────
      1      1
      2      2
@@ -274,8 +274,8 @@ Returns the last `n` rows of `ts`.
 julia> tail(TS(1:100))
 (10 x 1) TS with Int64 Index
 
- Index  x1    
- Int64  Int64 
+ Index  x1
+ Int64  Int64
 ──────────────
     91     91
     92     92
@@ -292,3 +292,84 @@ julia> tail(TS(1:100))
 function tail(ts::TS, n::Int = 10)
     TS(DataFrames.last(ts.coredata, n))
 end
+
+
+# Base.copy
+"""
+# Copy
+
+```julia
+copy(ts::TS; copycols::Bool=true)
+```
+
+Copy the time series `ts` following the semantics of `copy(::DataFrame)`. If `copycols=true` (the default),
+return a new `TS` holding copies of column vectors in `ts`. If `copycols=false`, return a new
+`TS` sharing column vectors with `ts`.
+
+```jldoctest; setup = :(using TSx, DataFrames, Dates, Random)
+julia> copy(TS(1:10))
+(10 x 1) TS with Int64 Index
+
+ Index  x1
+ Int64  Int64
+──────────────
+     1      1
+     2      2
+     3      3
+     4      4
+     5      5
+     6      6
+     7      7
+     8      8
+     9      9
+    10     10
+```
+"""
+Base.copy(ts::TS; copycols::Bool=true) = TS(copy(ts.coredata; copycols))
+
+
+# Base.similar
+"""
+# Similar
+
+```julia
+similar(ts::TS, rows::Integer=nrow(ts))
+```
+
+Create a new `TS` with the same column names and column element types as `ts`. An optional
+second argument can be provided to request a number of rows that is different than the number
+ of rows present in `ts`.
+
+```jldoctest; setup = :(using TSx, DataFrames, Dates, Random)
+
+julia> similar(TS(1:10))
+(10 x 1) TS with Int64 Index
+
+ Index            x1
+ Int64            Int64
+──────────────────────────────────
+               3                3
+               3                3
+              20               20
+              32               32
+              32               32
+             100              100
+             250              250
+            1000             1000
+            3329             3329
+ 140268692646400  140268692646400
+
+ julia> similar(TS(1:10), 4)
+(4 x 1) TS with Int64 Index
+
+ Index            x1
+ Int64            Int64
+──────────────────────────────────
+ 140268691629264  140267030569584
+ 140268691701168  140267030569616
+ 140268691701168  140267030569648
+ 140268691731376  140268776059472
+
+```
+"""
+Base.similar(ts::TS, rows::Integer=nrow(ts)) = TS(DataFrames::similar(ts.coredata, rows))

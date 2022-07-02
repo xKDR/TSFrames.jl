@@ -5,3 +5,6 @@
 /docs/Manifest.toml
 /docs/build/
 /test/Manifest.toml
+
+# Editors
+.vscode
