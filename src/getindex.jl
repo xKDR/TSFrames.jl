@@ -262,7 +262,7 @@ julia> ts[1, "x1"]; # same as above
 
 ### Inputs: row scalar, column scalar; Output: scalar
 function Base.getindex(ts::TS, i::Int, j::Int)
-    ts.coredata[i, j+1]
+    ts.coredata[i, [1,j+1]]
 end
 
 function Base.getindex(ts::TS, i::Int, j::Union{Symbol, String})
