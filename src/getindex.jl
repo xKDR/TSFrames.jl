@@ -429,7 +429,17 @@ end
 
 # XXX: ideally, Dates.YearMonth class should exist
 function Base.getindex(ts::TS, y::Year, m::Month)
-    sdf = filter(:Index => x -> (Year(x), Month(x)) == (y, m), ts.coredata)
+    sdf = filter(:Index => x -> yearmonth(x) == (y, m), ts.coredata)
+    TS(sdf)
+end
+
+function Base.getindex(ts::TS, y::Year, m::Month, d::Day)
+    sdf = filter(:Index => x -> (Year(x), Month(x), Day(x)) == (y, m, d), ts.coredata)
+    TS(sdf)
+end
+
+function Base.getindex(ts::TS, y::Year, m::Month, w::Week)
+    sdf = filter(:Index => x -> (Year(x), Month(x), Week(x)) == (y, m, w), ts.coredata)
     TS(sdf)
 end
 
