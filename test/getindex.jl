@@ -4,6 +4,40 @@ function test_types(obj::TS)
     @test typeof(obj.coredata) == DataFrame
 end
 
+# getindex(ts, i::Int, j::Int)
+i = 1; j = 1
+t = ts[i, j]
+@test typeof(t) == eltype(df_timetype_index[:, j+1])
+@test t == df_timetype_index[i, j+1]
+
+# getindex(ts::TS, i::Int, j::Symbol)
+i = 1; j = :data
+t = ts[i, j]
+@test typeof(t) == typeof(df_timetype_index[i, j])
+@test t == df_timetype_index[i, j]
+
+# getindex(ts::TS, i::Int, j::String)
+i = 1; j = "data"
+t = ts[i, j]
+@test typeof(t) == typeof(df_timetype_index[i, j])
+@test t == df_timetype_index[i, j]
+
+# getindex(ts::TS, dt::T, j::Int) where {T<:TimeType}
+dt = ts.coredata[:, :Index][1]; j = 1;
+t = ts[dt ,j]
+@test typeof(t) == typeof(df_timetype_index[1, j+1])
+@test t == df_timetype_index[1, j+1]
+
+# getindex(ts::TS, dt::T, j::Symbol) where {T<:TimeType}
+dt = ts.coredata[:, :Index][1]; j = "data";
+t = ts[dt,j]
+
+
+
+
+
+### Unedited
+
 # getindex(ts, i::Int)
 ind = 1
 test_types(ts[ind])
@@ -41,12 +75,6 @@ d = Date(2007, 10, 1)
 test_types(ts[ind])
 @test TSx.index(ts[ind]) == [d]
 
-# getindex(ts, i::Int, j::Int)
-i = 1; j = 1
-t = ts[i, j]
-@test typeof(t) == eltype(df_timetype_index[:, j+1])
-@test t == df_timetype_index[i, j+1]
-
 # getindex(ts, i::UnitRange, j::Int)
 i = 1:10; j = 1
 t = ts[i, j]
@@ -63,22 +91,10 @@ test_types(t)
 @test t.coredata[!, :Index] == [df_timetype_index[i, :Index]]
 @test t.coredata[!, :data] == [df_timetype_index[i, :data]]
 
-# getindex(ts::TS, i::Int, j::Symbol)
-i = 1; j = :data
-t = ts[i, j]
-@test typeof(t) == typeof(df_timetype_index[i, j])
-@test t == df_timetype_index[i, j]
-
 # getindex(ts::TS, i::UnitRange, j::Symbol)
 i = 1:10; j = :data
 t = ts[i, j]
 @test typeof(t) == typeof(df_timetype_index[i,j])
-@test t == df_timetype_index[i, j]
-
-# getindex(ts::TS, i::Int, j::String)
-i = 1; j = "data"
-t = ts[i, j]
-@test typeof(t) == typeof(df_timetype_index[i, j])
 @test t == df_timetype_index[i, j]
 
 # getindex(ts::TS, i::UnitRange, j::String)
