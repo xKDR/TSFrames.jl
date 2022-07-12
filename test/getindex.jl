@@ -1,8 +1,11 @@
 ts = TS(df_timetype_index)
+ts_long = TS(df_timetype_index_long_columns)
 
 function test_types(obj::TS)
     @test typeof(obj.coredata) == DataFrame
 end
+
+### Row, Column Scalar
 
 # getindex(ts, i::Int, j::Int)
 i = 1; j = 1
@@ -29,14 +32,26 @@ t = ts[dt ,j]
 @test t == df_timetype_index[1, j+1]
 
 # getindex(ts::TS, dt::T, j::Symbol) where {T<:TimeType}
+dt = ts.coredata[:, :Index][1]; j = :data;
+t = ts[dt,j]
+@test typeof(t) == typeof(df_timetype_index[1, j])
+@test t == df_timetype_index[1, j]
+
+# getindex(ts::TS, dt::T, j::String) where {T<:TimeType}
 dt = ts.coredata[:, :Index][1]; j = "data";
 t = ts[dt,j]
+@test typeof(t) == typeof(df_timetype_index[1, j])
+@test t == df_timetype_index[1, j]
 
 
+### Row Scalar, Column Vector
 
+# getindex(ts::TS, i::Int, j::AbstractVector{Int})
+i = 1; j = collect(1:10)
+t = ts_long[i, j]
+@test t.coredata == df_timetype_index_long_columns[1, insert!(j, 11)]
 
-
-### Unedited
+# Row Indexing
 
 # getindex(ts, i::Int)
 ind = 1
