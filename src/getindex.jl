@@ -443,6 +443,21 @@ function Base.getindex(ts::TS, y::Year, m::Month, w::Week)
     TS(sdf)
 end
 
+function Base.getindex(ts::TS, y::Year, m::Month, d::Day, h::Hour)
+    sdf = filter(:Index => x -> (Year(x), Month(x), Day(x), Hour(x)) == (y, m, w, h), ts.coredata)
+    TS(sdf)
+end
+
+function Base.getindex(ts::TS, y::Year, m::Month, d::Day, h::Hour, min::Minute)
+    sdf = filter(:Index => x -> (Year(x), Month(x), Day(x), Hour(x), Minute(x)) == (y, m, w, h, m), ts.coredata)
+    TS(sdf)
+end
+
+function Base.getindex(ts::TS, y::Year, m::Month, d::Day, h::Hour, min::Minute, sec::Second)
+    sdf = filter(:Index => x -> (Year(x), Month(x), Day(x), Hour(x), Minute(x), Second(x)) == (y, m, w, h, min, sec), ts.coredata)
+    TS(sdf)
+end
+
 # By string timestamp
 function Base.getindex(ts::TS, i::String)
     ind = findall(x -> x == TSx._convert(eltype(ts.coredata[!, :Index]), i), ts.coredata[!, :Index]) # XXX: may return duplicate indices
