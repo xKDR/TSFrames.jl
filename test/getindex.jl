@@ -129,6 +129,54 @@ t = ts_long[i, j]
 test_types(t)
 @test t.coredata == DataFrame(df_timetype_index_long_columns[i, Cols(:Index, j)])
 
+
+# Row Scalar, Column Unitrange
+
+# getindex(ts::TS, i::Int, j::UnitRange)
+i = 1; n = 10; j = 1:n
+t = ts_long[i, j]
+test_types(t)
+@test t.coredata == DataFrame(df_timetype_index_long_columns[i, collect(1:n+1)])
+
+i = 1; n = 1; j = 1:n
+t = ts_long[i, j]
+test_types(t)
+@test t.coredata == DataFrame(df_timetype_index_long_columns[i, collect(1:n+1)])
+
+i = 1; n = 100; j = 1:n
+t = ts_long[i, j]
+test_types(t)
+@test t.coredata == DataFrame(df_timetype_index_long_columns[i, collect(1:n+1)])
+
+
+# Row Vector, Column Scalar
+
+# getindex(ts::TS, i::AbstractVector{Int}, j::Int)
+
+# getindex(ts::TS, i::Int, j::AbstractVector{Int})
+j = 1; n = 10; i = collect(1:n)
+t = ts_long[i, j]
+@test typeof(t) == typeof(df_timetype_index_long_columns[i, j+1])
+@test t == df_timetype_index_long_columns[i, j+1]
+
+j = 1; n = 1; i = collect(1:n)
+t = ts_long[i, j]
+@test typeof(t) == typeof(df_timetype_index_long_columns[i, j+1])
+@test t == df_timetype_index_long_columns[i, j+1]
+
+j = 1; n = 400; i = collect(1:n)
+t = ts_long[i, j]
+@test typeof(t) == typeof(df_timetype_index_long_columns[i, j+1])
+@test t == df_timetype_index_long_columns[i, j+1]
+
+j = 1; i = [1, 400]
+t = ts_long[i, j]
+@test typeof(t) == typeof(df_timetype_index_long_columns[i, j+1])
+@test t == df_timetype_index_long_columns[i, j+1]
+
+
+
+
 # Row Indexing
 
 # getindex(ts, i::Int)
