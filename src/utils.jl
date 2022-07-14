@@ -297,7 +297,8 @@ end
 """
 # Column Rename
 ```julia
-rename!(ts::TS, colnames::AbstractVector{T}) where {T<:Union{String, Symbol}}
+rename!(ts::TS, colnames::AbstractVector{String})
+rename!(ts::TS, colnames::AbstractVector{Symbol})
 ```
 
 Renames columns of `ts` to the values in `colnames`, in order. Input
