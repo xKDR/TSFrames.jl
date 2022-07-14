@@ -175,8 +175,6 @@ t = ts_long[i, j]
 @test t == df_timetype_index_long_columns[i, j+1]
 
 
-
-
 # Row Indexing
 
 # getindex(ts, i::Int)
