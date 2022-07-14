@@ -341,13 +341,24 @@ Int64  Int64  Int64
 ```
 """
 
-function rename!(ts::TS, colnames::AbstractVector{T}) where {T<:Union{String, Symbol}}
+function rename!(ts::TS, colnames::AbstractVector{String})
     idx = findall(i -> i == "Index", colnames)
     if length(idx) > 0
         error("Column name `Index` not allowed in TS object")
     end
     cols = copy(colnames)
     insert!(cols, 1, "Index")
+    DataFrames.rename!(ts.coredata, cols)
+    return ts
+end
+
+function rename!(ts::TS, colnames::AbstractVector{Symbol})
+    idx = findall(i -> i == :Index, colnames)
+    if length(idx) > 0
+        error("Column name `Index` not allowed in TS object")
+    end
+    cols = copy(colnames)
+    insert!(cols, 1, :Index)
     DataFrames.rename!(ts.coredata, cols)
     return ts
 end
