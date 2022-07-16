@@ -152,27 +152,77 @@ test_types(t)
 # Row Vector, Column Scalar
 
 # getindex(ts::TS, i::AbstractVector{Int}, j::Int)
+n = 10; i = collect(1:n); j = 1
+t = ts[i, j]
+@test typeof(t) == typeof(df_timetype_index[i, j+1])
+@test t == df_timetype_index[i, j+1]
 
-# getindex(ts::TS, i::Int, j::AbstractVector{Int})
-j = 1; n = 10; i = collect(1:n)
-t = ts_long[i, j]
-@test typeof(t) == typeof(df_timetype_index_long_columns[i, j+1])
-@test t == df_timetype_index_long_columns[i, j+1]
+n = 1; i = collect(1:n); j = 1
+t = ts[i, j]
+@test typeof(t) == typeof(df_timetype_index[i, j+1])
+@test t == df_timetype_index[i, j+1]
 
-j = 1; n = 1; i = collect(1:n)
-t = ts_long[i, j]
-@test typeof(t) == typeof(df_timetype_index_long_columns[i, j+1])
-@test t == df_timetype_index_long_columns[i, j+1]
+n = 400; i = collect(1:n); j = 1
+t = ts[i, j]
+@test typeof(t) == typeof(df_timetype_index[i, j+1])
+@test t == df_timetype_index[i, j+1]
 
-j = 1; n = 400; i = collect(1:n)
-t = ts_long[i, j]
-@test typeof(t) == typeof(df_timetype_index_long_columns[i, j+1])
-@test t == df_timetype_index_long_columns[i, j+1]
+i = [1, 400];j = 1
+t = ts[i, j]
+@test typeof(t) == typeof(df_timetype_index[i, j+1])
+@test t == df_timetype_index[i, j+1]
 
-j = 1; i = [1, 400]
-t = ts_long[i, j]
-@test typeof(t) == typeof(df_timetype_index_long_columns[i, j+1])
-@test t == df_timetype_index_long_columns[i, j+1]
+# getindex(ts::TS, i::AbstractVector{Int}, j::Symbol)
+n = 10; i = collect(1:n); j = :data
+t = ts[i, j]
+@test typeof(t) == typeof(df_timetype_index[i, :data])
+@test t == df_timetype_index[i, :data]
+
+n = 1; i = collect(1:n); j = :data
+t = ts[i, j]
+@test typeof(t) == typeof(df_timetype_index[i, :data])
+@test t == df_timetype_index[i, :data]
+
+n = 400; i = collect(1:n); j = :data
+t = ts[i, j]
+@test typeof(t) == typeof(df_timetype_index[i, :data])
+@test t == df_timetype_index[i, :data]
+
+i = [1, 400];j = :data
+t = ts[i, j]
+@test typeof(t) == typeof(df_timetype_index[i, :data])
+@test t == df_timetype_index[i, :data]
+
+# getindex(ts::TS, i::AbstractVector{Int}, j::String)
+n = 10; i = collect(1:n); j = "data"
+t = ts[i, j]
+@test typeof(t) == typeof(df_timetype_index[i, "data"])
+@test t == df_timetype_index[i, "data"]
+
+n = 1; i = collect(1:n); j = "data"
+t = ts[i, j]
+@test typeof(t) == typeof(df_timetype_index[i, "data"])
+@test t == df_timetype_index[i, "data"]
+
+n = 400; i = collect(1:n); j = "data"
+t = ts[i, j]
+@test typeof(t) == typeof(df_timetype_index[i, "data"])
+@test t == df_timetype_index[i, "data"]
+
+i = [1, 400];j = "data"
+t = ts[i, j]
+@test typeof(t) == typeof(df_timetype_index[i, "data"])
+@test t == df_timetype_index[i, "data"]
+
+
+
+
+
+
+
+
+
+
 
 
 # Row Indexing
