@@ -242,17 +242,17 @@ t = ts_long[i, j]
 @test t.coredata == df_timetype_index_long_columns[i, [(2*x+1) for x in 0:50]]
 
 # getindex(ts::TS, i::AbstractVector{Int}, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
-n = 10; m = 10; i = collect(1:n); j = ["data$x" for x in 1:m]
+n = 10; m = 10; i = collect(1:n); j = insert!(["data$x" for x in 1:m], 1, "Index")
 t = ts_long[i, j]
 @test typeof(t.coredata) == typeof(df_timetype_index_long_columns[i, j])
 @test t.coredata == df_timetype_index_long_columns[i, j]
 
-n = 1; m = 1; i = collect(1:n); j = ["data$x" for x in 1:m]
+n = 1; m = 1; i = collect(1:n); j = insert!(["data$x" for x in 1:m], 1, "Index")
 t = ts_long[i, j]
 @test typeof(t.coredata) == typeof(df_timetype_index_long_columns[i, j])
 @test t.coredata == df_timetype_index_long_columns[i, j]
 
-n = 100; m = 400; i = collect(1:n); j = ["data$x" for x in 1:m]
+n = 400; m = 100; i = collect(1:n); j = insert!(["data$x" for x in 1:m], 1, "Index")
 t = ts_long[i, j]
 @test typeof(t.coredata) == typeof(df_timetype_index_long_columns[i, j])
 @test t.coredata == df_timetype_index_long_columns[i, j]
