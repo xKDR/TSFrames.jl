@@ -214,11 +214,53 @@ t = ts[i, j]
 @test typeof(t) == typeof(df_timetype_index[i, "data"])
 @test t == df_timetype_index[i, "data"]
 
+# getindex(ts::TS, dt::AbstractVector{T}, j::Int) where {T<:TimeType}
 
+# getindex(ts::TS, dt::AbstractVector{T}, j::Union{String, Symbol}) where {T<:TimeType}
 
+# Row Vector, Column Vector
 
+# getindex(ts::TS, i::AbstractVector{Int}, j::AbstractVector{Int})
+n = 10; m = 10; i = collect(1:n); j = collect(1:m)
+t = ts_long[i, j]
+@test typeof(t.coredata) == typeof(df_timetype_index_long_columns[i, collect(1:m+1)])
+@test t.coredata == df_timetype_index_long_columns[i, collect(1:m+1)]
 
+n = 1; m = 1; i = collect(1:n); j = collect(1:m)
+t = ts_long[i, j]
+@test typeof(t.coredata) == typeof(df_timetype_index_long_columns[i, collect(1:m+1)])
+@test t.coredata == df_timetype_index_long_columns[i, collect(1:m+1)]
 
+n = 400; m = 100; i = collect(1:n); j = collect(1:m)
+t = ts_long[i, j]
+@test typeof(t.coredata) == typeof(df_timetype_index_long_columns[i, collect(1:m+1)])
+@test t.coredata == df_timetype_index_long_columns[i, collect(1:m+1)]
+
+i = [2*x for x in 1:50]; j = [2*x for x in 1:50]
+t = ts_long[i, j]
+@test typeof(t.coredata) == typeof(df_timetype_index_long_columns[i, [(2*x+1) for x in 0:50]])
+@test t.coredata == df_timetype_index_long_columns[i, [(2*x+1) for x in 0:50]]
+
+# getindex(ts::TS, i::AbstractVector{Int}, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
+n = 10; m = 10; i = collect(1:n); j = ["data$x" for x in 1:m]
+t = ts_long[i, j]
+@test typeof(t.coredata) == typeof(df_timetype_index_long_columns[i, j])
+@test t.coredata == df_timetype_index_long_columns[i, j]
+
+n = 1; m = 1; i = collect(1:n); j = ["data$x" for x in 1:m]
+t = ts_long[i, j]
+@test typeof(t.coredata) == typeof(df_timetype_index_long_columns[i, j])
+@test t.coredata == df_timetype_index_long_columns[i, j]
+
+n = 100; m = 400; i = collect(1:n); j = ["data$x" for x in 1:m]
+t = ts_long[i, j]
+@test typeof(t.coredata) == typeof(df_timetype_index_long_columns[i, j])
+@test t.coredata == df_timetype_index_long_columns[i, j]
+
+i = [2*x for x in 1:50]; j = insert!(["data$x" for x in [2*y for y in 1:50]], 1, "Index")
+t = ts_long[i, j]
+@test typeof(t.coredata) == typeof(df_timetype_index_long_columns[i, j])
+@test t.coredata == df_timetype_index_long_columns[i, j]
 
 
 
