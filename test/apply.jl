@@ -28,8 +28,51 @@ ts_monthly = apply(ts_daily_1, Dates.Month, first)
 ts_monthly = apply(ts_daily_1, Dates.Month, last)
 @test typeof(ts_monthly) == TSx.TS
 @test typeof(ts_monthly.coredata) == DataFrame
-@test DataFrames.nrow(ts_monthly.coredata) == 12 # 360 days
+@test DataFrames.nrow(ts_monthly.coredata) == 12
 
+ts_monthly = apply(ts_daily_1, Dates.Month(1), first)
+@test typeof(ts_monthly) == TSx.TS
+@test typeof(ts_monthly.coredata) == DataFrame
+@test DataFrames.nrow(ts_monthly.coredata) == 12
+
+ts_monthly = apply(ts_daily_1, Dates.Month(2), first)
+@test typeof(ts_monthly) == TSx.TS
+@test typeof(ts_monthly.coredata) == DataFrame
+@test DataFrames.nrow(ts_monthly.coredata) == 6
+
+ts_monthly = apply(ts_daily_1, Dates.Month(12), first)
+@test typeof(ts_monthly) == TSx.TS
+@test typeof(ts_monthly.coredata) == DataFrame
+@test DataFrames.nrow(ts_monthly.coredata) == 1
+
+ts_monthly = apply(ts_daily_1, Dates.Month(100), first)
+@test typeof(ts_monthly) == TSx.TS
+@test typeof(ts_monthly.coredata) == DataFrame
+@test DataFrames.nrow(ts_monthly.coredata) == 1
+
+ts_monthly = apply(ts_daily_1, Dates.Month, Statistics.mean)
+t = ts_daily_1[:, "data"]
+@test typeof(ts_monthly) == TSx.TS
+@test typeof(ts_monthly.coredata) == DataFrame
+@test DataFrames.nrow(ts_monthly.coredata) == 12
+@test typeof(ts_monthly[:, "data_mean"]) == Vector{Float64}
+@test ts_monthly[1, "data_mean"] == Statistics.mean(t[1:31])
+
+ts_monthly = apply(ts_daily_1, Dates.Month, sum)
+t = ts_daily_1[:, "data"]
+@test typeof(ts_monthly) == TSx.TS
+@test typeof(ts_monthly.coredata) == DataFrame
+@test DataFrames.nrow(ts_monthly.coredata) == 12
+@test typeof(ts_monthly[:, "data_sum"]) == Vector{Float64}
+@test ts_monthly[1, "data_sum"] == sum(t[1:31])
+
+ts_monthly = apply(ts_daily_1, Dates.Month, sum, last)
+t = ts_daily_1[:, "data"]
+@test typeof(ts_monthly) == TSx.TS
+@test typeof(ts_monthly.coredata) == DataFrame
+@test DataFrames.nrow(ts_monthly.coredata) == 12
+@test typeof(ts_monthly[:, "data_sum"]) == Vector{Float64}
+@test ts_monthly["2007-01-31"][1,1] == sum(t[1:31])
 
 # Daily -> Yearly
 ts_yearly = apply(ts_daily_1, Dates.Year, first)
@@ -42,6 +85,45 @@ ts_yearly = apply(ts_daily_1, Dates.Year, last)
 @test typeof(ts_yearly.coredata) == DataFrame
 @test DataFrames.nrow(ts_yearly.coredata) == 1
 
+ts_yearly = apply(ts_daily_1, Dates.Year(1), first)
+@test typeof(ts_yearly) == TSx.TS
+@test typeof(ts_yearly.coredata) == DataFrame
+@test DataFrames.nrow(ts_yearly.coredata) == 1
+
+ts_yearly = apply(ts_daily_1, Dates.Year(2), first)
+@test typeof(ts_yearly) == TSx.TS
+@test typeof(ts_yearly.coredata) == DataFrame
+@test DataFrames.nrow(ts_yearly.coredata) == 1
+
+ts_yearly = apply(ts_daily_1, Dates.Year(100), first)
+@test typeof(ts_yearly) == TSx.TS
+@test typeof(ts_yearly.coredata) == DataFrame
+@test DataFrames.nrow(ts_yearly.coredata) == 1
+
+ts_yearly = apply(ts_daily_1, Dates.Year, Statistics.mean)
+t = ts_daily_1[:, "data"]
+@test typeof(ts_yearly) == TSx.TS
+@test typeof(ts_yearly.coredata) == DataFrame
+@test DataFrames.nrow(ts_yearly.coredata) == 1
+@test typeof(ts_yearly[:, "data_mean"]) == Vector{Float64}
+@test ts_yearly[1, "data_mean"] ≈ Statistics.mean(t)
+
+ts_yearly = apply(ts_daily_1, Dates.Year, sum)
+t = ts_daily_1[:, "data"]
+@test typeof(ts_yearly) == TSx.TS
+@test typeof(ts_yearly.coredata) == DataFrame
+@test DataFrames.nrow(ts_yearly.coredata) == 1
+@test typeof(ts_yearly[:, "data_sum"]) == Vector{Float64}
+@test ts_yearly[1, "data_sum"] ≈ sum(t)
+
+ts_yearly = apply(ts_daily_1, Dates.Year, sum, last)
+t = ts_daily_1[:, "data"]
+@test typeof(ts_yearly) == TSx.TS
+@test typeof(ts_yearly.coredata) == DataFrame
+@test DataFrames.nrow(ts_yearly.coredata) == 1
+@test typeof(ts_yearly[:, "data_sum"]) == Vector{Float64}
+@test ts_yearly[1, "data_sum"] ≈ sum(t)
+@test ts_yearly["2007-12-26"][1,1] ≈ sum(t)
 
 # Daily -> Weekly
 ts_weekly = apply(ts_daily_1, Dates.Week, first)
@@ -54,6 +136,25 @@ ts_weekly = apply(ts_daily_1, Dates.Week, last)
 @test typeof(ts_weekly.coredata) == DataFrame
 @test DataFrames.nrow(ts_weekly.coredata) == 52
 
+ts_weekly = apply(ts_daily_1, Dates.Week(1), first)
+@test typeof(ts_weekly) == TSx.TS
+@test typeof(ts_weekly.coredata) == DataFrame
+@test DataFrames.nrow(ts_weekly.coredata) == 52
+
+ts_weekly = apply(ts_daily_1, Dates.Week(2), first)
+@test typeof(ts_weekly) == TSx.TS
+@test typeof(ts_weekly.coredata) == DataFrame
+@test DataFrames.nrow(ts_weekly.coredata) == 26
+
+ts_weekly = apply(ts_daily_1, Dates.Week(12), first)
+@test typeof(ts_weekly) == TSx.TS
+@test typeof(ts_weekly.coredata) == DataFrame
+@test DataFrames.nrow(ts_weekly.coredata) == 1
+
+ts_weekly = apply(ts_daily_1, Dates.Week(100), first)
+@test typeof(ts_weekly) == TSx.TS
+@test typeof(ts_weekly.coredata) == DataFrame
+@test DataFrames.nrow(ts_weekly.coredata) == 1
 
 # Daily -> Quarterly
 ts_quarterly = apply(ts_daily_1, Dates.Quarter, first)
