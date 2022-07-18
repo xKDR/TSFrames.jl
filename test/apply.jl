@@ -146,7 +146,7 @@ ts_weekly = apply(ts_daily_1, Dates.Week(2), first)
 @test typeof(ts_weekly.coredata) == DataFrame
 @test DataFrames.nrow(ts_weekly.coredata) == 26
 
-ts_weekly = apply(ts_daily_1, Dates.Week(12), first)
+ts_weekly = apply(ts_daily_1, Dates.Week(52), first)
 @test typeof(ts_weekly) == TSx.TS
 @test typeof(ts_weekly.coredata) == DataFrame
 @test DataFrames.nrow(ts_weekly.coredata) == 1
