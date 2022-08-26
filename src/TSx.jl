@@ -35,6 +35,7 @@ export TS,
     cbind,
     describe,
     diff,
+    endpoints,
     first,
     getindex,
     head,
@@ -69,6 +70,7 @@ include("utils.jl")
 
 include("apply.jl")
 include("diff.jl")
+include("endpoints.jl")
 include("getindex.jl")
 include("join.jl")
 include("lag.jl")

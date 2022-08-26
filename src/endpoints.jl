@@ -1,23 +1,37 @@
 """
 # Computing end points
 ```julia
-endpoints(ts::TS, on::T, k::Int=1) where {T<:Union{Symbol, String}}
 endpoints(ts::TS, on::Function, k::Int=1)
+endpoints(ts::TS, on::Type{Day}, k::Int=1)
+endpoints(ts::TS, on::Type{Week}, k::Int=1)
+endpoints(ts::TS, on::Type{Month}, k::Int=1)
+endpoints(ts::TS, on::Type{Quarter}, k::Int=1)
+endpoints(ts::TS, on::Type{Year}, k::Int=1)
+endpoints(ts::TS, on::T, k::Int=1) where {T<:Union{Symbol, String}}
 ```
 
-Return index values for last observation in `ts` for the period given
-by `on` every `k` instance. Can be used to subset a `TS` object
-directly using it's return value.
+Return a vector of index values for last observation in `ts` for each
+period given by `on`, ending with the last values of `index(ts)`. The
+values are picked up every `k` instance of period (see examples). The
+last observation of each unique group (based on `on`) is returned.
 
-Valid values for `on` are: `:years`, `:quarters`, `:months`, `:weeks`,
-and `:days`. `on` can also take a `Function` which should return a
-tuple to be used as a grouping key. The last observation of each
-unique group is returned. See the weekly example below to see how the
-function works in real world.
+Can be used to subset a `TS` object directly using this function's
+return value.
 
-`ts` is first converted into the groups provided by `on` then the
-last observation is picked up every `k^th` instance. For example,
-`k=2` picks every alternate group out of the ones created by `on`.
+`ts` is first converted into the groups provided by `on` then the last
+observation is picked up every `k^th` instance. For example, `k=2`
+picks every alternate group out of the ones created by `on`. See the
+monthly example below to see how the function works in real world.
+
+In the `endpoints(ts::TS, on::Function, k::Int=1)` method `on` takes a
+`Function` which should return a tuple to be used as a grouping
+key. For other uses, the type of `on` determines the method which is
+invoked (ex: `Week`, `Month`, etc.).
+
+`endpoints(ts::TS, on::T, k::Int=1) where {T<:Union{Symbol, String}}`
+is a convenience method where `on` can be a `String` or a `Symbol`
+type.  Valid values for `on` for this method are: `:years`,
+`:quarters`, `:months`, `:weeks`, and `:days`.
 
 The method returns `Vector{Int}` corresponding to the matched values
 in `Index`.
@@ -219,22 +233,6 @@ julia> endpoints(ts, i -> [(year(x), Dates.week(x)) for x in i], 1)
  731
 ```
 """
-function endpoints(ts::TS, on::T, k::Int=1) where {T<:Union{Symbol, String}}
-    if (on == :days || on == "days")
-        endpoints(ts, i -> Dates.yearmonthday.(i), k)
-    elseif (on == :weeks || on == "weeks")
-        endpoints(ts, i -> [(year(x), Dates.week(x)) for x in i], k)
-    elseif (on == :months || on == "months")
-        endpoints(ts, i -> Dates.yearmonth.(i), k)
-    elseif (on == :quarters || on == "quarters")
-        endpoints(ts, i -> [(year(x), Dates.quarterofyear(x)) for x in i], k)
-    elseif (on == :years || on == "years")
-        endpoints(ts, i -> Dates.year.(i), k)
-    else
-        error("unsupported value supplied to `on`")
-    end
-end
-
 function endpoints(ts::TS, on::Function, k::Int=1)
     ii = index(ts)
     ex = Expr(:call, on, ii)
@@ -242,4 +240,59 @@ function endpoints(ts::TS, on::Function, k::Int=1)
     new_index_unique = unique(new_index)
     points = new_index_unique[k:k:length(new_index_unique)]
     [findlast([p] .== new_index) for p in points]
+end
+
+function endpoints(ts::TS, on::Type{Day}, k::Int=1)
+    if (k <= 0)
+        throw(DomainError("`k` needs to be greater than 0"))
+    end
+    endpoints(ts, i -> Dates.yearmonthday.(i), k)
+end
+
+function endpoints(ts::TS, on::Type{Week}, k::Int=1)
+    if (k <= 0)
+        throw(DomainError("`k` needs to be greater than 0"))
+    end
+    endpoints(ts, i -> lastdayofweek.(i), k)
+end
+
+function endpoints(ts::TS, on::Type{Month}, k::Int=1)
+    if (k <= 0)
+        throw(DomainError("`k` needs to be greater than 0"))
+    end
+    endpoints(ts, i -> Dates.yearmonth.(i), k)
+end
+
+function endpoints(ts::TS, on::Type{Quarter}, k::Int=1)
+    if (k <= 0)
+        throw(DomainError("`k` needs to be greater than 0"))
+    end
+    endpoints(ts, i -> [(year(x), Dates.quarterofyear(x)) for x in i], k)
+end
+
+function endpoints(ts::TS, on::Type{Year}, k::Int=1)
+    if (k <= 0)
+        throw(DomainError("`k` needs to be greater than 0"))
+    end
+    endpoints(ts, i -> Dates.year.(i), k)
+end
+
+function endpoints(ts::TS, on::T, k::Int=1) where {T<:Union{Symbol, String}}
+    if (k <= 0)
+        throw(DomainError("`k` needs to be greater than 0"))
+    end
+
+    if (on == :days || on == "days")
+        endpoints(ts, Day, k)
+    elseif (on == :weeks || on == "weeks")
+        endpoints(ts, Week, k)
+    elseif (on == :months || on == "months")
+        endpoints(ts, Month, k)
+    elseif (on == :quarters || on == "quarters")
+        endpoints(ts, Quarter, k)
+    elseif (on == :years || on == "years")
+        endpoints(ts, Year, k)
+    else
+        throw(ArgumentError("unsupported value supplied to `on`"))
+    end
 end
