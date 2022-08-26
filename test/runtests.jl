@@ -31,3 +31,7 @@ end
 @testset "index()" begin
     include("index.jl")
 end
+
+@testset "utils" begin
+    include("utils.jl")
+end
