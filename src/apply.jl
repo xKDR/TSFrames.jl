@@ -14,7 +14,7 @@ indexed rows. This method is used for doing aggregation over a time
 period or to convert `ts` into an object of lower frequency (ex. from
 daily series to monthly).
 
-`period` is any of `Periirstod` types in the `Dates` module. Conversion
+`period` is any of `Period` types in the `Dates` module. Conversion
 from lower to a higher frequency will throw an error as interpolation
 isn't currently handled by this method.
 
