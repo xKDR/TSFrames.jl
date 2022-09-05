@@ -199,7 +199,7 @@ julia> names(TS([1:10 11:20]))
  "x2"
 ```
 """
-            
+
 function names(ts::TS)
     names(ts.coredata[!, Not(:Index)])
 end
@@ -242,8 +242,8 @@ Returns the first `n` rows of `ts`.
 julia> head(TS(1:100))
 (10 x 1) TS with Int64 Index
 
- Index  x1    
- Int64  Int64 
+ Index  x1
+ Int64  Int64
 ──────────────
      1      1
      2      2
@@ -274,8 +274,8 @@ Returns the last `n` rows of `ts`.
 julia> tail(TS(1:100))
 (10 x 1) TS with Int64 Index
 
- Index  x1    
- Int64  Int64 
+ Index  x1
+ Int64  Int64
 ──────────────
     91     91
     92     92
@@ -309,8 +309,8 @@ and `rename!()` will throw an error if `colnames` contains the name `Index`.
 julia> ts
 (100 x 2) TS with Int64 Index
 
- Index  x1     x2    
- Int64  Int64  Int64 
+ Index  x1     x2
+ Int64  Int64  Int64
 ─────────────────────
      1      2      1
      2      3      2
@@ -326,8 +326,8 @@ julia> ts
 julia> rename!(ts, ["Col1", "Col2"])
 (100 x 2) TS with Int64 Index
 
-Index  Col1   Col2  
-Int64  Int64  Int64 
+Index  Col1   Col2
+Int64  Int64  Int64
 ─────────────────────
     1      2      1
     2      3      2
@@ -343,14 +343,7 @@ Int64  Int64  Int64
 """
 
 function rename!(ts::TS, colnames::AbstractVector{String})
-    idx = findall(i -> i == "Index", colnames)
-    if length(idx) > 0
-        error("Column name `Index` not allowed in TS object")
-    end
-    cols = copy(colnames)
-    insert!(cols, 1, "Index")
-    DataFrames.rename!(ts.coredata, cols)
-    return ts
+    rename!(ts, Symbol.(colnames))
 end
 
 function rename!(ts::TS, colnames::AbstractVector{Symbol})
