@@ -255,8 +255,8 @@ function TS(coredata::DataFrame, index::UnitRange{Int})
 end
 
 # From AbstractVector
-function TS(coredata::AbstractVector{T}, index::AbstractVector{V}) where {T, V}
-    df = DataFrame([coredata], :auto)
+function TS(coredata::AbstractVector{T}, index::AbstractVector{V}, colnames=:auto) where {T, V}
+    df = DataFrame([coredata], colnames)
     TS(df, index)
 end
 
@@ -268,13 +268,13 @@ end
 
 # From Matrix and meta
 # FIXME: use Metadata.jl
-function TS(coredata::AbstractArray{T,2}) where {T}
+function TS(coredata::AbstractArray{T,2}, colnames=:auto) where {T}
     index_vals = collect(Base.OneTo(size(coredata)[1]))
-    df = DataFrame(coredata, :auto, copycols=true)
+    df = DataFrame(coredata, colnames, copycols=true)
     TS(df, index_vals)
 end
 
-function TS(coredata::AbstractArray{T,2}, index::AbstractVector{V}) where {T, V}
-    df = DataFrame(coredata, :auto, copycols=true)
+function TS(coredata::AbstractArray{T,2}, index::AbstractVector{V}, colnames=:auto) where {T, V}
+    df = DataFrame(coredata, colnames, copycols=true)
     TS(df, index)
 end
