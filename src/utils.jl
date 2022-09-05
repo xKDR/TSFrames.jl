@@ -356,3 +356,11 @@ function rename!(ts::TS, colnames::AbstractVector{Symbol})
     DataFrames.rename!(ts.coredata, cols)
     return ts
 end
+
+"""
+Internal function to check consistency of the Index of a TS
+object.
+"""
+function _check_consistency(ts::TS)::Bool
+    issorted(index(ts))
+end
