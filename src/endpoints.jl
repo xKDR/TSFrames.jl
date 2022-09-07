@@ -267,7 +267,7 @@ function endpoints(ts::TS, on::Type{Quarter}, k::Int=1)
     if (k <= 0)
         throw(DomainError("`k` needs to be greater than 0"))
     end
-    endpoints(ts, i -> [(year(x), Dates.quarterofyear(x)) for x in i], k)
+    endpoints(ts, i -> Dates.lastdayofquarter.(i), k)
 end
 
 function endpoints(ts::TS, on::Type{Year}, k::Int=1)
