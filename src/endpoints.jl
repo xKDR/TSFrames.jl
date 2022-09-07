@@ -24,7 +24,7 @@ picks every alternate group out of the ones created by `on`. See the
 monthly example below to see how the function works in real world.
 
 In the `endpoints(ts::TS, on::Function, k::Int=1)` method `on` takes a
-`Function` which should return a tuple to be used as a grouping
+`Function` which should return a `Vector` to be used as a grouping
 key. For other uses, the type of `on` determines the method which is
 invoked (ex: `Week`, `Month`, etc.).
 
