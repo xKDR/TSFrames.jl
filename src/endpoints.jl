@@ -237,7 +237,7 @@ function endpoints(ts::TS, on::Function, k::Int=1)
     ii = index(ts)
     ex = Expr(:call, on, ii)
     new_index = eval(ex)
-    new_index_unique = unique(new_index)
+    new_index_unique = sort(unique(new_index)) # for some `on` the keys become unsorted
     points = new_index_unique[k:k:length(new_index_unique)]
     [findlast([p] .== new_index) for p in points]
 end
