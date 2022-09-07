@@ -33,5 +33,9 @@ ep1 = endpoints(ts, :weeks, 2)[1]; @test dayofweek(index(ts)[ep1]) == 7
 @test endpoints(ts, :years, 1) == [181]
 @test endpoints(ts, :years, 2) == Int64[]
 
-# @test endpoints(ts, :Function, 1)
-# @test endpoints(ts, :Function, 2)
+# value of last monday, tuesday, etc.
+@test endpoints(ts, i -> dayofweek.(i), 1) == [175, 176, 177, 178, 179, 180, 181]
+
+ts = TS(1:7, [-3, -2, -1, 0, 1, 2, 3])
+@test endpoints(ts, i -> i .^ 2, 1) == [4, 5, 6, 7]
+@test endpoints(ts, i -> i .^ 2, 2) == [5, 7]
