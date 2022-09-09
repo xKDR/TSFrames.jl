@@ -277,22 +277,36 @@ function endpoints(ts::TS, on::Type{Year}, k::Int=1)
     endpoints(ts, i -> Dates.year.(i), k)
 end
 
-function endpoints(ts::TS, on::T, k::Int=1) where {T<:Union{Symbol, String}}
+function endpoints(ts::TS, on::Symbol, k::Int=1)
     if (k <= 0)
         throw(DomainError("`k` needs to be greater than 0"))
     end
 
-    if (on == :days || on == "days")
+    if (on == :days)
         endpoints(ts, Day, k)
-    elseif (on == :weeks || on == "weeks")
+    elseif (on == :weeks)
         endpoints(ts, Week, k)
-    elseif (on == :months || on == "months")
+    elseif (on == :months)
         endpoints(ts, Month, k)
-    elseif (on == :quarters || on == "quarters")
+    elseif (on == :quarters)
         endpoints(ts, Quarter, k)
-    elseif (on == :years || on == "years")
+    elseif (on == :years)
         endpoints(ts, Year, k)
+    elseif (on == :hours)
+        endpoints(ts, Hour, k)
+    elseif (on == :minutes)
+        endpoints(ts, Minute, k)
+    elseif (on == :seconds)
+        endpoints(ts, Second, k)
+    elseif (on == :milliseconds)
+        endpoints(ts, Millisecond, k)
+    elseif (on == :microseconds)
+        endpoints(ts, Microsecond, k)
     else
         throw(ArgumentError("unsupported value supplied to `on`"))
     end
+end
+
+function endpoints(ts::TS, on::String, k::Int=1)
+    endpoints(ts, Symbol(on), k)
 end
