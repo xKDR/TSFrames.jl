@@ -236,10 +236,37 @@ julia> endpoints(ts, i -> [(year(x), Dates.week(x)) for x in i], 1)
 function endpoints(ts::TS, on::Function, k::Int=1)
     ii = index(ts)
     ex = Expr(:call, on, ii)
-    new_index = eval(ex)
-    new_index_unique = sort(unique(new_index)) # for some `on` the keys become unsorted
-    points = new_index_unique[k:k:length(new_index_unique)]
-    [findlast([p] .== new_index) for p in points]
+    keys = eval(ex)
+    keys_unique = sort(unique(keys)) # for some `on` the keys become unsorted
+    points = keys_unique[k:k:length(keys_unique)]
+
+    # include last observation if k^th period finishes before the end
+    # value
+    if (!isempty(points) && last(points) != last(keys_unique))
+        push!(points, last(keys_unique))
+    end
+    [findlast([p] .== keys) for p in points]
+end
+
+function endpoints(ts::TS, on::Type{Second}, k::Int=1)
+    if (k <= 0)
+        throw(DomainError("`k` needs to be greater than 0"))
+    end
+    endpoints(ts, index -> [div(i.instant.periods.value, 1000) for i in index], k)
+end
+
+function endpoints(ts::TS, on::Type{Minute}, k::Int=1)
+    if (k <= 0)
+        throw(DomainError("`k` needs to be greater than 0"))
+    end
+    endpoints(ts, index -> [div(i.instant.periods.value, 60000) for i in index], k)
+end
+
+function endpoints(ts::TS, on::Type{Hour}, k::Int=1)
+    if (k <= 0)
+        throw(DomainError("`k` needs to be greater than 0"))
+    end
+    endpoints(ts, index -> [div(i.instant.periods.value, 3600000) for i in index], k)
 end
 
 function endpoints(ts::TS, on::Type{Day}, k::Int=1)
