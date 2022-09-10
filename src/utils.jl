@@ -2,12 +2,16 @@
 # Summary statistics
 
 ```julia
-describe(ts::TS)
+describe(ts::TS; cols=:)
+describe(ts::TS, stats::Union{Symbol, Pair}...; cols=:)
 ```
 
 Compute summary statistics of `ts`. The output is a `DataFrame`
 containing standard statistics along with number of missing values and
-data types of columns.
+data types of columns. The `cols` keyword controls which subset of columns
+from `ts` to be selected. The `stats` keyword is used to control which
+summary statistics are to be printed. For more information about these
+keywords, check out the corresponding [documentation from DataFrames.jl](https://dataframes.juliadata.org/stable/lib/functions/#DataAPI.describe).
 
 # Examples
 ```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
@@ -33,6 +37,19 @@ julia> describe(ts, :min, :max, cols=:x1)
      │ Symbol    Int64  Int64
 ─────┼────────────────────────
    1 │ x1            2      4
+julia> describe(ts, :min, sum => :sum)
+2×3 DataFrame
+ Row │ variable  min    sum
+     │ Symbol    Int64  Int64
+─────┼────────────────────────
+   1 │ Index         1     55
+   2 │ x1            2     22
+julia> describe(ts, :min, sum => :sum, cols=:x1)
+1×3 DataFrame
+ Row │ variable  min    sum
+     │ Symbol    Int64  Int64
+─────┼────────────────────────
+   1 │ x1            2     22
 
 ```
 """
