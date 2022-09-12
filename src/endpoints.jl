@@ -237,7 +237,10 @@ function endpoints(ts::TS, on::Function, k::Int=1)
     ii = index(ts)
     ex = Expr(:call, on, ii)
     keys = eval(ex)
-    keys_unique = sort(unique(keys)) # for some `on` the keys become unsorted
+    keys_unique = unique(keys) # for some `on` the keys become unsorted
+    if (!issorted(keys_unique))
+        keys_unique = sort(keys_unique)
+    end
     points = keys_unique[k:k:length(keys_unique)]
 
     # include last observation if k^th period finishes before the end
