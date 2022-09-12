@@ -1,6 +1,7 @@
 using Dates
 using DataFrames
 using Random
+using StatsBase
 using Statistics
 using Test
 using TSx
