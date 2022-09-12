@@ -2,36 +2,40 @@
 # Computing end points
 ```julia
 endpoints(ts::TS, on::Function, k::Int=1)
+endpoints(ts::TS, on::Type{Second}, k::Int=1)
+endpoints(ts::TS, on::Type{Minute}, k::Int=1)
+endpoints(ts::TS, on::Type{Hour}, k::Int=1)
 endpoints(ts::TS, on::Type{Day}, k::Int=1)
 endpoints(ts::TS, on::Type{Week}, k::Int=1)
 endpoints(ts::TS, on::Type{Month}, k::Int=1)
 endpoints(ts::TS, on::Type{Quarter}, k::Int=1)
 endpoints(ts::TS, on::Type{Year}, k::Int=1)
-endpoints(ts::TS, on::T, k::Int=1) where {T<:Union{Symbol, String}}
+endpoints(ts::TS, on::Symbol, k::Int=1)
+endpoints(ts::TS, on::String, k::Int=1)
 ```
 
 Return a vector of index values for last observation in `ts` for each
-period given by `on`, ending with the last values of `index(ts)`. The
-values are picked up every `k` instance of period (see examples). The
-last observation of each unique group (based on `on`) is returned.
+period given by `on`. The values are picked up every `k` instance of
+the period (see examples).
 
 Can be used to subset a `TS` object directly using this function's
 return value.
 
-`ts` is first converted into the groups provided by `on` then the last
-observation is picked up every `k^th` instance. For example, `k=2`
-picks every alternate group out of the ones created by `on`. See the
-monthly example below to see how the function works in real world.
+`ts` is first converted into unique period-groups provided by `on`
+then the last observation is picked up for every group. `k` decides
+the number of groups to skip . For example, `k=2` picks every
+alternate group starting from 2 out of the ones created by `on`. See
+the examples below to see how the function works in the real world.
 
 In the `endpoints(ts::TS, on::Function, k::Int=1)` method `on` takes a
-`Function` which should return a `Vector` to be used as a grouping
-key. For other uses, the type of `on` determines the method which is
+`Function` which should return a `Vector` to be used as grouping
+keys. For other methods the type of `on` determines the method that is
 invoked (ex: `Week`, `Month`, etc.).
-
-`endpoints(ts::TS, on::T, k::Int=1) where {T<:Union{Symbol, String}}`
-is a convenience method where `on` can be a `String` or a `Symbol`
-type.  Valid values for `on` for this method are: `:years`,
-`:quarters`, `:months`, `:weeks`, and `:days`.
+`endpoints(ts::TS, on::Symbol, k::Int=1)` and `endpoints(ts::TS, on::String, k::Int=1)`
+are convenience methods where valid values for `on` are: `:years`,
+`:quarters`, `:months`, `:weeks`, `:days`, `:hours`, `:minutes`, and
+`:seconds`. Note, that except for `on::Function` all other methods
+expect Index type of `TS` to be a subtype of `TimeType`.
 
 The method returns `Vector{Int}` corresponding to the matched values
 in `Index`.
@@ -157,21 +161,7 @@ julia> diff(index(ts[ep]))
  1 day
 
 # with k=2
-julia> ep = endpoints(ts, :months, 2)
-12-element Vector{Int64}:
-  59
- 120
- 181
- 243
- 304
- 365
- 424
- 485
- 546
- 608
- 669
- 730
-
+julia> ep = endpoints(ts, :months, 2);
 julia> ts[ep]
 (12 x 1) TS with Date Index
 
@@ -190,6 +180,7 @@ julia> ts[ep]
  2018-08-31  0.912558
  2018-10-31  0.49775
  2018-12-31  0.67549
+ 2019-01-01  0.910285
 
 julia> diff(index(ts[ep]))
 11-element Vector{Day}:
@@ -204,26 +195,19 @@ julia> diff(index(ts[ep]))
  62 days
  61 days
  61 days
+ 1 day
 
 # Weekly points are implemented internally like this
-julia> endpoints(ts, i -> [(year(x), Dates.week(x)) for x in i], 1)
-105-element Vector{Int64}:
- 365
+julia> endpoints(ts, i -> lastdayofweek.(i), 1)
+106-element Vector{Int64}:
+   1
    8
   15
   22
   29
   36
   43
-  50
-  57
-  64
-  71
    ⋮
- 666
- 673
- 680
- 687
  694
  701
  708
