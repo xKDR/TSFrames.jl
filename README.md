@@ -3,6 +3,7 @@
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://xKDR.github.io/TSx.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://xKDR.github.io/TSx.jl/dev)
 ![Build Status](https://github.com/xKDR/TSx.jl/actions/workflows/documentation.yml/badge.svg)
+[![codecov](https://codecov.io/gh/xKDR/TSx.jl/branch/main/graph/badge.svg?token=9qkJUtdgrz)](https://codecov.io/gh/xKDR/TSx.jl)
 
 TSx is a Julia package to handle timeseries data. It provides a
 convenient interface for the commonly used timeseries data

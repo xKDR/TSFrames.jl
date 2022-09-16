@@ -10,7 +10,7 @@ on:
     # can add tags if needed
 
 jobs: 
-    test: 
+    test:
         name: Test
         runs-on: ubuntu-latest
         steps:
@@ -21,4 +21,6 @@ jobs:
             - name: Install test dependencies
               run: julia --project=test/ -e 'using Pkg; Pkg.instantiate()'
             - name: Run tests
-              run: julia --project=. -e 'using Pkg; Pkg.test()'
+              run: julia --project=. -e 'using Pkg; Pkg.test("TSx", coverage=true)'
+            - name: Codecov
+              run: julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
