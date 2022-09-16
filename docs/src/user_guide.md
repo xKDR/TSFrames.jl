@@ -903,3 +903,60 @@ the `CSV.write` method for writing into a file.
 ```julia
 julia> ts.coredata |> CSV.write("/tmp/demo_ts.csv");
 ```
+
+## Broadcasting
+
+Broadcasting can be used on a `TS` object to apply a function to a subset of it's columns.
+
+```julia-repl
+julia> using TSx, DataFrames
+
+julia> ts = TS(DataFrame(Index = [1, 2, 3, 4, 5], A = [10.1, 12.4, 42.4, 24.1, 242.5], B = [2, 4, 6, 8, 10]))
+(5 x 2) TS with Int64 Index
+
+ Index  A        B     
+ Int64  Float64  Int64 
+───────────────────────
+     1     10.1      2
+     2     12.4      4
+     3     42.4      6
+     4     24.1      8
+     5    242.5     10
+
+julia> sin_A = sin.(ts[:, [:A]])    # get sin of column A
+(5 x 1) TS with Int64 Index
+
+ Index  A_sin
+ Int64  Float64
+──────────────────
+     1  -0.625071
+     2  -0.165604
+     3  -0.999934
+     4  -0.858707
+     5  -0.562466
+
+julia> log_ts = log.(ts)    # take log of all columns
+(5 x 2) TS with Int64 Index
+
+ Index  A_log    B_log
+ Int64  Float64  Float64
+──────────────────────────
+     1  2.31254  0.693147
+     2  2.5177   1.38629
+     3  3.74715  1.79176
+     4  3.18221  2.07944
+     5  5.491    2.30259
+
+julia> log_ts = log.(ts[:, [:A, :B]])   # can specify multiple columns
+(5 x 2) TS with Int64 Index
+
+ Index  A_log    B_log
+ Int64  Float64  Float64
+──────────────────────────
+     1  2.31254  0.693147
+     2  2.5177   1.38629
+     3  3.74715  1.79176
+     4  3.18221  2.07944
+     5  5.491    2.30259
+
+```
