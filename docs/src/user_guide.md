@@ -908,8 +908,8 @@ julia> ts.coredata |> CSV.write("/tmp/demo_ts.csv");
 
 Broadcasting can be used on a `TS` object to apply a function to a subset of it's columns.
 
-```julia-repl
-julia> using TSx, DataFrames
+```jldoctest
+julia> using TSx, DataFrames;
 
 julia> ts = TS(DataFrame(Index = [1, 2, 3, 4, 5], A = [10.1, 12.4, 42.4, 24.1, 242.5], B = [2, 4, 6, 8, 10]))
 (5 x 2) TS with Int64 Index
