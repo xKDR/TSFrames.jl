@@ -80,5 +80,6 @@ include("plot.jl")
 include("rollapply.jl")
 include("subset.jl")
 include("vcat.jl")
+include("broadcasting.jl")
 
 end                             # END module TSx

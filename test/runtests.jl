@@ -36,3 +36,7 @@ end
 @testset "utils" begin
     include("utils.jl")
 end
+
+@testset "broadcasting" begin
+    include("broadcasting.jl")
+end
