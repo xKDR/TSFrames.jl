@@ -273,6 +273,14 @@ julia> ts[Year(2007), Quarter(2)];
 
 ```
 
+Finally, one can also use the dot notation to get a column as a vector.
+
+```julia
+# get the value column as a vector
+julia> ts.value;
+
+```
+
 ## Summary statistics
 
 The `describe()` method prints summary statistics of the TS
