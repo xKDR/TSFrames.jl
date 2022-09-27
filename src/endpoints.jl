@@ -1,17 +1,25 @@
 """
 # Computing end points
 ```julia
-endpoints(ts::TS, on::Function, k::Int=1)
-endpoints(ts::TS, on::Type{Second}, k::Int=1)
-endpoints(ts::TS, on::Type{Minute}, k::Int=1)
-endpoints(ts::TS, on::Type{Hour}, k::Int=1)
-endpoints(ts::TS, on::Type{Day}, k::Int=1)
-endpoints(ts::TS, on::Type{Week}, k::Int=1)
-endpoints(ts::TS, on::Type{Month}, k::Int=1)
-endpoints(ts::TS, on::Type{Quarter}, k::Int=1)
-endpoints(ts::TS, on::Type{Year}, k::Int=1)
+endpoints(ts::TS, on::T) where {T<:Period}
 endpoints(ts::TS, on::Symbol, k::Int=1)
 endpoints(ts::TS, on::String, k::Int=1)
+endpoints(ts::TS, on::Function, k::Int=1)
+endpoints(dates::AbstractVector{T}, on::Year) where {T<:Union{Date, DateTime}}
+endpoints(dates::AbstractVector{T}, on::Quarter) where {T<:Union{Date, DateTime}}
+endpoints(dates::AbstractVector{T}, on::Month) where {T<:Union{Date, DateTime}}
+endpoints(dates::AbstractVector{T}, on::Week) where {T<:Union{Date, DateTime}}
+endpoints(dates::AbstractVector{T}, on::Day) where {T<:Union{Date, DateTime}}
+endpoints(datetimes::AbstractVector{DateTime}, on::Hour)
+endpoints(datetimes::AbstractVector{DateTime}, on::Minute)
+endpoints(datetimes::AbstractVector{T}, on::Second) where {T<:Union{Date, DateTime}}
+endpoints(datetimes::AbstractVector{Time}, on::Hour)
+endpoints(datetimes::AbstractVector{Time}, on::Minute)
+endpoints(datetimes::AbstractVector{Time}, on::Second)
+endpoints(datetimes::AbstractVector{Time}, on::Millisecond)
+endpoints(datetimes::AbstractVector{Time}, on::Microsecond)
+endpoints(datetimes::AbstractVector{Time}, on::Nanosecond)
+endpoints(values::AbstractVector, on::Function, k::Int=1)
 ```
 
 Return a vector of index values for last observation in `ts` for each
@@ -21,21 +29,28 @@ the period (see examples).
 Can be used to subset a `TS` object directly using this function's
 return value.
 
-`ts` is first converted into unique period-groups provided by `on`
-then the last observation is picked up for every group. `k` decides
-the number of groups to skip . For example, `k=2` picks every
-alternate group starting from 2 out of the ones created by `on`. See
-the examples below to see how the function works in the real world.
+Most methods work on the index directly (`AbstractVector`) for all
+`DateTime.Period` types others are provided for convenience to work
+directly on `TS` type.
 
-In the `endpoints(ts::TS, on::Function, k::Int=1)` method `on` takes a
-`Function` which should return a `Vector` to be used as grouping
-keys. For other methods the type of `on` determines the method that is
-invoked (ex: `Week`, `Month`, etc.).
-`endpoints(ts::TS, on::Symbol, k::Int=1)` and `endpoints(ts::TS, on::String, k::Int=1)`
+The time-based vector is first converted into unique period-groups
+using the period provided by `on` then the last observation is picked
+up for each group. `k` decides the number of groups to skip. For
+example, `k=2` picks every alternate group starting from the 2ⁿᵈ
+element out of the ones created by `on`. See the examples below to see
+how the function works in the real world.
+
+In the `endpoints(values::AbstractVector, on::Function, k::Int=1)`
+method `on` takes a `Function` which should return a `Vector` to be
+used as grouping keys. For other methods the type of `on` determines
+the method that is invoked (ex: `Week`, `Month`, etc.).
+`endpoints(ts::TS, on::Symbol)` and `endpoints(ts::TS, on::String)`
 are convenience methods where valid values for `on` are: `:years`,
-`:quarters`, `:months`, `:weeks`, `:days`, `:hours`, `:minutes`, and
-`:seconds`. Note, that except for `on::Function` all other methods
-expect Index type of `TS` to be a subtype of `TimeType`.
+`:quarters`, `:months`, `:weeks`, `:days`, `:hours`, `:minutes`,
+`:seconds`, `milliseconds`, `microseconds`, and `nanoseconds`.
+
+Note, that except for `on::Function` all other methods expect Index
+type of `TS` to be a subtype of `TimeType`.
 
 The method returns `Vector{Int}` corresponding to the matched values
 in `Index`.
@@ -73,7 +88,7 @@ julia> ts = TS(random(length(dates)), dates)
  2019-01-01  0.910285
        712 rows omitted
 
-julia> ep = endpoints(ts, :months, 1)
+julia> ep = endpoints(ts, Month(1))
 25-element Vector{Int64}:
   31
   59
@@ -160,8 +175,8 @@ julia> diff(index(ts[ep]))
  31 days
  1 day
 
-# with k=2
-julia> ep = endpoints(ts, :months, 2);
+# every 2ⁿᵈ month
+julia> ep = endpoints(ts, Month(2));
 julia> ts[ep]
 (12 x 1) TS with Date Index
 
@@ -217,9 +232,12 @@ julia> endpoints(ts, i -> lastdayofweek.(i), 1)
  731
 ```
 """
-function endpoints(ts::TS, on::Function, k::Int=1)
-    ii = index(ts)
-    ex = Expr(:call, on, ii)
+function endpoints(values::AbstractVector, on::Function, k::Int=1)
+    if (k <= 0)
+        throw(DomainError("`k` needs to be greater than 0"))
+    end
+
+    ex = Expr(:call, on, values)
     keys = eval(ex)
     keys_unique = unique(keys) # for some `on` the keys become unsorted
     if (!issorted(keys_unique))
@@ -235,87 +253,95 @@ function endpoints(ts::TS, on::Function, k::Int=1)
     [findlast([p] .== keys) for p in points]
 end
 
-function endpoints(ts::TS, on::Type{Second}, k::Int=1)
-    if (k <= 0)
-        throw(DomainError("`k` needs to be greater than 0"))
-    end
-    endpoints(ts, index -> [div(i.instant.periods.value, 1000) for i in index], k)
+function endpoints(ts::TS, on::Function, k::Int=1)
+    endpoints(index(ts), on, k)
 end
 
-function endpoints(ts::TS, on::Type{Minute}, k::Int=1)
-    if (k <= 0)
-        throw(DomainError("`k` needs to be greater than 0"))
-    end
-    endpoints(ts, index -> [div(i.instant.periods.value, 60000) for i in index], k)
+# DateTime and Date type methods
+function endpoints(dates::AbstractVector{T}, on::Year) where {T<:Union{Date, DateTime}}
+    endpoints(dates, i -> Dates.year.(i), on.value)
 end
 
-function endpoints(ts::TS, on::Type{Hour}, k::Int=1)
-    if (k <= 0)
-        throw(DomainError("`k` needs to be greater than 0"))
-    end
-    endpoints(ts, index -> [div(i.instant.periods.value, 3600000) for i in index], k)
+function endpoints(dates::AbstractVector{T}, on::Quarter) where {T<:Union{Date, DateTime}}
+    endpoints(dates, i -> Dates.lastdayofquarter.(i), on.value)
 end
 
-function endpoints(ts::TS, on::Type{Day}, k::Int=1)
-    if (k <= 0)
-        throw(DomainError("`k` needs to be greater than 0"))
-    end
-    endpoints(ts, i -> Dates.yearmonthday.(i), k)
+function endpoints(dates::AbstractVector{T}, on::Month) where {T<:Union{Date, DateTime}}
+    endpoints(dates, i -> Dates.yearmonth.(i), on.value)
 end
 
-function endpoints(ts::TS, on::Type{Week}, k::Int=1)
-    if (k <= 0)
-        throw(DomainError("`k` needs to be greater than 0"))
-    end
-    endpoints(ts, i -> lastdayofweek.(i), k)
+function endpoints(dates::AbstractVector{T}, on::Week) where {T<:Union{Date, DateTime}}
+    endpoints(dates, i -> lastdayofweek.(i), on.value)
 end
 
-function endpoints(ts::TS, on::Type{Month}, k::Int=1)
-    if (k <= 0)
-        throw(DomainError("`k` needs to be greater than 0"))
-    end
-    endpoints(ts, i -> Dates.yearmonth.(i), k)
+function endpoints(dates::AbstractVector{T}, on::Day) where {T<:Union{Date, DateTime}}
+    endpoints(dates, i -> Dates.yearmonthday.(i), on.value)
 end
 
-function endpoints(ts::TS, on::Type{Quarter}, k::Int=1)
-    if (k <= 0)
-        throw(DomainError("`k` needs to be greater than 0"))
-    end
-    endpoints(ts, i -> Dates.lastdayofquarter.(i), k)
+function endpoints(datetimes::AbstractVector{DateTime}, on::Hour)
+    endpoints(datetimes, index -> [div(i.instant.periods.value, 3600*10^3) for i in index], on.value)
 end
 
-function endpoints(ts::TS, on::Type{Year}, k::Int=1)
-    if (k <= 0)
-        throw(DomainError("`k` needs to be greater than 0"))
-    end
-    endpoints(ts, i -> Dates.year.(i), k)
+function endpoints(datetimes::AbstractVector{DateTime}, on::Minute)
+    endpoints(datetimes, index -> [div(i.instant.periods.value, 60*10^3) for i in index], on.value)
+end
+
+function endpoints(datetimes::AbstractVector{T}, on::Second) where {T<:Union{Date, DateTime}}
+    endpoints(datetimes, index -> [div(i.instant.periods.value, 10^3) for i in index], on.value)
+end
+
+# `Time` type methods
+function endpoints(timestamps::AbstractVector{Time}, on::Hour)
+    endpoints(timestamps, index -> [div(i.instant.value, 3600*10^9) for i in index], on.value)
+end
+
+function endpoints(timestamps::AbstractVector{Time}, on::Minute)
+    endpoints(timestamps, index -> [div(i.instant.value, 60*10^9) for i in index], on.value)
+end
+
+function endpoints(timestamps::AbstractVector{Time}, on::Second)
+    endpoints(timestamps, index -> [div(i.instant.value, 10^9) for i in index], on.value)
+end
+
+function endpoints(timestamps::AbstractVector{Time}, on::Millisecond)
+    endpoints(timestamps, index -> [div(i.instant.value, 10^6) for i in index], on.value)
+end
+
+function endpoints(timestamps::AbstractVector{Time}, on::Microsecond)
+    endpoints(timestamps, index -> [div(i.instant.value, 10^3) for i in index], on.value)
+end
+
+function endpoints(timestamps::AbstractVector{Time}, on::Nanosecond)
+    endpoints(timestamps, index -> [i.instant.value for i in index], on.value)
+end
+
+function endpoints(ts::TS, on::T) where {T<:Period}
+    endpoints(index(ts), on)
 end
 
 function endpoints(ts::TS, on::Symbol, k::Int=1)
-    if (k <= 0)
-        throw(DomainError("`k` needs to be greater than 0"))
-    end
-
     if (on == :days)
-        endpoints(ts, Day, k)
+        endpoints(ts, Day(k))
     elseif (on == :weeks)
-        endpoints(ts, Week, k)
+        endpoints(ts, Week(k))
     elseif (on == :months)
-        endpoints(ts, Month, k)
+        endpoints(ts, Month(k))
     elseif (on == :quarters)
-        endpoints(ts, Quarter, k)
+        endpoints(ts, Quarter(k))
     elseif (on == :years)
-        endpoints(ts, Year, k)
+        endpoints(ts, Year(k))
     elseif (on == :hours)
-        endpoints(ts, Hour, k)
+        endpoints(ts, Hour(k))
     elseif (on == :minutes)
-        endpoints(ts, Minute, k)
+        endpoints(ts, Minute(k))
     elseif (on == :seconds)
-        endpoints(ts, Second, k)
+        endpoints(ts, Second(k))
     elseif (on == :milliseconds)
-        endpoints(ts, Millisecond, k)
+        endpoints(ts, Millisecond(k))
     elseif (on == :microseconds)
-        endpoints(ts, Microsecond, k)
+        endpoints(ts, Microsecond(k))
+    elseif (on == :nanoseconds)
+        endpoints(ts, Nanosecond(k))
     else
         throw(ArgumentError("unsupported value supplied to `on`"))
     end
