@@ -1,5 +1,6 @@
 using Dates
 using DataFrames
+using StatsBase
 using Statistics
 using Test
 using TSx
@@ -34,4 +35,12 @@ end
 
 @testset "utils" begin
     include("utils.jl")
+end
+
+@testset "broadcasting" begin
+    include("broadcasting.jl")
+end
+
+@testset "getproperty" begin
+    include("getproperty.jl")
 end
