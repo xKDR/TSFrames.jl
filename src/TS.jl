@@ -8,7 +8,7 @@
 A TS object is essentially a `DataFrame` with a specific column marked
 as an index. The input `DataFrame` is sorted during construction and
 is stored under the property `coredata`. The index is stored in the
-`Index` column of `coredata`.
+`Index` column of `coredata`. 
 
 Permitted data inputs to the constructors are `DataFrame`, `Vector`,
 and 2-dimensional `Array`. If an index is already not present in the
