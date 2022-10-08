@@ -32,6 +32,11 @@ datetimeseconds = collect(range(DateTime(today()) + Hour(9),
                                 step=Second(1)));
 tsseconds = TS(random(length(datetimeseconds)), datetimeseconds);
 
+## ::DateTime (Second(10))
+datetime10seconds = collect(range(DateTime(today()) + Hour(9),
+                                  DateTime(today()) + Hour(9) + Minute(2),
+                                  step=Second(10)));
+
 ## ::DateTime (Millisecond)
 datetimemilliseconds = collect(range(DateTime(today()) + Hour(9),
                                      DateTime(today()) + Hour(9) + Minute(59),
@@ -42,7 +47,7 @@ tsmilliseconds = TS(random(length(datetimemilliseconds)), datetimemilliseconds);
 timestampshours = collect(Time(9, 0, 0):Hour(1):Time(15, 0, 0))
 
 ## ::Time (Minute)
-timestampsminutes = collect(Time(9, 0, 0):Minute(1):Time(11, 0, 0))
+timestampsminutes = collect(Time(9, 1, 2):Minute(1):Time(11, 2, 3))
 
 ## ::Time (Second)
 timestampsseconds = collect(Time(9, 0, 0):Second(1):Time(10, 0, 0))
@@ -146,38 +151,43 @@ ep1 = endpoints(datetimes, Week(2))[1];
 @test endpoints(datetimehours, Hour(1)) == collect(1:length(datetimehours))
 @test endpoints(datetimehours, Hour(2)) == collect([2:2:length(datetimehours)..., lastindex(datetimehours)])
 @test endpoints(datetimehours, Hour(24)) == [24, 48, 49]
-@test endpoints(datetimehours, Hour(50)) == []
+@test endpoints(datetimehours, Hour(length(datetimehours)+1)) == [lastindex(datetimehours)]
 # Minute to Hour
 @test endpoints(datetimeminutes, Hour(1)) == [60, 120, 180, 240, 300, 360, 390]
 @test endpoints(datetimeminutes, Hour(2)) == [120, 240, 360, 390]
 @test endpoints(datetimeminutes, Hour(7)) == [390]
-@test endpoints(datetimeminutes, Hour(8)) == []
+@test endpoints(datetimeminutes, Hour(8)) == [390]
+# Hour to Minute
+@test endpoints(datetimehours, Minute(1)) == collect(1:length(datetimehours))
+@test endpoints(datetimehours, Minute(2)) == collect(1:length(datetimehours))
 
 ##
 # endpoints(datetimes::AbstractVector{DateTime}, on::Minute)
 ##
+
 # Minute to Minute
 @test endpoints(datetimeminutes, Minute(1)) == collect(1:length(datetimeminutes))
 @test endpoints(datetimeminutes, Minute(2)) == collect(2:2:length(datetimeminutes))
 @test endpoints(datetimeminutes, Minute(59)) == [59, 118, 177, 236, 295, 354, 390]
 @test endpoints(datetimeminutes, Minute(60)) == endpoints(datetimeminutes, Hour(1))
-@test endpoints(datetimeminutes, Minute(600)) == []
+@test endpoints(datetimeminutes, Minute(600)) == [390]
 
 # Second to Minute
 @test endpoints(datetimeseconds, Minute(1)) == [collect(range(60, 6*60*60 + 29*60, step=60))..., length(datetimeseconds)]
 @test endpoints(datetimeseconds, Minute(2)) == [collect(range(120, 6*60*60 + 29*60, step=120))..., length(datetimeseconds)]
 @test endpoints(datetimeseconds, Minute(60)) == endpoints(datetimeseconds, Hour(1))
-@test endpoints(datetimeseconds, Minute(length(datetimeseconds) + 1)) == []
+@test endpoints(datetimeseconds, Minute(length(datetimeseconds) + 1)) == [length(datetimeseconds)]
 
 ##
 # endpoints(datetimes::AbstractVector{T}, on::Second) where {T<:Union{Date, DateTime}}
 ##
+
 # Second to Second
 @test endpoints(datetimeseconds, Second(1)) == collect(1:length(datetimeseconds))
 @test endpoints(datetimeseconds, Second(2)) == collect([2:2:length(datetimeseconds)..., lastindex(datetimeseconds)])
 @test endpoints(datetimeseconds, Second(59)) == collect([59:59:length(datetimeseconds)..., lastindex(datetimeseconds)])
 @test endpoints(datetimeseconds, Second(60)) == endpoints(datetimeseconds, Minute(1))
-@test endpoints(datetimeseconds, Second(length(datetimeseconds) + 1)) == []
+@test endpoints(datetimeseconds, Second(length(datetimeseconds) + 1)) == [length(datetimeseconds)]
 
 # Millisecond to Second
 @test endpoints(datetimemilliseconds, Second(1)) == [collect(range(2, 59*60*2, step=2))..., length(datetimemilliseconds)]
@@ -185,26 +195,34 @@ ep1 = endpoints(datetimes, Week(2))[1];
 @test endpoints(datetimemilliseconds, Second(60)) == endpoints(datetimemilliseconds, Minute(1))
 @test endpoints(datetimemilliseconds, Second(3600 - 60)) == [7080, 7081]
 
+# Periodicity > 1
+@test endpoints(datetime10seconds, Second(1)) == collect(1:length(datetime10seconds))
+@test endpoints(datetime10seconds, Second(2)) == collect(1:length(datetime10seconds))
+@test endpoints(datetime10seconds, Second(10)) == collect(1:length(datetime10seconds))
+@test endpoints(datetime10seconds, Second(20)) == collect([2:2:length(datetime10seconds)..., lastindex(datetime10seconds)])
+@test endpoints(datetime10seconds, Minute(1)) == [collect(6:6:length(datetime10seconds))..., lastindex(datetime10seconds)]
+@test endpoints(datetime10seconds, Second(60)) == endpoints(datetime10seconds, Minute(1))
+
 ##
 # endpoints(timestamps::AbstractVector{Time}, on::Hour)
 ##
 @test endpoints(timestampshours, Hour(1)) == collect(1:length(timestampshours))
 @test endpoints(timestampshours, Hour(2)) == [2, 4, 6, 7]
-@test endpoints(timestampshours, Hour(length(timestampshours) + 1)) == []
+@test endpoints(timestampshours, Hour(length(timestampshours) + 1)) == [lastindex(timestampshours)]
 
 ##
 # endpoints(timestamps::AbstractVector{Time}, on::Minute)
 ##
 # Minute to Hour
-@test endpoints(timestampsminutes, Hour(1)) == [60, 120, 121]
-@test endpoints(timestampsminutes, Hour(2)) == [120, 121]
+@test endpoints(timestampsminutes, Hour(1)) == [59, 119, lastindex(timestampsminutes)]
+@test endpoints(timestampsminutes, Hour(2)) == [119, lastindex(timestampsminutes)]
 
 # Minute to Minute
 @test endpoints(timestampsminutes, Minute(1)) == collect(1:length(timestampsminutes))
-@test endpoints(timestampsminutes, Minute(2)) == collect([2:2:length(timestampsminutes)..., lastindex(timestampsminutes)])
+@test endpoints(timestampsminutes, Minute(2)) == collect(2:2:length(timestampsminutes))
 @test endpoints(timestampsminutes, Minute(59)) == collect([59:59:length(timestampsminutes)..., lastindex(timestampsminutes)])
-@test endpoints(timestampsminutes, Minute(60)) == endpoints(timestampsminutes, Hour(1))
-@test endpoints(timestampsminutes, Minute(length(timestampsminutes) + 1)) == []
+@test endpoints(timestampsminutes, Minute(60)) == [60, 120, 122] # Note: every 60 minutes != every 1 hour
+@test endpoints(timestampsminutes, Minute(length(timestampsminutes) + 1)) == [lastindex(timestampsminutes)]
 
 ##
 # endpoints(timestamps::AbstractVector{Time}, on::Second)
@@ -219,7 +237,7 @@ ep1 = endpoints(datetimes, Week(2))[1];
 @test endpoints(timestampsseconds, Second(2)) == collect([2:2:length(timestampsseconds)..., lastindex(timestampsseconds)])
 @test endpoints(timestampsseconds, Second(59)) == collect([59:59:length(timestampsseconds)..., lastindex(timestampsseconds)])
 @test endpoints(timestampsseconds, Second(60)) == endpoints(timestampsseconds, Minute(1))
-@test endpoints(timestampsseconds, Second(length(timestampsseconds) + 1)) == []
+@test endpoints(timestampsseconds, Second(length(timestampsseconds) + 1)) == [lastindex(timestampsseconds)]
 
 ##
 # endpoints(timestamps::AbstractVector{Time}, on::Millisecond)
@@ -233,7 +251,7 @@ ep1 = endpoints(datetimes, Week(2))[1];
 @test endpoints(timestampsmilliseconds, Millisecond(2)) == collect([2:2:length(timestampsmilliseconds)..., lastindex(timestampsmilliseconds)])
 @test endpoints(timestampsmilliseconds, Millisecond(999)) == collect([999:999:length(timestampsmilliseconds)..., lastindex(timestampsmilliseconds)])
 @test endpoints(timestampsmilliseconds, Millisecond(1000)) == endpoints(timestampsmilliseconds, Second(1))
-@test endpoints(timestampsmilliseconds, Millisecond(length(timestampsmilliseconds) + 1)) == []
+@test endpoints(timestampsmilliseconds, Millisecond(length(timestampsmilliseconds) + 1)) == [lastindex(timestampsmilliseconds)]
 
 ##
 # endpoints(timestamps::AbstractVector{Time}, on::Microsecond)
@@ -247,7 +265,7 @@ ep1 = endpoints(datetimes, Week(2))[1];
 @test endpoints(timestampsmicroseconds, Microsecond(2)) == collect([2:2:length(timestampsmicroseconds)..., lastindex(timestampsmicroseconds)])
 @test endpoints(timestampsmicroseconds, Microsecond(999)) == collect([999:999:length(timestampsmicroseconds)..., lastindex(timestampsmicroseconds)])
 @test endpoints(timestampsmicroseconds, Microsecond(1000)) == endpoints(timestampsmicroseconds, Millisecond(1))
-@test endpoints(timestampsmicroseconds, Microsecond(length(timestampsmicroseconds) + 1)) == []
+@test endpoints(timestampsmicroseconds, Microsecond(length(timestampsmicroseconds) + 1)) == [lastindex(timestampsmicroseconds)]
 
 ##
 # endpoints(timestamps::AbstractVector{Time}, on::Nanosecond)
@@ -261,7 +279,16 @@ ep1 = endpoints(datetimes, Week(2))[1];
 @test endpoints(timestampsnanoseconds, Nanosecond(2)) == collect([2:2:length(timestampsnanoseconds)..., lastindex(timestampsnanoseconds)])
 @test endpoints(timestampsnanoseconds, Nanosecond(999)) == collect([999:999:length(timestampsnanoseconds)..., lastindex(timestampsnanoseconds)])
 @test endpoints(timestampsnanoseconds, Nanosecond(1000)) == endpoints(timestampsnanoseconds, Microsecond(1))
-@test endpoints(timestampsnanoseconds, Nanosecond(length(timestampsnanoseconds) + 1)) == []
+@test endpoints(timestampsnanoseconds, Nanosecond(length(timestampsnanoseconds) + 1)) == [lastindex(timestampsnanoseconds)]
+
+# Irregular series
+datetimesecondsrandom = sample(MersenneTwister(123), datetimeseconds, 20, replace=false, ordered=true)
+@test endpoints(datetimesecondsrandom, Minute(1)) == [1, 2, 3, 4, 5, 6, 7, 8, 10, 11,
+                                                      12, 13, 14, 15, 16, 17, 18, 19,
+                                                      20]
+@test endpoints(datetimesecondsrandom, Minute(20)) == [2, 3, 5, 6, 8, 11, 12, 13, 15, 18, 19, 20]
+@test endpoints(datetimesecondsrandom, Hour(1)) == [3, 6, 11, 13, 18, 20]
+
 
 ##
 # endpoints(ts::TS, on::T) where {T<:Period}
