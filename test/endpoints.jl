@@ -59,9 +59,11 @@ timestampsmilliseconds = collect(Time(9, 0, 0):Millisecond(1):Time(9, 0, 2))
 
 ## ::Time (Microsecond)
 timestampsmicroseconds = collect(Time(9, 0, 0):Microsecond(1):Time(9, 0, 0, 2))
+tsmicroseconds = TS(1:length(timestampsmicroseconds), timestampsmicroseconds)
 
 ## ::Time (Nanosecond)
 timestampsnanoseconds = collect(Time(9, 0, 0):Nanosecond(1):Time(9, 0, 0, 0, 2))
+tsnanoseconds = TS(1:length(timestampsnanoseconds), timestampsnanoseconds)
 
 ##
 # endpoints(values::AbstractVector, on::Function, k::Int=1)
@@ -72,6 +74,7 @@ timestampsnanoseconds = collect(Time(9, 0, 0):Nanosecond(1):Time(9, 0, 0, 0, 2))
 @test endpoints(dates, i -> dayofweek.(i), 1) == [175, 176, 177, 178, 179, 180, 181]
 @test endpoints(indexinteger, i -> i .^ 2, 1) == [4, 5, 6, 7]
 @test endpoints(indexinteger, i -> i .^ 2, 2) == [5, 7]
+@test endpoints(indexinteger, i -> i, length(indexinteger)+1) == [lastindex(indexinteger)]
 
 ##
 # endpoints(ts::TS, on::Function, k::Int=1)
@@ -327,9 +330,21 @@ datetimesecondsrandom = sample(MersenneTwister(123), datetimeseconds, 20, replac
 @test_throws ArgumentError endpoints(tsdaily, :abc, 1)
 @test_throws DomainError endpoints(tsdaily, :days, 0)
 @test_throws DomainError endpoints(tsdaily, :days, -1)
-@test endpoints(tsdaily, :days, 1) == endpoints(tsdaily, Day(1))
-
+@test endpoints(tsdaily, :years, 1) == [181]
+@test endpoints(tsdaily, :quarters, 1) == [89, 180, 181]
+@test endpoints(tsdaily, :months, 1) == [30, 58, 89, 119, 150, 180, 181]
+@test endpoints(tsdaily, :weeks, 1) == [6, 13, 20, 27, 34, 41, 48, 55, 62,
+                                      69, 76, 83, 90, 97, 104, 111, 118,
+                                      125, 132, 139, 146, 153, 160, 167,
+                                      174, 181]
+@test endpoints(tsdaily, :days, 2) == endpoints(index(tsdaily), Day(2))
+@test endpoints(tshours, :hours, 2) == endpoints(index(tshours), Hour(2))
+@test endpoints(tsminutes, :minutes, 2) == endpoints(index(tsminutes), Minute(2))
+@test endpoints(tsseconds, :seconds, 2) == endpoints(index(tsseconds), Second(2))
+@test endpoints(tsmilliseconds, :milliseconds, 500) == endpoints(index(tsmilliseconds), Millisecond(500))
+@test endpoints(tsmicroseconds, :microseconds, 2) == endpoints(index(tsmicroseconds), Microsecond(2))
+@test endpoints(tsnanoseconds, :nanoseconds, 2) == endpoints(index(tsnanoseconds), Nanosecond(2))
 ##
 # endpoints(ts::TS, on::String, k::Int=1)
 ##
-@test endpoints(tsdaily, "days", 1) == endpoints(tsdaily, :days, 1)
+@test endpoints(tsdaily, "days", 1) == endpoints(tsdaily, Day(1))

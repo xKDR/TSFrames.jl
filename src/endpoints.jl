@@ -305,7 +305,8 @@ function endpoints(values::AbstractVector, on::Function, k::Int=1)
 
     # include last observation if k^th period finishes before the end
     # value
-    if (!isempty(points) && last(points) != last(keys_unique))
+    if (isempty(points) ||
+        (!isempty(points) && last(points) != last(keys_unique)))
         push!(points, last(keys_unique))
     end
     [findlast([p] .== keys) for p in points]
