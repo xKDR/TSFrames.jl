@@ -25,7 +25,7 @@ julia> Pkg.add(url="https://github.com/xKDR/TSx.jl")
 ```julia
 julia> using CSV, Dates, DataFrames, TSx
 
-julia> ts = CSV.File("IBM.csv") |> DataFrame |> TS
+julia> ts = CSV.read("IBM.csv", DataFrame) |> TS
 (252 x 6) TS with Dates.Date Index
 
  Index       Open     High     Low      Close    Adj Close  Volume
@@ -114,7 +114,8 @@ julia> TSx.subset(ts, from, to)
 
 ### Frequency conversion
 ```julia
-julia> ts_weekly = apply(ts, Week, last, last)
+julia> ep = endpoints(ts, Week(1));
+julia> ts_weekly = ts[ep]
 (52 x 6) TS with Date Index
 
  Index       Open_last  High_last  Low_last  Close_last  Adj Close_last  Volume_last 
