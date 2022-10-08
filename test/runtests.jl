@@ -26,6 +26,7 @@ end
 
 @testset "endpoints()" begin
     include("endpoints.jl")
+end
 
 @testset "broadcasting" begin
     include("broadcasting.jl")
