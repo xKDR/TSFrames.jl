@@ -26,4 +26,12 @@ end
 
 @testset "endpoints()" begin
     include("endpoints.jl")
+
+@testset "broadcasting" begin
+    include("broadcasting.jl")
+end
+
+@testset "getproperty" begin
+    include("getproperty.jl")
+
 end

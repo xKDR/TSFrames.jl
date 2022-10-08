@@ -73,9 +73,8 @@ TSx.describe(
 ) = TSx.describe(stdout, ts, stats...; cols=cols)
 
 function Base.show(io::IO, ts::TS)
-    println("(", TSx.nrow(ts), " x ", TSx.ncol(ts), ") TS with ", eltype(index(ts)), " Index")
-    println("")
-    DataFrames.show(ts.coredata, show_row_number=false, summary=false)
+    title = "$(TSx.nrow(ts))×$(TSx.ncol(ts)) TS with $(eltype(index(ts))) Index"
+    Base.show(io, ts.coredata; show_row_number=false, title=title)
     return nothing
 end
 Base.show(ts::TS) = show(stdout, ts)
