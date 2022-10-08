@@ -1,54 +1,55 @@
 """
 # Computing end points
 ```julia
-endpoints(ts::TS, on::T) where {T<:Period}
+endpoints(timestamps::AbstractVector{T}, on::V) where {T<:Union{Date, DateTime, Time},
+                                                       V<:Union{
+                                                           Year,
+                                                           Quarter,
+                                                           Month,
+                                                           Week,
+                                                           Day,
+                                                           Hour,
+                                                           Minute,
+                                                           Second,
+                                                           Millisecond,
+                                                           Microsecond,
+                                                           Nanosecond
+                                                       }}
+endpoints(ts::TS, on::T) where {T<:Dates.Period}
 endpoints(ts::TS, on::Symbol, k::Int=1)
 endpoints(ts::TS, on::String, k::Int=1)
 endpoints(ts::TS, on::Function, k::Int=1)
-endpoints(dates::AbstractVector{T}, on::Year) where {T<:Union{Date, DateTime}}
-endpoints(dates::AbstractVector{T}, on::Quarter) where {T<:Union{Date, DateTime}}
-endpoints(dates::AbstractVector{T}, on::Month) where {T<:Union{Date, DateTime}}
-endpoints(dates::AbstractVector{T}, on::Week) where {T<:Union{Date, DateTime}}
-endpoints(dates::AbstractVector{T}, on::Day) where {T<:Union{Date, DateTime}}
-function endpoints(timestamps::AbstractVector{T}, on::V) where {T<:Union{DateTime,Time},
-                                                                V<:Union{
-                                                                    Hour,
-                                                                    Minute,
-                                                                    Second,
-                                                                    Millisecond,
-                                                                    Microsecond,
-                                                                    Nanosecond
-                                                                }}
 endpoints(values::AbstractVector, on::Function, k::Int=1)
 ```
 
-Return an integer vector of values for last observation in the first
-argument for each period given by `on`. The values are picked up every
-`k` instance of the period (see examples).
+Return an integer vector of values for last observation in
+`timestamps` for each period given by `on`. The values are picked up
+every `on.value` instance of the period.
 
 Can be used to subset a `TS` object directly using this function's
-return value. The methods work for regular series of any periodicity
-and irregular series belonging to any of the time-based types provided
-by the `Dates` module.
+return value. The methods work for regular time series of any
+periodicity and irregular time series belonging to any of the
+time-based types provided by the `Dates` module.
 
-Methods are provided for all time types including `Date`, `DateTime`,
-and `Time` and for all sub-types of `Dates.Period`. The `::TS` methods
-are provided for convenience and directly work on the `Index` column.
+The primary method works for series of all time types including
+`Date`, `DateTime`, and `Time`, and for `on` belonging to any of the
+sub-types of `Dates.Period`. The `::TS` methods are provided for
+convenience and call the primary method directly using the `Index`
+column.
 
-For the methods accepting `on` of `Year`, `Quarter`, `Month`, `Week`,
-or `Day` types `dates` is first converted into unique period-groups
-using the period provided by `on` then the last observation is picked
-up for each group. `k` decides the number of groups to skip. For
-example, `k=2` picks every alternate group starting from the 2ⁿᵈ
-element out of the ones created by `on`. See the examples below to see
-how the function works in the real world.
+For the methods accepting `on` of `Function` type the `values` vector
+will get converted into unique period-groups which act as unique keys.
+The method uses these keys and the period provided by `on` to pick
+up the last observation in each key-group. `k` decides the number of
+groups to skip. For example, `k=2` picks every alternate group
+starting from the 2ⁿᵈ element out of the ones created by `on`. See the
+examples below to see how the function works in the real world. The
+`on` function should return a `Vector` to be used as grouping keys.
 
-For the methods accepting `on` of `Function` type which which should
-return a `Vector` to be used as grouping keys.  `endpoints(ts::TS,
-on::Symbol)` and `endpoints(ts::TS, on::String)` are convenience
-methods where valid values for `on` are: `:years`, `:quarters`,
-`:months`, `:weeks`, `:days`, `:hours`, `:minutes`, `:seconds`,
-`:milliseconds`, `:microseconds`, and `:nanoseconds`.
+`endpoints(ts::TS, on::Symbol)` and `endpoints(ts::TS, on::String)`
+are convenience methods where valid values for `on` are: `:years`,
+`:quarters`, `:months`, `:weeks`, `:days`, `:hours`, `:minutes`,
+`:seconds`, `:milliseconds`, `:microseconds`, and `:nanoseconds`.
 
 Note, that except for `on::Function` all other methods expect Index
 type of `TS` to be a subtype of `TimeType`.
@@ -197,7 +198,7 @@ julia> ts[endpoints(ts, Month(2))]
  2018-12-31  0.67549
  2019-01-01  0.910285
 
-# Weekly points are implemented internally like this
+# Weekly points using a function
 julia> endpoints(ts, i -> lastdayofweek.(i), 1)
 106-element Vector{Int64}:
    1
@@ -215,7 +216,9 @@ julia> endpoints(ts, i -> lastdayofweek.(i), 1)
  722
  729
  731
-```
+
+julia> endpoints(ts, i -> lastdayofweek.(i), 1) == endpoints(ts, Week(1))
+true
 
 # Time type series
 julia> timestampsminutes = collect(Time(9, 1, 2):Minute(1):Time(11, 2, 3));
@@ -285,7 +288,7 @@ julia> datetimesecondsrandom[endpoints(datetimesecondsrandom, Hour(1))]
  2022-10-08T12:32:08
  2022-10-08T13:59:08
  2022-10-08T14:37:17
-
+```
 """
 function endpoints(values::AbstractVector, on::Function, k::Int=1)
     if (k <= 0)
@@ -312,29 +315,13 @@ function endpoints(ts::TS, on::Function, k::Int=1)
     endpoints(index(ts), on, k)
 end
 
-# DateTime and Date type methods
-function endpoints(dates::AbstractVector{T}, on::Year) where {T<:Union{Date, DateTime}}
-    endpoints(dates, i -> Dates.year.(i), on.value)
-end
-
-function endpoints(dates::AbstractVector{T}, on::Quarter) where {T<:Union{Date, DateTime}}
-    endpoints(dates, i -> Dates.lastdayofquarter.(i), on.value)
-end
-
-function endpoints(dates::AbstractVector{T}, on::Month) where {T<:Union{Date, DateTime}}
-    endpoints(dates, i -> Dates.yearmonth.(i), on.value)
-end
-
-function endpoints(dates::AbstractVector{T}, on::Week) where {T<:Union{Date, DateTime}}
-    endpoints(dates, i -> lastdayofweek.(i), on.value)
-end
-
-function endpoints(dates::AbstractVector{T}, on::Day) where {T<:Union{Date, DateTime}}
-    endpoints(dates, i -> Dates.yearmonthday.(i), on.value)
-end
-
-function endpoints(timestamps::AbstractVector{T}, on::V) where {T<:Union{DateTime,Time},
+function endpoints(timestamps::AbstractVector{T}, on::V) where {T<:Union{Date, DateTime, Time},
                                                                 V<:Union{
+                                                                    Year,
+                                                                    Quarter,
+                                                                    Month,
+                                                                    Week,
+                                                                    Day,
                                                                     Hour,
                                                                     Minute,
                                                                     Second,
@@ -342,6 +329,20 @@ function endpoints(timestamps::AbstractVector{T}, on::V) where {T<:Union{DateTim
                                                                     Microsecond,
                                                                     Nanosecond
                                                                 }}
+    if (on.value <= 0)
+        throw(DomainError("`k` needs to be greater than 0"))
+    end
+    if (typeof(timestamps[1]) == Date && typeof(on) <: TimePeriod)
+        throw(ArgumentError("Cannot find `TimePeriod` type inside a `Date` vector"))
+    end
+    if (typeof(timestamps[1]) == DateTime &&
+        (typeof(on) == Microsecond || typeof(on) == Nanosecond))
+        throw(ArgumentError("`DateTime` type does not support resolution of Microsecond or Nanosecond"))
+    end
+    if (typeof(timestamps[1]) == Time && typeof(on) <: DatePeriod)
+        throw(ArgumentError("Cannot find `DatePeriod` type inside a `Time` vector"))
+    end
+
     ep = Int[]
     sizehint!(ep, length(timestamps))
     nextval = typeof(timestamps[1]) <: Time ? # store the next value of the period
@@ -362,7 +363,7 @@ function endpoints(timestamps::AbstractVector{T}, on::V) where {T<:Union{DateTim
     return ep
 end
 
-function endpoints(ts::TS, on::T) where {T<:Period}
+function endpoints(ts::TS, on::T) where {T<:Dates.Period}
     endpoints(index(ts), on)
 end
 

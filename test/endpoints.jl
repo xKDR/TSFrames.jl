@@ -3,11 +3,13 @@
 ##
 
 ## ::Date
-dates = Date(2007, 1, 2):Day(1):Date(2007, 7, 1);
+dates = collect(Date(2007, 1, 2):Day(1):Date(2007, 7, 1));
 tsdaily = TS(random(length(dates)), dates);
 
+dates5 = collect(Date(2007, 1, 2):Day(5):Date(2007, 7, 1));
+
 ## ::DateTime
-datetimes = DateTime(2007, 1, 2):Day(1):DateTime(2007, 7, 1);
+datetimes = collect(DateTime(2007, 1, 2):Day(1):DateTime(2007, 7, 1));
 tsdatetimes = TS(random(length(datetimes)), datetimes);
 
 ## ::Integer
@@ -81,13 +83,27 @@ timestampsnanoseconds = collect(Time(9, 0, 0):Nanosecond(1):Time(9, 0, 0, 0, 2))
 @test endpoints(tsinteger, i -> i .^  2, 1) == [4, 5, 6, 7]
 @test endpoints(tsinteger, i -> i .^ 2, 2) == [5, 7]
 
+## Error cases
+# ::Date, <:TimePeriod
+@test_throws ArgumentError endpoints(tsdaily, Hour(1))
+@test_throws ArgumentError endpoints(tsdaily, Minute(1))
+# ::DateTime, ::Union{Microsecond, Nanosecond}
+@test_throws ArgumentError endpoints(datetimehours, Microsecond(1))
+@test_throws ArgumentError endpoints(datetimehours, Nanosecond(1))
+# ::Time, <: DatePeriod
+@test_throws ArgumentError endpoints(timestampshours, Day(1))
+@test_throws ArgumentError endpoints(timestampshours, Year(1))
+
+
 ##
 # endpoints(dates::AbstractVector{T}, on::Year) where {T<:Union{Date, DateTime}}
 ##
 @test endpoints(dates, Year(1)) == [181]
-@test endpoints(dates, Year(2)) == []
+@test endpoints(dates, Year(2)) == [181]
 @test endpoints(datetimes, Year(1)) == [181]
-@test endpoints(datetimes, Year(2)) == []
+@test endpoints(datetimes, Year(2)) == [181]
+
+@test endpoints(dates5, Year(1)) == [lastindex(dates5)]
 
 ##
 # endpoints(dates::AbstractVector{T}, on::Quarter) where {T<:Union{Date, DateTime}}
@@ -95,11 +111,15 @@ timestampsnanoseconds = collect(Time(9, 0, 0):Nanosecond(1):Time(9, 0, 0, 0, 2))
 @test endpoints(dates, Quarter(1)) == [89, 180, 181]
 @test endpoints(dates, Quarter(2)) == [180, 181]
 @test endpoints(dates, Quarter(3)) == [181]
-@test endpoints(dates, Quarter(4)) == []
+@test endpoints(dates, Quarter(4)) == [181]
 @test endpoints(datetimes, Quarter(1)) == [89, 180, 181]
 @test endpoints(datetimes, Quarter(2)) == [180, 181]
 @test endpoints(datetimes, Quarter(3)) == [181]
-@test endpoints(datetimes, Quarter(4)) == []
+@test endpoints(datetimes, Quarter(4)) == [181]
+
+@test endpoints(dates5, Quarter(1)) == [18, 36, 37]
+@test endpoints(dates5, Quarter(2)) == [36, 37]
+@test endpoints(dates5, Quarter(3)) == [37]
 
 ##
 # endpoints(dates::AbstractVector{T}, on::Month) where {T<:Union{Date, DateTime}}
@@ -107,11 +127,15 @@ timestampsnanoseconds = collect(Time(9, 0, 0):Nanosecond(1):Time(9, 0, 0, 0, 2))
 @test endpoints(dates, Month(1)) == [30, 58, 89, 119, 150, 180, 181]
 @test endpoints(dates, Month(2)) == [58, 119, 180, 181]
 @test endpoints(dates, Month(7)) == [181]
-@test endpoints(dates, Month(8)) == []
+@test endpoints(dates, Month(8)) == [181]
 @test endpoints(datetimes, Month(1)) == [30, 58, 89, 119, 150, 180, 181]
 @test endpoints(datetimes, Month(2)) == [58, 119, 180, 181]
 @test endpoints(datetimes, Month(7)) == [181]
-@test endpoints(datetimes, Month(8)) == []
+@test endpoints(datetimes, Month(8)) == [181]
+
+@test endpoints(dates5, Month(1)) == [6, 12, 18, 24, 30, 36, 37]
+@test endpoints(dates5, Month(2)) == [12, 24, 36, 37]
+@test endpoints(dates5, Month(8)) == [37]
 
 ##
 # endpoints(dates::AbstractVector{T}, on::Week) where {T<:Union{Date, DateTime}}
