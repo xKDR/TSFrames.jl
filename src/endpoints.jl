@@ -331,7 +331,7 @@ function endpoints(timestamps::AbstractVector{T}, on::V) where {T<:Union{Date, D
                                                                     Nanosecond
                                                                 }}
     if (on.value <= 0)
-        throw(DomainError("`k` needs to be greater than 0"))
+        throw(DomainError("`on.value` needs to be greater than 0"))
     end
     if (typeof(timestamps[1]) == Date && typeof(on) <: TimePeriod)
         throw(ArgumentError("Cannot find `TimePeriod` type inside a `Date` vector"))
