@@ -333,7 +333,10 @@ end
 # Constructors
 ####################################
 
-function TS(coredata::DataFrame)
+# For general Tables.jl compatible types
+function TS(table)
+    coredata = DataFrame(table, copycols=true)
+
     if "Index" in names(coredata)
         return TS(coredata, :Index)
     elseif DataFrames.ncol(coredata) == 1
