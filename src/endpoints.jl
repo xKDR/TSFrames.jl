@@ -39,19 +39,20 @@ column.
 
 For the methods accepting `on` of `Function` type the `values` vector
 will get converted into unique period-groups which act as unique keys.
-The method uses these keys and the period provided by `on` to pick
-up the last observation in each key-group. `k` decides the number of
-groups to skip. For example, `k=2` picks every alternate group
-starting from the 2ⁿᵈ element out of the ones created by `on`. See the
-examples below to see how the function works in the real world. The
-`on` function should return a `Vector` to be used as grouping keys.
+The method uses these keys to create groups of values and uses the
+period provided by `on` to pick up the last observation in each
+group. `k` decides the number of groups to skip. For example, `k=2`
+picks every alternate group starting from the 2ⁿᵈ element out of the
+ones created by `on`. See the examples below to see how the function
+works in the real world. The `on` function should return a `Vector` to
+be used as grouping keys.
 
 `endpoints(ts::TS, on::Symbol)` and `endpoints(ts::TS, on::String)`
 are convenience methods where valid values for `on` are: `:years`,
 `:quarters`, `:months`, `:weeks`, `:days`, `:hours`, `:minutes`,
 `:seconds`, `:milliseconds`, `:microseconds`, and `:nanoseconds`.
 
-Note, that except for `on::Function` all other methods expect Index
+Note, that except for `on::Function` all other methods expect `Index`
 type of `TS` to be a subtype of `TimeType`.
 
 The method returns `Vector{Int}` corresponding to the matched values
@@ -316,7 +317,7 @@ function endpoints(ts::TS, on::Function, k::Int=1)
     endpoints(index(ts), on, k)
 end
 
-function endpoints(timestamps::AbstractVector{T}, on::V) where {T<:Union{Date, DateTime, Time},
+function endpoints(timestamps::AbstractVector{T}, on::V)::Vector{Int} where {T<:Union{Date, DateTime, Time},
                                                                 V<:Union{
                                                                     Year,
                                                                     Quarter,
@@ -333,33 +334,45 @@ function endpoints(timestamps::AbstractVector{T}, on::V) where {T<:Union{Date, D
     if (on.value <= 0)
         throw(DomainError("`on.value` needs to be greater than 0"))
     end
-    if (typeof(timestamps[1]) == Date && typeof(on) <: TimePeriod)
+    if (typeof(first(timestamps)) == Date && typeof(on) <: TimePeriod)
         throw(ArgumentError("Cannot find `TimePeriod` type inside a `Date` vector"))
     end
-    if (typeof(timestamps[1]) == DateTime &&
+    if (typeof(first(timestamps)) == DateTime &&
         (typeof(on) == Microsecond || typeof(on) == Nanosecond))
         throw(ArgumentError("`DateTime` type does not support resolution of Microsecond or Nanosecond"))
     end
-    if (typeof(timestamps[1]) == Time && typeof(on) <: DatePeriod)
+    if (typeof(first(timestamps)) == Time && typeof(on) <: DatePeriod)
         throw(ArgumentError("Cannot find `DatePeriod` type inside a `Time` vector"))
     end
 
     ep = Int[]
     sizehint!(ep, length(timestamps))
-    nextval = typeof(timestamps[1]) <: Time ? # store the next value of the period
-        Time(0) + floor(timestamps[1] - Time(0), typeof(on)) + on : # floor(::Time) isn't implemented
-        floor(timestamps[1], typeof(on)(1)) + on
 
-    while (nextval <= timestamps[end] + on) # increment to make sure last value is not left out
-        val = findlast(timestamps .< nextval)
-        if (!isnothing(val) &&
-            timestamps[val] >= (nextval - on)) # handle non-existing values in between a period
-            push!(ep, val)
-            if (val == lastindex(timestamps))
-                break
+    # store the next value of the period (on), use it for comparison
+    # with values in the series (timestamps)
+    nextval = eltype(timestamps)(1)
+    if (typeof(on) == Week)
+        nextval = floor(first(timestamps), typeof(on)) + on
+    else
+        nextval = trunc(first(timestamps), typeof(on)) + on
+    end
+
+    for i in eachindex(timestamps)
+        if (timestamps[i] >= nextval)
+            push!(ep, i-1)
+
+            # handle gaps between values (irregular series)
+            while (true)
+                nextval += on
+                if (nextval >= timestamps[i])
+                    break
+                end
             end
         end
-        nextval += on
+    end
+
+    if (isempty(ep) || last(ep) != lastindex(timestamps))
+        push!(ep, lastindex(timestamps))
     end
     return ep
 end

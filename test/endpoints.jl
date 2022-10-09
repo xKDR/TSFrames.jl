@@ -248,7 +248,7 @@ ep1 = endpoints(datetimes, Week(2))[1];
 @test endpoints(timestampsminutes, Minute(1)) == collect(1:length(timestampsminutes))
 @test endpoints(timestampsminutes, Minute(2)) == collect(2:2:length(timestampsminutes))
 @test endpoints(timestampsminutes, Minute(59)) == collect([59:59:length(timestampsminutes)..., lastindex(timestampsminutes)])
-@test endpoints(timestampsminutes, Minute(60)) == [60, 120, 122] # Note: every 60 minutes != every 1 hour
+@test endpoints(timestampsminutes, Minute(60)) == [60, 120, lastindex(timestampsminutes)] # Note: every 60 minutes != every 1 hour
 @test endpoints(timestampsminutes, Minute(length(timestampsminutes) + 1)) == [lastindex(timestampsminutes)]
 
 ##
