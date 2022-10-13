@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>API reference · TSx.jl</title><script data-outdated-warner src="../assets/warner.js"></script><link rel="canonical" href="https://xKDR.github.io/TSx.jl/api/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">TSx.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Introduction</a></li><li><a class="tocitem" href="../demo_finance/">Basic demo of TSx</a></li><li><a class="tocitem" href="../user_guide/">User guide</a></li><li class="is-active"><a class="tocitem" href>API reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>API reference</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>API reference</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/xKDR/TSx.jl/blob/main/docs/src/api.md#" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="TSx-API-reference"><a class="docs-heading-anchor" href="#TSx-API-reference">TSx API reference</a><a id="TSx-API-reference-1"></a><a class="docs-heading-anchor-permalink" href="#TSx-API-reference" title="Permalink"></a></h1><p>API reference of <a href="https://github.com/xKDR/TSx.jl">TSx</a>.</p><ul><li><a href="#Base.Matrix-Tuple{TS}"><code>Base.Matrix</code></a></li><li><a href="#TSx.TS"><code>TSx.TS</code></a></li><li><a href="#Base.first-Tuple{TS}"><code>Base.first</code></a></li><li><a href="#Base.join-Tuple{TS, TS}"><code>Base.join</code></a></li><li><a href="#Base.log-Tuple{TS}"><code>Base.log</code></a></li><li><a href="#Base.size-Tuple{TS}"><code>Base.size</code></a></li><li><a href="#Base.vcat-Tuple{TS, TS}"><code>Base.vcat</code></a></li><li><a href="#RecipesBase.apply_recipe"><code>RecipesBase.apply_recipe</code></a></li><li><a href="#TSx._check_consistency-Tuple{TS}"><code>TSx._check_consistency</code></a></li><li><a href="#TSx.apply-Union{Tuple{V}, Tuple{T}, Tuple{TS, Union{Type{T}, T}, V}, Tuple{TS, Union{Type{T}, T}, V, Function}} where {T&lt;:Union{Dates.DatePeriod, Dates.TimePeriod}, V&lt;:Function}"><code>TSx.apply</code></a></li><li><a href="#TSx.describe-Tuple{IO, TS}"><code>TSx.describe</code></a></li><li><a href="#TSx.head"><code>TSx.head</code></a></li><li><a href="#TSx.index-Tuple{TS}"><code>TSx.index</code></a></li><li><a href="#TSx.lag"><code>TSx.lag</code></a></li><li><a href="#TSx.lead"><code>TSx.lead</code></a></li><li><a href="#TSx.ncol-Tuple{TS}"><code>TSx.ncol</code></a></li><li><a href="#TSx.nrow-Tuple{TS}"><code>TSx.nrow</code></a></li><li><a href="#TSx.rollapply-Tuple{Function, TS, Any, Int64}"><code>TSx.rollapply</code></a></li><li><a href="#TSx.subset-Union{Tuple{T}, Tuple{TS, T, T}} where T&lt;:Union{Int64, Dates.TimeType}"><code>TSx.subset</code></a></li><li><a href="#TSx.tail"><code>TSx.tail</code></a></li></ul><article class="docstring"><header><a class="docstring-binding" id="Base.Matrix-Tuple{TS}" href="#Base.Matrix-Tuple{TS}"><code>Base.Matrix</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Conversion of non-Index data to Matrix</strong></p><p>Data in non-index columns of a TS object can be converted into a <code>Matrix</code> type for further numerical analysis using the <code>Matrix()</code> constructor.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>API reference · TSx.jl</title><script data-outdated-warner src="../assets/warner.js"></script><link rel="canonical" href="https://xKDR.github.io/TSx.jl/api/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">TSx.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Introduction</a></li><li><a class="tocitem" href="../demo_finance/">Basic demo of TSx</a></li><li><a class="tocitem" href="../user_guide/">User guide</a></li><li class="is-active"><a class="tocitem" href>API reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>API reference</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>API reference</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/xKDR/TSx.jl/blob/main/docs/src/api.md#" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="TSx-API-reference"><a class="docs-heading-anchor" href="#TSx-API-reference">TSx API reference</a><a id="TSx-API-reference-1"></a><a class="docs-heading-anchor-permalink" href="#TSx-API-reference" title="Permalink"></a></h1><p>API reference of <a href="https://github.com/xKDR/TSx.jl">TSx</a>.</p><ul><li><a href="#Base.Matrix-Tuple{TS}"><code>Base.Matrix</code></a></li><li><a href="#TSx.TS"><code>TSx.TS</code></a></li><li><a href="#Base.first-Tuple{TS}"><code>Base.first</code></a></li><li><a href="#Base.join-Tuple{TS, TS}"><code>Base.join</code></a></li><li><a href="#Base.log-Tuple{TS}"><code>Base.log</code></a></li><li><a href="#Base.size-Tuple{TS}"><code>Base.size</code></a></li><li><a href="#Base.vcat-Tuple{TS, TS}"><code>Base.vcat</code></a></li><li><a href="#RecipesBase.apply_recipe"><code>RecipesBase.apply_recipe</code></a></li><li><a href="#TSx._check_consistency-Tuple{TS}"><code>TSx._check_consistency</code></a></li><li><a href="#TSx.apply-Union{Tuple{V}, Tuple{T}, Tuple{TS, Union{Type{T}, T}, V}, Tuple{TS, Union{Type{T}, T}, V, Function}} where {T&lt;:Union{Dates.DatePeriod, Dates.TimePeriod}, V&lt;:Function}"><code>TSx.apply</code></a></li><li><a href="#TSx.describe-Tuple{IO, TS}"><code>TSx.describe</code></a></li><li><a href="#TSx.endpoints"><code>TSx.endpoints</code></a></li><li><a href="#TSx.head"><code>TSx.head</code></a></li><li><a href="#TSx.index-Tuple{TS}"><code>TSx.index</code></a></li><li><a href="#TSx.lag"><code>TSx.lag</code></a></li><li><a href="#TSx.lead"><code>TSx.lead</code></a></li><li><a href="#TSx.ncol-Tuple{TS}"><code>TSx.ncol</code></a></li><li><a href="#TSx.nrow-Tuple{TS}"><code>TSx.nrow</code></a></li><li><a href="#TSx.rollapply-Tuple{Function, TS, Any, Int64}"><code>TSx.rollapply</code></a></li><li><a href="#TSx.subset-Union{Tuple{T}, Tuple{TS, T, T}} where T&lt;:Union{Int64, Dates.TimeType}"><code>TSx.subset</code></a></li><li><a href="#TSx.tail"><code>TSx.tail</code></a></li></ul><article class="docstring"><header><a class="docstring-binding" id="Base.Matrix-Tuple{TS}" href="#Base.Matrix-Tuple{TS}"><code>Base.Matrix</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Conversion of non-Index data to Matrix</strong></p><p>Data in non-index columns of a TS object can be converted into a <code>Matrix</code> type for further numerical analysis using the <code>Matrix()</code> constructor.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
 julia&gt; random(x) = rand(MersenneTwister(123), x);
 julia&gt; ts = TS([random(10) random(10)])
 julia&gt; show(ts)
@@ -30,7 +30,7 @@ julia&gt; Matrix(ts)
  0.586022   0.586022
  0.0521332  0.0521332
  0.26864    0.26864
- 0.108871   0.108871</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/545d0b9f83b42816db61716ea9dbea5a8c6ff942/src/matrix.jl#L1-L44">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.TS" href="#TSx.TS"><code>TSx.TS</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct TS
+ 0.108871   0.108871</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/matrix.jl#L1-L44">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.TS" href="#TSx.TS"><code>TSx.TS</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct TS
   coredata :: DataFrame
 end</code></pre><p><code>::TS</code> - A type to hold ordered data with an index.</p><p>A TS object is essentially a <code>DataFrame</code> with a specific column marked as an index. The input <code>DataFrame</code> is sorted during construction and is stored under the property <code>coredata</code>. The index is stored in the <code>Index</code> column of <code>coredata</code>.</p><p>Permitted data inputs to the constructors are <code>DataFrame</code>, <code>Vector</code>, and 2-dimensional <code>Array</code>. If an index is already not present in the constructor then a sequential integer index is created automatically.</p><p><code>TS(coredata::DataFrame)</code>: Here, the constructor looks for a column named <code>Index</code> in <code>coredata</code> as the index column, if this is not found then the first column of <code>coredata</code> is made the index by default. If <code>coredata</code> only has a single column then a new sequential index is generated.</p><p>Since <code>TS.coredata</code> is a DataFrame it can be operated upon independently using methods provided by the DataFrames package (ex. <code>transform</code>, <code>combine</code>, etc.).</p><p><strong>Constructors</strong></p><pre><code class="language-julia hljs">TS(coredata::DataFrame, index::Union{String, Symbol, Int})
 TS(coredata::DataFrame, index::AbstractVector{T}) where {T&lt;:Union{Int, TimeType}}
@@ -196,14 +196,14 @@ julia&gt; ts = TS([random(10) random(10)], dates) # matrix object
  2017-01-08  0.0521332  0.0521332
  2017-01-09  0.26864    0.26864
  2017-01-10  0.108871   0.108871
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/545d0b9f83b42816db61716ea9dbea5a8c6ff942/src/TS.jl#L1-L201">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Base.first-Tuple{TS}" href="#Base.first-Tuple{TS}"><code>Base.first</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>First Row</strong></p><pre><code class="language-julia hljs">first(ts::TS)</code></pre><p>Returns the first row of <code>ts</code> as a TS object.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; first(TS(1:10))
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/TS.jl#L1-L201">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Base.first-Tuple{TS}" href="#Base.first-Tuple{TS}"><code>Base.first</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>First Row</strong></p><pre><code class="language-julia hljs">first(ts::TS)</code></pre><p>Returns the first row of <code>ts</code> as a TS object.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; first(TS(1:10))
 (10 x 1) TS with Dates.Date Index
 
  Index       x1
  Date        Float64
 ───────────────────────
  2022-02-01  0.768448
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/545d0b9f83b42816db61716ea9dbea5a8c6ff942/src/utils.jl#L249-L268">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Base.join-Tuple{TS, TS}" href="#Base.join-Tuple{TS, TS}"><code>Base.join</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Joins/Column-binding</strong></p><p><code>TS</code> objects can be combined together column-wise using <code>Index</code> as the column key. There are four kinds of column-binding operations possible as of now. Each join operation works by performing a Set operation on the <code>Index</code> column and then merging the datasets based on the output from the Set operation. Each operation changes column names in the final object automatically if the operation encounters duplicate column names amongst the TS objects.</p><p>The following join types are supported:</p><p><code>join(ts1::TS, ts2::TS, ::Type{JoinInner})</code> and <code>join(ts1::TS, ts2::TS, ::Type{JoinBoth})</code></p><p>a.k.a. inner join, takes the intersection of the indexes of <code>ts1</code> and <code>ts2</code>, and then merges the columns of both the objects. The resulting object will only contain rows which are present in both the objects&#39; indexes. The function will rename columns in the final object if they had same names in the TS objects.</p><p><code>join(ts1::TS, ts2::TS, ::Type{JoinOuter})</code> and <code>join(ts1::TS, ts2::TS, ::Type{JoinAll})</code>:</p><p>a.k.a. outer join, takes the union of the indexes of <code>ts1</code> and <code>ts2</code> before merging the other columns of input objects. The output will contain rows which are present in all the input objects while inserting <code>missing</code> values where a row was not present in any of the objects. This is the default behaviour if no <code>JoinType</code> object is provided.</p><p><code>join(ts1::TS, ts2::TS, ::Type{JoinLeft})</code>:</p><p>Left join takes the index values which are present in the left object <code>ts1</code> and finds matching index values in the right object <code>ts2</code>. The resulting object includes all the rows from the left object, the column values from the left object, and the values associated with matching index rows on the right. The operation inserts <code>missing</code> values where in the unmatched rows of the right object.</p><p><code>join(ts1::TS, ts2::TS, ::Type{JoinRight})</code></p><p>Right join, similar to left join but works in the opposite direction. The final object contains all the rows from the right object while inserting <code>missing</code> values in rows missing from the left object.</p><p>The default behaviour is to assume <code>JoinAll</code> if no <code>JoinType</code> object is provided to the <code>join</code> method.</p><p><code>cbind</code> is an alias for <code>join</code> method.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/utils.jl#L249-L268">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Base.join-Tuple{TS, TS}" href="#Base.join-Tuple{TS, TS}"><code>Base.join</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Joins/Column-binding</strong></p><p><code>TS</code> objects can be combined together column-wise using <code>Index</code> as the column key. There are four kinds of column-binding operations possible as of now. Each join operation works by performing a Set operation on the <code>Index</code> column and then merging the datasets based on the output from the Set operation. Each operation changes column names in the final object automatically if the operation encounters duplicate column names amongst the TS objects.</p><p>The following join types are supported:</p><p><code>join(ts1::TS, ts2::TS, ::Type{JoinInner})</code> and <code>join(ts1::TS, ts2::TS, ::Type{JoinBoth})</code></p><p>a.k.a. inner join, takes the intersection of the indexes of <code>ts1</code> and <code>ts2</code>, and then merges the columns of both the objects. The resulting object will only contain rows which are present in both the objects&#39; indexes. The function will rename columns in the final object if they had same names in the TS objects.</p><p><code>join(ts1::TS, ts2::TS, ::Type{JoinOuter})</code> and <code>join(ts1::TS, ts2::TS, ::Type{JoinAll})</code>:</p><p>a.k.a. outer join, takes the union of the indexes of <code>ts1</code> and <code>ts2</code> before merging the other columns of input objects. The output will contain rows which are present in all the input objects while inserting <code>missing</code> values where a row was not present in any of the objects. This is the default behaviour if no <code>JoinType</code> object is provided.</p><p><code>join(ts1::TS, ts2::TS, ::Type{JoinLeft})</code>:</p><p>Left join takes the index values which are present in the left object <code>ts1</code> and finds matching index values in the right object <code>ts2</code>. The resulting object includes all the rows from the left object, the column values from the left object, and the values associated with matching index rows on the right. The operation inserts <code>missing</code> values where in the unmatched rows of the right object.</p><p><code>join(ts1::TS, ts2::TS, ::Type{JoinRight})</code></p><p>Right join, similar to left join but works in the opposite direction. The final object contains all the rows from the right object while inserting <code>missing</code> values in rows missing from the left object.</p><p>The default behaviour is to assume <code>JoinAll</code> if no <code>JoinType</code> object is provided to the <code>join</code> method.</p><p><code>cbind</code> is an alias for <code>join</code> method.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
 
 julia&gt; random(x) = rand(MersenneTwister(123), x);
 
@@ -355,7 +355,7 @@ julia&gt; join(ts1, ts2, JoinRight)
  2017-01-29  missing          0.555668
  2017-01-30  missing          0.940782
                          11 rows omitted
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/545d0b9f83b42816db61716ea9dbea5a8c6ff942/src/join.jl#L14-L224">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Base.log-Tuple{TS}" href="#Base.log-Tuple{TS}"><code>Base.log</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Log Function</strong></p><pre><code class="language-julia hljs">log(ts::TS, complex::Bool = false)</code></pre><p>This method computes the log value of non-index columns in the TS object.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/join.jl#L14-L224">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Base.log-Tuple{TS}" href="#Base.log-Tuple{TS}"><code>Base.log</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Log Function</strong></p><pre><code class="language-julia hljs">log(ts::TS, complex::Bool = false)</code></pre><p>This method computes the log value of non-index columns in the TS object.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random
 julia&gt; random(x) = rand(MersenneTwister(123), x...);
 julia&gt; ts = TS(random(([1, 2, 3, 4, missing], 10)))
 julia&gt; show(ts)
@@ -391,8 +391,8 @@ julia&gt; log(ts)
      8  missing
      9        0.693147
     10        1.09861
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/545d0b9f83b42816db61716ea9dbea5a8c6ff942/src/log.jl#L1-L51">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Base.size-Tuple{TS}" href="#Base.size-Tuple{TS}"><code>Base.size</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Size methods</strong></p><pre><code class="language-julia hljs">size(ts::TS)</code></pre><p>Return the number of rows and columns of <code>ts</code> as a tuple.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; TSx.size(TS([collect(1:100) collect(1:100) collect(1:100)]))
-(100, 3)</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/545d0b9f83b42816db61716ea9dbea5a8c6ff942/src/utils.jl#L148-L161">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Base.vcat-Tuple{TS, TS}" href="#Base.vcat-Tuple{TS, TS}"><code>Base.vcat</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Row-merging (vcat/rbind)</strong></p><pre><code class="language-julia hljs">vcat(ts1::TS, ts2::TS; colmerge::Symbol=:union)</code></pre><p>Concatenate rows of two TS objects, append <code>ts2</code> to <code>ts1</code>.</p><p>The <code>colmerge</code> keyword argument specifies the column merge strategy. The value of <code>colmerge</code> is directly passed to <code>cols</code> argument of <code>DataFrames.vcat</code>.</p><p>Currently, <code>DataFrames.vcat</code> supports four types of column-merge strategies:</p><ol><li><code>:setequal</code>: only merge if both objects have same column names, use the order of columns in <code>ts1</code>.</li><li><code>:orderequal</code>: only merge if both objects have same column names and columns are in the same order.</li><li><code>:intersect</code>: only merge the columns which are common to both objects, ignore the rest.</li><li><code>:union</code>: merge even if columns differ, the resulting object has all the columns filled with <code>missing</code>, if necessary.</li></ol><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/log.jl#L1-L51">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Base.size-Tuple{TS}" href="#Base.size-Tuple{TS}"><code>Base.size</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Size methods</strong></p><pre><code class="language-julia hljs">size(ts::TS)</code></pre><p>Return the number of rows and columns of <code>ts</code> as a tuple.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; TSx.size(TS([collect(1:100) collect(1:100) collect(1:100)]))
+(100, 3)</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/utils.jl#L148-L161">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Base.vcat-Tuple{TS, TS}" href="#Base.vcat-Tuple{TS, TS}"><code>Base.vcat</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Row-merging (vcat/rbind)</strong></p><pre><code class="language-julia hljs">vcat(ts1::TS, ts2::TS; colmerge::Symbol=:union)</code></pre><p>Concatenate rows of two TS objects, append <code>ts2</code> to <code>ts1</code>.</p><p>The <code>colmerge</code> keyword argument specifies the column merge strategy. The value of <code>colmerge</code> is directly passed to <code>cols</code> argument of <code>DataFrames.vcat</code>.</p><p>Currently, <code>DataFrames.vcat</code> supports four types of column-merge strategies:</p><ol><li><code>:setequal</code>: only merge if both objects have same column names, use the order of columns in <code>ts1</code>.</li><li><code>:orderequal</code>: only merge if both objects have same column names and columns are in the same order.</li><li><code>:intersect</code>: only merge the columns which are common to both objects, ignore the rest.</li><li><code>:union</code>: merge even if columns differ, the resulting object has all the columns filled with <code>missing</code>, if necessary.</li></ol><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
 
 julia&gt; random(x) = rand(MersenneTwister(123), x);
 
@@ -519,7 +519,7 @@ julia&gt; vcat(ts1, ts2; colmerge=:intersect)
  2017-01-28   0.278259
  2017-01-29   0.0231765
  2017-01-30   0.516704
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/545d0b9f83b42816db61716ea9dbea5a8c6ff942/src/vcat.jl#L1-L152">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="RecipesBase.apply_recipe" href="#RecipesBase.apply_recipe"><code>RecipesBase.apply_recipe</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Plotting</strong></p><pre><code class="language-julia hljs">plot(ts::TS, cols::Vector{Int} = collect(1:TSx.ncol(ts)))
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/vcat.jl#L1-L152">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="RecipesBase.apply_recipe" href="#RecipesBase.apply_recipe"><code>RecipesBase.apply_recipe</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Plotting</strong></p><pre><code class="language-julia hljs">plot(ts::TS, cols::Vector{Int} = collect(1:TSx.ncol(ts)))
 plot(ts::TS, cols::Vector{T}) where {T&lt;:Union{String, Symbol}}
 plot(ts::TS, cols::T) where {T&lt;:Union{Int, String, Symbol}}</code></pre><p>Plots a TS object with the index on the x-axis and selected <code>cols</code> on the y-axis. By default, plot all the columns. Columns can be selected using Int indexes, String(s), or Symbol(s).</p><p><strong>Example</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
 julia&gt; random(x) = rand(MersenneTwister(123), x);
@@ -559,7 +559,7 @@ julia&gt; # plot(ts)
 julia&gt; # plot(ts[1:6], [:val1, :val3]);
 
 # plot columns 1 and 2 on a specified window size
-julia&gt; # plot(ts, [1, 2], size=(600, 400));</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/545d0b9f83b42816db61716ea9dbea5a8c6ff942/src/plot.jl#L1-L56">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx._check_consistency-Tuple{TS}" href="#TSx._check_consistency-Tuple{TS}"><code>TSx._check_consistency</code></a> — <span class="docstring-category">Method</span></header><section><div><p>Internal function to check consistency of the Index of a TS object.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/545d0b9f83b42816db61716ea9dbea5a8c6ff942/src/utils.jl#L401-L404">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.apply-Union{Tuple{V}, Tuple{T}, Tuple{TS, Union{Type{T}, T}, V}, Tuple{TS, Union{Type{T}, T}, V, Function}} where {T&lt;:Union{Dates.DatePeriod, Dates.TimePeriod}, V&lt;:Function}" href="#TSx.apply-Union{Tuple{V}, Tuple{T}, Tuple{TS, Union{Type{T}, T}, V}, Tuple{TS, Union{Type{T}, T}, V, Function}} where {T&lt;:Union{Dates.DatePeriod, Dates.TimePeriod}, V&lt;:Function}"><code>TSx.apply</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Apply/Period conversion</strong></p><pre><code class="language-julia hljs">apply(ts::TS,
+julia&gt; # plot(ts, [1, 2], size=(600, 400));</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/plot.jl#L1-L56">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx._check_consistency-Tuple{TS}" href="#TSx._check_consistency-Tuple{TS}"><code>TSx._check_consistency</code></a> — <span class="docstring-category">Method</span></header><section><div><p>Internal function to check consistency of the Index of a TS object.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/utils.jl#L401-L404">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.apply-Union{Tuple{V}, Tuple{T}, Tuple{TS, Union{Type{T}, T}, V}, Tuple{TS, Union{Type{T}, T}, V, Function}} where {T&lt;:Union{Dates.DatePeriod, Dates.TimePeriod}, V&lt;:Function}" href="#TSx.apply-Union{Tuple{V}, Tuple{T}, Tuple{TS, Union{Type{T}, T}, V}, Tuple{TS, Union{Type{T}, T}, V, Function}} where {T&lt;:Union{Dates.DatePeriod, Dates.TimePeriod}, V&lt;:Function}"><code>TSx.apply</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Apply/Period conversion</strong></p><pre><code class="language-julia hljs">apply(ts::TS,
       period::Union{T,Type{T}},
       fun::V,
       index_at::Function=first;
@@ -661,7 +661,7 @@ julia&gt; show(ts_weekly[1:10])
  2017-02-19    0.319216
  2017-02-26    0.272058
  2017-03-05    0.23651
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/545d0b9f83b42816db61716ea9dbea5a8c6ff942/src/apply.jl#L1-L133">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.describe-Tuple{IO, TS}" href="#TSx.describe-Tuple{IO, TS}"><code>TSx.describe</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Summary statistics</strong></p><pre><code class="language-julia hljs">describe(ts::TS; cols=:)
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/apply.jl#L1-L133">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.describe-Tuple{IO, TS}" href="#TSx.describe-Tuple{IO, TS}"><code>TSx.describe</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Summary statistics</strong></p><pre><code class="language-julia hljs">describe(ts::TS; cols=:)
 describe(ts::TS, stats::Union{Symbol, Pair}...; cols=:)</code></pre><p>Compute summary statistics of <code>ts</code>. The output is a <code>DataFrame</code> containing standard statistics along with number of missing values and data types of columns. The <code>cols</code> keyword controls which subset of columns from <code>ts</code> to be selected. The <code>stats</code> keyword is used to control which summary statistics are to be printed. For more information about these keywords, check out the corresponding <a href="https://dataframes.juliadata.org/stable/lib/functions/#DataAPI.describe">documentation from DataFrames.jl</a>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
 julia&gt; random(x) = rand(MersenneTwister(123), x...);
 julia&gt; ts = TS(random(([1, 2, 3, 4, missing], 10)))
@@ -697,7 +697,253 @@ julia&gt; describe(ts, :min, sum =&gt; :sum, cols=:x1)
      │ Symbol    Int64  Int64
 ─────┼────────────────────────
    1 │ x1            2     22
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/545d0b9f83b42816db61716ea9dbea5a8c6ff942/src/utils.jl#L1-L55">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.head" href="#TSx.head"><code>TSx.head</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Head</strong></p><pre><code class="language-julia hljs">head(ts::TS, n::Int = 10)</code></pre><p>Returns the first <code>n</code> rows of <code>ts</code>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; head(TS(1:100))
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/utils.jl#L1-L55">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.endpoints" href="#TSx.endpoints"><code>TSx.endpoints</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Computing end points</strong></p><pre><code class="language-julia hljs">endpoints(timestamps::AbstractVector{T}, on::V) where {T&lt;:Union{Date, DateTime, Time},
+                                                       V&lt;:Union{
+                                                           Year,
+                                                           Quarter,
+                                                           Month,
+                                                           Week,
+                                                           Day,
+                                                           Hour,
+                                                           Minute,
+                                                           Second,
+                                                           Millisecond,
+                                                           Microsecond,
+                                                           Nanosecond
+                                                       }}
+endpoints(ts::TS, on::T) where {T&lt;:Dates.Period}
+endpoints(ts::TS, on::Symbol, k::Int=1)
+endpoints(ts::TS, on::String, k::Int=1)
+endpoints(ts::TS, on::Function, k::Int=1)
+endpoints(values::AbstractVector, on::Function, k::Int=1)</code></pre><p>Return an integer vector of values for last observation in <code>timestamps</code> for each period given by <code>on</code>. The values are picked up every <code>on.value</code> instance of the period.</p><p>Can be used to subset a <code>TS</code> object directly using this function&#39;s return value. The methods work for regular time series of any periodicity and irregular time series belonging to any of the time-based types provided by the <code>Dates</code> module.</p><p>The primary method works for series of all time types including <code>Date</code>, <code>DateTime</code>, and <code>Time</code>, and for <code>on</code> belonging to any of the sub-types of <code>Dates.Period</code>. The <code>::TS</code> methods are provided for convenience and call the primary method directly using the <code>Index</code> column.</p><p>For the methods accepting <code>on</code> of <code>Function</code> type the <code>values</code> vector will get converted into unique period-groups which act as unique keys. The method uses these keys to create groups of values and uses the period provided by <code>on</code> to pick up the last observation in each group. <code>k</code> decides the number of groups to skip. For example, <code>k=2</code> picks every alternate group starting from the 2ⁿᵈ element out of the ones created by <code>on</code>. See the examples below to see how the function works in the real world. The <code>on</code> function should return a <code>Vector</code> to be used as grouping keys.</p><p><code>endpoints(ts::TS, on::Symbol)</code> and <code>endpoints(ts::TS, on::String)</code> are convenience methods where valid values for <code>on</code> are: <code>:years</code>, <code>:quarters</code>, <code>:months</code>, <code>:weeks</code>, <code>:days</code>, <code>:hours</code>, <code>:minutes</code>, <code>:seconds</code>, <code>:milliseconds</code>, <code>:microseconds</code>, and <code>:nanoseconds</code>.</p><p>Note, that except for <code>on::Function</code> all other methods expect <code>Index</code> type of <code>TS</code> to be a subtype of <code>TimeType</code>.</p><p>The method returns <code>Vector{Int}</code> corresponding to the matched values in the first argument.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random
+julia&gt; random(x) = rand(MersenneTwister(123), x);
+julia&gt; dates = Date(2017):Day(1):Date(2019);
+julia&gt; ts = TS(random(length(dates)), dates)
+(731 x 1) TS with Date Index
+
+ Index       x1
+ Date        Float64
+───────────────────────
+ 2017-01-01  0.768448
+ 2017-01-02  0.940515
+ 2017-01-03  0.673959
+ 2017-01-04  0.395453
+ 2017-01-05  0.313244
+ 2017-01-06  0.662555
+ 2017-01-07  0.586022
+ 2017-01-08  0.0521332
+ 2017-01-09  0.26864
+ 2017-01-10  0.108871
+     ⋮           ⋮
+ 2018-12-24  0.812797
+ 2018-12-25  0.158056
+ 2018-12-26  0.269285
+ 2018-12-27  0.15065
+ 2018-12-28  0.916177
+ 2018-12-29  0.278016
+ 2018-12-30  0.617211
+ 2018-12-31  0.67549
+ 2019-01-01  0.910285
+       712 rows omitted
+
+julia&gt; ep = endpoints(ts, Month(1))
+25-element Vector{Int64}:
+  31
+  59
+  90
+ 120
+ 151
+ 181
+ 212
+ 243
+ 273
+ 304
+ 334
+ 365
+ 396
+ 424
+ 455
+ 485
+ 516
+ 546
+ 577
+ 608
+ 638
+ 669
+ 699
+ 730
+ 731
+
+julia&gt; ts[ep]
+(25 x 1) TS with Date Index
+
+ Index       x1
+ Date        Float64
+───────────────────────
+ 2017-01-31  0.48
+ 2017-02-28  0.458476
+ 2017-03-31  0.274441
+ 2017-04-30  0.413966
+ 2017-05-31  0.734931
+ 2017-06-30  0.257159
+ 2017-07-31  0.415851
+ 2017-08-31  0.0377973
+ 2017-09-30  0.934059
+ 2017-10-31  0.413175
+ 2017-11-30  0.557009
+ 2017-12-31  0.346659
+ 2018-01-31  0.174777
+ 2018-02-28  0.432223
+ 2018-03-31  0.835142
+ 2018-04-30  0.945539
+ 2018-05-31  0.0635483
+ 2018-06-30  0.589922
+ 2018-07-31  0.285088
+ 2018-08-31  0.912558
+ 2018-09-30  0.238931
+ 2018-10-31  0.49775
+ 2018-11-30  0.830232
+ 2018-12-31  0.67549
+ 2019-01-01  0.910285
+
+julia&gt; diff(index(ts[ep]))
+24-element Vector{Day}:
+ 28 days
+ 31 days
+ 30 days
+ 31 days
+ 30 days
+ 31 days
+ 31 days
+ 30 days
+ 31 days
+ 30 days
+ 31 days
+ 31 days
+ 28 days
+ 31 days
+ 30 days
+ 31 days
+ 30 days
+ 31 days
+ 31 days
+ 30 days
+ 31 days
+ 30 days
+ 31 days
+ 1 day
+
+# every 2ⁿᵈ month
+julia&gt; ts[endpoints(ts, Month(2))]
+(12 x 1) TS with Date Index
+
+ Index       x1
+ Date        Float64
+───────────────────────
+ 2017-02-28  0.458476
+ 2017-04-30  0.413966
+ 2017-06-30  0.257159
+ 2017-08-31  0.0377973
+ 2017-10-31  0.413175
+ 2017-12-31  0.346659
+ 2018-02-28  0.432223
+ 2018-04-30  0.945539
+ 2018-06-30  0.589922
+ 2018-08-31  0.912558
+ 2018-10-31  0.49775
+ 2018-12-31  0.67549
+ 2019-01-01  0.910285
+
+# Weekly points using a function
+julia&gt; endpoints(ts, i -&gt; lastdayofweek.(i), 1)
+106-element Vector{Int64}:
+   1
+   8
+  15
+  22
+  29
+  36
+  43
+   ⋮
+ 694
+ 701
+ 708
+ 715
+ 722
+ 729
+ 731
+
+julia&gt; endpoints(ts, i -&gt; lastdayofweek.(i), 1) == endpoints(ts, Week(1))
+true
+
+# Time type series
+julia&gt; timestampsminutes = collect(Time(9, 1, 2):Minute(1):Time(11, 2, 3));
+julia&gt; timestampsminutes[endpoints(timestampsminutes, Minute(2))]
+61-element Vector{Time}:
+ 09:02:02
+ 09:04:02
+ 09:06:02
+ 09:08:02
+ 09:10:02
+ 09:12:02
+ 09:14:02
+ 09:16:02
+ 09:18:02
+ 09:20:02
+ 09:22:02
+ 09:24:02
+ ⋮
+ 10:40:02
+ 10:42:02
+ 10:44:02
+ 10:46:02
+ 10:48:02
+ 10:50:02
+ 10:52:02
+ 10:54:02
+ 10:56:02
+ 10:58:02
+ 11:00:02
+ 11:02:02
+
+julia&gt; timestampsminutes[endpoints(timestampsminutes, Hour(1))]
+3-element Vector{Time}:
+ 09:59:02
+ 10:59:02
+ 11:02:02
+
+## Irregular series
+julia&gt; datetimeseconds = collect(range(DateTime(2022, 10, 08) + Hour(9),
+                                DateTime(2022, 10, 08) + Hour(15) + Minute(29),
+                                step=Second(1)));
+julia&gt; datetimesecondsrandom = sample(MersenneTwister(123), datetimeseconds, 20, replace=false, ordered=true)
+17-element Vector{DateTime}:
+ 2022-10-08T09:20:16
+ 2022-10-08T09:32:00
+ 2022-10-08T09:43:57
+ 2022-10-08T10:13:27
+ 2022-10-08T10:44:34
+ 2022-10-08T11:04:23
+ 2022-10-08T11:08:37
+ 2022-10-08T11:46:51
+ 2022-10-08T11:56:46
+ 2022-10-08T12:14:22
+ 2022-10-08T12:32:08
+ 2022-10-08T13:28:42
+ 2022-10-08T13:34:33
+ 2022-10-08T13:54:11
+ 2022-10-08T13:59:08
+ 2022-10-08T14:05:57
+ 2022-10-08T14:37:17
+
+julia&gt; datetimesecondsrandom[endpoints(datetimesecondsrandom, Hour(1))]
+6-element Vector{DateTime}:
+ 2022-10-08T09:43:57
+ 2022-10-08T10:44:34
+ 2022-10-08T11:56:46
+ 2022-10-08T12:32:08
+ 2022-10-08T13:59:08
+ 2022-10-08T14:37:17</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/endpoints.jl#L1-L293">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.head" href="#TSx.head"><code>TSx.head</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Head</strong></p><pre><code class="language-julia hljs">head(ts::TS, n::Int = 10)</code></pre><p>Returns the first <code>n</code> rows of <code>ts</code>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; head(TS(1:100))
 (10 x 1) TS with Int64 Index
 
  Index  x1
@@ -712,7 +958,7 @@ julia&gt; describe(ts, :min, sum =&gt; :sum, cols=:x1)
      7      7
      8      8
      9      9
-    10     10</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/545d0b9f83b42816db61716ea9dbea5a8c6ff942/src/utils.jl#L274-L300">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.index-Tuple{TS}" href="#TSx.index-Tuple{TS}"><code>TSx.index</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Index column</strong></p><pre><code class="language-julia hljs">index(ts::TS)</code></pre><p>Return the index vector from the <code>coredata</code> DataFrame.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
+    10     10</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/utils.jl#L274-L300">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.index-Tuple{TS}" href="#TSx.index-Tuple{TS}"><code>TSx.index</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Index column</strong></p><pre><code class="language-julia hljs">index(ts::TS)</code></pre><p>Return the index vector from the <code>coredata</code> DataFrame.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
 
 julia&gt; random(x) = rand(MersenneTwister(123), x);
 
@@ -750,7 +996,7 @@ julia&gt; index(ts)
  2022-11-01
 
 julia&gt;  eltype(index(ts))
-Date</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/545d0b9f83b42816db61716ea9dbea5a8c6ff942/src/utils.jl#L169-L221">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.lag" href="#TSx.lag"><code>TSx.lag</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Lagging</strong></p><pre><code class="language-julia hljs">lag(ts::TS, lag_value::Int = 1)</code></pre><p>Lag the <code>ts</code> object by the specified <code>lag_value</code>. The rows corresponding to lagged values will be rendered as <code>missing</code>. Negative values of lag are also accepted (see <code>TSx.lead</code>).</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random, Statistics;
+Date</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/utils.jl#L169-L221">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.lag" href="#TSx.lag"><code>TSx.lag</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Lagging</strong></p><pre><code class="language-julia hljs">lag(ts::TS, lag_value::Int = 1)</code></pre><p>Lag the <code>ts</code> object by the specified <code>lag_value</code>. The rows corresponding to lagged values will be rendered as <code>missing</code>. Negative values of lag are also accepted (see <code>TSx.lead</code>).</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random, Statistics;
 
 julia&gt; random(x) = rand(MersenneTwister(123), x);
 
@@ -808,7 +1054,7 @@ julia&gt; lag(ts, 2) # lags by 2 values
  2017-01-08        0.662555
  2017-01-09        0.586022
  2017-01-10        0.0521332
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/545d0b9f83b42816db61716ea9dbea5a8c6ff942/src/lag.jl#L1-L73">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.lead" href="#TSx.lead"><code>TSx.lead</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Leading</strong></p><pre><code class="language-julia hljs">lead(ts::TS, lead_value::Int = 1)</code></pre><p>Similar to lag, this method leads the <code>ts</code> object by <code>lead_value</code>. The lead rows are inserted with <code>missing</code>. Negative values of lead are also accepted (see <code>TSx.lag</code>).</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random, Statistics;
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/lag.jl#L1-L73">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.lead" href="#TSx.lead"><code>TSx.lead</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Leading</strong></p><pre><code class="language-julia hljs">lead(ts::TS, lead_value::Int = 1)</code></pre><p>Similar to lag, this method leads the <code>ts</code> object by <code>lead_value</code>. The lead rows are inserted with <code>missing</code>. Negative values of lead are also accepted (see <code>TSx.lag</code>).</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random, Statistics;
 
 julia&gt; random(x) = rand(MersenneTwister(123), x);
 
@@ -874,7 +1120,7 @@ julia&gt; lead(ts, 2)[1:10]     # leads by 2 values
  2017-01-08  0.108871
  2017-01-09  0.163666
  2017-01-10  0.473017
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/545d0b9f83b42816db61716ea9dbea5a8c6ff942/src/lead.jl#L1-L81">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.ncol-Tuple{TS}" href="#TSx.ncol-Tuple{TS}"><code>TSx.ncol</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Size methods</strong></p><pre><code class="language-julia hljs">ncol(ts::TS)</code></pre><p>Return the number of columns of <code>ts</code>. <code>nc</code> is an alias for <code>ncol</code>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/lead.jl#L1-L81">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.ncol-Tuple{TS}" href="#TSx.ncol-Tuple{TS}"><code>TSx.ncol</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Size methods</strong></p><pre><code class="language-julia hljs">ncol(ts::TS)</code></pre><p>Return the number of columns of <code>ts</code>. <code>nc</code> is an alias for <code>ncol</code>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
 
 julia&gt; random(x) = rand(MersenneTwister(123), x);
 
@@ -882,10 +1128,10 @@ julia&gt; TSx.ncol(TS([random(100) random(100) random(100)]))
 3
 
 julia&gt; nc(TS([random(100) random(100) random(100)]))
-3</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/545d0b9f83b42816db61716ea9dbea5a8c6ff942/src/utils.jl#L119-L140">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.nrow-Tuple{TS}" href="#TSx.nrow-Tuple{TS}"><code>TSx.nrow</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Size methods</strong></p><pre><code class="language-julia hljs">nrow(ts::TS)
+3</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/utils.jl#L119-L140">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.nrow-Tuple{TS}" href="#TSx.nrow-Tuple{TS}"><code>TSx.nrow</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Size methods</strong></p><pre><code class="language-julia hljs">nrow(ts::TS)
 nr(ts::TS)</code></pre><p>Return the number of rows of <code>ts</code>. <code>nr</code> is an alias for <code>nrow</code>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; ts = TS(collect(1:10))
 julia&gt; TSx.nrow(ts)
-10</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/545d0b9f83b42816db61716ea9dbea5a8c6ff942/src/utils.jl#L87-L103">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.rollapply-Tuple{Function, TS, Any, Int64}" href="#TSx.rollapply-Tuple{Function, TS, Any, Int64}"><code>TSx.rollapply</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Rolling Functions</strong></p><pre><code class="language-julia hljs">rollapply(fun::Function, ts::TS, column::Any, windowsize::Int)</code></pre><p>Apply a function to a column of <code>ts</code> for each continuous set of rows of size <code>windowsize</code>. <code>column</code> could be any of the <code>DataFrame</code> column selectors.</p><p>The output is a TS object with <code>(nrow(ts) - windowsize + 1)</code> rows indexed with the last index value of each window.</p><p>This method uses <code>RollingFunctions</code> package to implement this functionality.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; ts = TS(1:12, Date(&quot;2022-02-01&quot;):Month(1):Date(&quot;2022-02-01&quot;)+Month(11))
+10</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/utils.jl#L87-L103">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.rollapply-Tuple{Function, TS, Any, Int64}" href="#TSx.rollapply-Tuple{Function, TS, Any, Int64}"><code>TSx.rollapply</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Rolling Functions</strong></p><pre><code class="language-julia hljs">rollapply(fun::Function, ts::TS, column::Any, windowsize::Int)</code></pre><p>Apply a function to a column of <code>ts</code> for each continuous set of rows of size <code>windowsize</code>. <code>column</code> could be any of the <code>DataFrame</code> column selectors.</p><p>The output is a TS object with <code>(nrow(ts) - windowsize + 1)</code> rows indexed with the last index value of each window.</p><p>This method uses <code>RollingFunctions</code> package to implement this functionality.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; ts = TS(1:12, Date(&quot;2022-02-01&quot;):Month(1):Date(&quot;2022-02-01&quot;)+Month(11))
 
 julia&gt; show(ts)
 (12 x 1) TS with Dates.Date Index
@@ -930,7 +1176,7 @@ julia&gt; rollapply(Statistics.mean, ts, 1, 5)
  2022-11-01              8.0
  2022-12-01              9.0
  2023-01-01             10.0
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/545d0b9f83b42816db61716ea9dbea5a8c6ff942/src/rollapply.jl#L1-L68">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.subset-Union{Tuple{T}, Tuple{TS, T, T}} where T&lt;:Union{Int64, Dates.TimeType}" href="#TSx.subset-Union{Tuple{T}, Tuple{TS, T, T}} where T&lt;:Union{Int64, Dates.TimeType}"><code>TSx.subset</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Subsetting based on Index</strong></p><pre><code class="language-julia hljs">subset(ts::TS, from::T, to::T) where {T&lt;:Union{Int, TimeType}}</code></pre><p>Create a subset of <code>ts</code> based on the <code>Index</code> starting <code>from</code> (inclusive) till <code>to</code> (inclusive).</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/rollapply.jl#L1-L68">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.subset-Union{Tuple{T}, Tuple{TS, T, T}} where T&lt;:Union{Int64, Dates.TimeType}" href="#TSx.subset-Union{Tuple{T}, Tuple{TS, T, T}} where T&lt;:Union{Int64, Dates.TimeType}"><code>TSx.subset</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Subsetting based on Index</strong></p><pre><code class="language-julia hljs">subset(ts::TS, from::T, to::T) where {T&lt;:Union{Int, TimeType}}</code></pre><p>Create a subset of <code>ts</code> based on the <code>Index</code> starting <code>from</code> (inclusive) till <code>to</code> (inclusive).</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
 julia&gt; random(x) = rand(MersenneTwister(123), x);
 julia&gt; dates = Date(&quot;2022-02-01&quot;):Week(1):Date(&quot;2022-02-01&quot;)+Month(9);
 julia&gt; ts = TS(random(length(dates)), dates)
@@ -1054,7 +1300,7 @@ julia&gt; subset(ts,Date(&quot;2022-9-27&quot;),:)
  2022-10-25  0.621379
  2022-11-01  0.348173
 
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/545d0b9f83b42816db61716ea9dbea5a8c6ff942/src/subset.jl#L1-L140">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.tail" href="#TSx.tail"><code>TSx.tail</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Tail</strong></p><pre><code class="language-julia hljs">tail(ts::TS, n::Int = 10)</code></pre><p>Returns the last <code>n</code> rows of <code>ts</code>.</p><pre><code class="language-julia-repl hljs">julia&gt; tail(TS(1:100))
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/subset.jl#L1-L140">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.tail" href="#TSx.tail"><code>TSx.tail</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Tail</strong></p><pre><code class="language-julia hljs">tail(ts::TS, n::Int = 10)</code></pre><p>Returns the last <code>n</code> rows of <code>ts</code>.</p><pre><code class="language-julia-repl hljs">julia&gt; tail(TS(1:100))
 (10 x 1) TS with Int64 Index
 
  Index  x1
@@ -1069,4 +1315,4 @@ julia&gt; subset(ts,Date(&quot;2022-9-27&quot;),:)
     97     97
     98     98
     99     99
-   100    100</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/545d0b9f83b42816db61716ea9dbea5a8c6ff942/src/utils.jl#L306-L332">source</a></section></article></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../user_guide/">« User guide</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Thursday 29 September 2022 09:06">Thursday 29 September 2022</span>. Using Julia version 1.7.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+   100    100</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/c193b235d6bfca1684b51234d2beefd7f83f0efa/src/utils.jl#L306-L332">source</a></section></article></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../user_guide/">« User guide</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Thursday 13 October 2022 07:01">Thursday 13 October 2022</span>. Using Julia version 1.7.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
