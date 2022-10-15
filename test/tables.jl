@@ -34,3 +34,14 @@ for i in 1:15
 
     @test columnTable[:x1][i] == day(date)
 end
+
+# testing Tables.namedtupleiterator
+for namedtuple in Tables.namedtupleiterator(ts)
+    @test day(namedtuple[:Index]) == namedtuple[:x1]
+end
+
+# testing columnindex
+@test Tables.columnindex(ts, :Index) == 1
+@test Tables.columnindex(ts, "Index") == 1
+@test Tables.columnindex(ts, :x1) == 2
+@test Tables.columnindex(ts, "x1") == 2
