@@ -45,3 +45,20 @@ end
 @test Tables.columnindex(ts, "Index") == 1
 @test Tables.columnindex(ts, :x1) == 2
 @test Tables.columnindex(ts, "x1") == 2
+
+# testing Tables.schema
+@test Tables.schema(ts).names == (:Index, :x1)
+@test Tables.schema(ts).types == (Date, Int64)
+
+# testing Tables.getcolumn
+indexCol = Tables.getcolumn(ts, :Index)
+x1Col = Tables.getcolumn(ts, :x1)
+@test indexCol == Tables.getcolumn(ts, 1)
+@test x1Col == Tables.getcolumn(ts, 2)
+for i in 1:15
+    @test year(indexCol[i]) == 2022
+    @test month(indexCol[i]) == 1
+    @test day(indexCol[i]) == i
+
+    @test day(indexCol[i]) == x1Col[i]
+end
