@@ -101,16 +101,6 @@ julia> ts = TS(df, 1)        # the first column is index
      1  0.768448
      2  0.940515
      3  0.673959
-
-julia> ts = TS(df, :ind)     # the column named `ind` is index
-(3 x 1) TS with Int64 Index
-     
- Index  x1       
- Int64  Float64  
-     ─────────────────
-     1  0.768448
-     2  0.940515
-     3  0.673959
      
 julia> df = DataFrame(x1 = random(3), x2 = random(3), Index = [1, 2, 3]);
 3×3 DataFrame
@@ -187,7 +177,39 @@ julia> ts = TS(random(10))
      9  0.26864
     10  0.108871
 
-julia> ts = TS(random(10), dates);
+julia> ts = TS(random(10), dates)
+(10 x 1) TS with Date Index
+
+ Index       x1        
+ Date        Float64   
+───────────────────────
+ 2017-01-01  0.768448
+ 2017-01-02  0.940515
+ 2017-01-03  0.673959
+ 2017-01-04  0.395453
+ 2017-01-05  0.313244
+ 2017-01-06  0.662555
+ 2017-01-07  0.586022
+ 2017-01-08  0.0521332
+ 2017-01-09  0.26864
+ 2017-01-10  0.108871
+
+julia> ts = TS(random(10), collect(1:10), [:A]) # column is named A
+(10 x 1) TS with Int64 Index
+
+ Index  A         
+ Int64  Float64   
+──────────────────
+     1  0.768448
+     2  0.940515
+     3  0.673959
+     4  0.395453
+     5  0.313244
+     6  0.662555
+     7  0.586022
+     8  0.0521332
+     9  0.26864
+    10  0.108871
 
 
 julia> ts = TS([random(10) random(10)], dates) # matrix object
@@ -206,6 +228,24 @@ julia> ts = TS([random(10) random(10)], dates) # matrix object
  2017-01-08  0.0521332  0.0521332
  2017-01-09  0.26864    0.26864
  2017-01-10  0.108871   0.108871
+
+julia> ts = TS([random(10) random(10)], collect(1:10), [:A, :B]) # columns are named A and B
+(10 x 2) TS with Int64 Index
+
+ Index  A          B         
+ Int64  Float64    Float64   
+─────────────────────────────
+     1  0.768448   0.768448
+     2  0.940515   0.940515
+     3  0.673959   0.673959
+     4  0.395453   0.395453
+     5  0.313244   0.313244
+     6  0.662555   0.662555
+     7  0.586022   0.586022
+     8  0.0521332  0.0521332
+     9  0.26864    0.26864
+    10  0.108871   0.108871
+
 
 ```
 """
