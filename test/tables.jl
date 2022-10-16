@@ -18,7 +18,7 @@ for row in Tables.rows(ts)
     @test day(date) == dayValue
     @test row[:x1] == dayValue
 
-    dayValue = dayValue + 1
+    global dayValue += 1
 end
 
 # testing Tables.columns
@@ -34,30 +34,32 @@ end
 # testing Tables.rowtable
 rowTable = Tables.rowtable(ts) 
 @test typeof(rowTable) == Vector{NamedTuple{(:Index, :x1), Tuple{Date, Int64}}}
-for i in 1:15
+for i in 1:TSx.nrow(ts)
     date = rowTable[i][:Index]
-    @test year(date) == 2022
-    @test month(date) == 1
+    @test year(date) == YEAR
+    @test month(date) == MONTH
     @test day(date) == i
-
-    @test rowTable[i][:x1] == day(date)
+    @test rowTable[i][:x1] == i
 end
 
 # testing Tables.columntable
 columnTable = Tables.columntable(ts)
 @test typeof(columnTable) == NamedTuple{(:Index, :x1), Tuple{Vector{Date}, Vector{Int64}}}
-for i in 1:15
+for i in 1:TSx.nrow(ts)
     date = columnTable[:Index][i]
-    @test year(date) == 2022
-    @test month(date) == 1
+    @test year(date) == YEAR
+    @test month(date) == MONTH
     @test day(date) == i
-
-    @test columnTable[:x1][i] == day(date)
+    @test columnTable[:x1][i] == i
 end
 
 # testing Tables.namedtupleiterator
+dayValue = 1
 for namedtuple in Tables.namedtupleiterator(ts)
-    @test day(namedtuple[:Index]) == namedtuple[:x1]
+    @test day(namedtuple[:Index]) == dayValue
+    @test namedtuple[:x1] == dayValue
+
+    global dayValue += 1
 end
 
 # testing columnindex
@@ -70,15 +72,17 @@ end
 @test Tables.schema(ts).names == (:Index, :x1)
 @test Tables.schema(ts).types == (Date, Int64)
 
+# testing Tables.materializer
+@test Tables.materializer(ts) == TS
+
 # testing Tables.getcolumn
 indexCol = Tables.getcolumn(ts, :Index)
 x1Col = Tables.getcolumn(ts, :x1)
 @test indexCol == Tables.getcolumn(ts, 1)
 @test x1Col == Tables.getcolumn(ts, 2)
-for i in 1:15
-    @test year(indexCol[i]) == 2022
-    @test month(indexCol[i]) == 1
+for i in 1:TSx.nrow(ts)
+    @test year(indexCol[i]) == YEAR
+    @test month(indexCol[i]) == MONTH
     @test day(indexCol[i]) == i
-
-    @test day(indexCol[i]) == x1Col[i]
+    @test x1Col[i] == i
 end
