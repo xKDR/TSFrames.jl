@@ -88,7 +88,8 @@ value with which the trading closed on the last day of the week as the
 week's price.
 
 ```@example e1
-ibm_aapl_weekly = apply(ibm_aapl, Week, last, last)
+ep = endpoints(ibm_aapl, Week(1));
+ibm_aapl_weekly = ibm_aapl[ep]
 show(ibm_aapl_weekly)
 ```
 
