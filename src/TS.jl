@@ -31,10 +31,10 @@ TS(coredata::DataFrame, index::Union{String, Symbol, Int})
 TS(coredata::DataFrame, index::AbstractVector{T}) where {T<:Union{Int, TimeType}}
 TS(coredata::DataFrame)
 TS(coredata::DataFrame, index::UnitRange{Int})
-TS(coredata::AbstractVector{T}, index::AbstractVector{V}, colnames=:auto) where {T, V}
-TS(coredata::AbstractVector{T}) where {T}
-TS(coredata::AbstractArray{T,2}, colnames=:auto) where {T}
-TS(coredata::AbstractArray{T,2}, index::AbstractVector{V}, colnames=:auto) where {T, V}
+TS(coredata::AbstractVector{T}, index::AbstractVector{V}; colnames=:auto) where {T, V}
+TS(coredata::AbstractVector{T}; colnames=:auto) where {T}
+TS(coredata::AbstractArray{T,2}; colnames=:auto) where {T}
+TS(coredata::AbstractArray{T,2}, index::AbstractVector{V}; colnames=:auto) where {T, V}
 ```
 
 # Examples
@@ -101,7 +101,7 @@ julia> ts = TS(df, 1)        # the first column is index
      1  0.768448
      2  0.940515
      3  0.673959
-     
+
 julia> df = DataFrame(x1 = random(3), x2 = random(3), Index = [1, 2, 3]);
 3×3 DataFrame
  Row │ x1        x2        Index
@@ -156,9 +156,7 @@ julia> ts = TS(df, :dates)
  2017-01-09  0.26864
  2017-01-10  0.108871
 
-
 julia> ts = TS(DataFrame(x1=random(10)), dates);
-
 
 julia> ts = TS(random(10))
 (10 x 1) TS with Int64 Index
