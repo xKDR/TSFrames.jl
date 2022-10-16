@@ -4,22 +4,18 @@ MONTH = 1
 DAYS = 15
 
 dates = Date(YEAR, MONTH, 1):Day(1):Date(YEAR, MONTH, DAYS)
-ts = TS(DataFrame(Index=dates, x1=1:DAYS))
+ts = TS(1:DAYS, dates)
 
 @test Tables.istable(ts)
 
 # testing Tables.rows
 @test Tables.rowaccess(ts)
 dayValue = 1
-for row in Tables.rows(ts)
-    date = row[:Index]
-    @test year(date) == YEAR
-    @test month(date) == MONTH
-    @test day(date) == dayValue
-    @test row[:x1] == dayValue
-
-    global dayValue += 1
-end
+row = first(Tables.rows(ts))
+@test year(row[:Index]) == YEAR
+@test month(row[:Index]) == MONTH
+@test day(row[:Index]) == 1
+@test row[:x1] == 1
 
 # testing Tables.columns
 for col in Tables.columns(ts)
@@ -54,13 +50,11 @@ for i in 1:TSx.nrow(ts)
 end
 
 # testing Tables.namedtupleiterator
-dayValue = 1
-for namedtuple in Tables.namedtupleiterator(ts)
-    @test day(namedtuple[:Index]) == dayValue
-    @test namedtuple[:x1] == dayValue
-
-    global dayValue += 1
-end
+namedtuple = first(Tables.namedtupleiterator(ts))
+@test year(namedtuple[:Index]) == YEAR
+@test month(namedtuple[:Index]) == MONTH
+@test day(namedtuple[:Index]) == 1
+@test namedtuple[:x1] == 1
 
 # testing columnindex
 @test Tables.columnindex(ts, :Index) == 1
