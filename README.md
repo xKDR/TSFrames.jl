@@ -27,7 +27,7 @@ TSx is a [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible package.
 ```julia
 julia> using CSV, Dates, DataFrames, TSx
 
-julia> ts = CSV.read("IBM.csv", sink=TS)
+julia> ts = CSV.read("IBM.csv", TS)
 (252 x 6) TS with Dates.Date Index
 
  Index       Open     High     Low      Close    Adj Close  Volume
