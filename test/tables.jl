@@ -1,14 +1,34 @@
-dates = Date(2022, 1, 1):Day(1):Date(2022, 1, 15)
-ts = TS(DataFrame(Index=dates, x1=1:15))
+# Constants
+YEAR = 2022
+MONTH = 1
+DAYS = 15
+
+dates = Date(YEAR, MONTH, 1):Day(1):Date(YEAR, MONTH, DAYS)
+ts = TS(DataFrame(Index=dates, x1=1:DAYS))
+
+@test Tables.istable(ts)
 
 # testing Tables.rows
+@test Tables.rowaccess(ts)
+dayValue = 1
 for row in Tables.rows(ts)
-    @test day(row[:Index]) == row[:x1]
+    date = row[:Index]
+    @test year(date) == YEAR
+    @test month(date) == MONTH
+    @test day(date) == dayValue
+    @test row[:x1] == dayValue
+
+    dayValue = dayValue + 1
 end
 
 # testing Tables.columns
 for col in Tables.columns(ts)
-    @test length(col) == 15
+    @test day.(col) == 1:DAYS
+
+    if (typeof(col) == Vector{Date})
+        @test year.(col) == fill(YEAR, DAYS)
+        @test month.(col) == fill(MONTH, DAYS)
+    end
 end
 
 # testing Tables.rowtable
