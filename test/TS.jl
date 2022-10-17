@@ -57,6 +57,23 @@ function test_array()
     @test Matrix(ts.coredata[!, Not(:Index)]) == data_array
 end
 
+function test_colnames()
+    random(x) = rand(MersenneTwister(123), x)
+    dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10))
+
+    ts = TS(random(10), colnames=[:A])
+    @test names(ts.coredata) == ["Index", "A"]
+
+    ts = TS(random(10), dates, colnames=[:A])
+    @test names(ts.coredata) == ["Index", "A"]
+
+    ts = TS([random(10) random(10)], colnames=[:A, :B])
+    @test names(ts.coredata) == ["Index", "A", "B"]
+
+    ts = TS([random(10) random(10)], dates, colnames=[:A, :B])
+    @test names(ts.coredata) == ["Index", "A", "B"]
+end
+
 # Run each test
 # NOTE: Do not forget to add any new test-function created above
 # otherwise that test won't run.
@@ -69,3 +86,4 @@ test_vector_index_vector_integer()
 test_vector_index_vector_timetype()
 test_vector()
 test_array()
+test_colnames()
