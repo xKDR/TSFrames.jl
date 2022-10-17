@@ -93,10 +93,7 @@ ibm_aapl_weekly = ibm_aapl[ep]
 show(ibm_aapl_weekly)
 ```
 
-### Compute weekly returns using the `diff` function
-
-TSx has a specialised function for computing rolling differences of timeseries data. We use it to compute weekly log
-returns of both the stocks.
+### Compute weekly returns using the familiar `log` and `diff` functions
 
 ```@example e1
 ibm_aapl_weekly_returns = diff(log.(ibm_aapl_weekly))
