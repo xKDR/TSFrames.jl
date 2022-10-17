@@ -324,7 +324,7 @@ timeseries to monthly you may use `first()`, `last()`, or
 julia> using Statistics
 
 # convert to monthly series using the last value for each month
-julia> ts_monthly = apply(ts, Month, last)
+julia> ts_monthly = apply(ts, Month(1), last)
 (15 x 1) TS with Date Index
 
  Index       value_last
@@ -348,7 +348,7 @@ julia> ts_monthly = apply(ts, Month, last)
 
 
 # compute weekly standard deviation
-julia> ts_weekly = apply(ts, Week, Statistics.std)
+julia> ts_weekly = apply(ts, Week(1), Statistics.std)
 (62 x 1) TS with Date Index
 
  Index       value_std
@@ -377,7 +377,7 @@ julia> ts_weekly = apply(ts, Week, Statistics.std)
         43 rows omitted
 
 # same as above but index contains the last date of the week
-julia> apply(ts, Week, Statistics.std, last)
+julia> apply(ts, Week(1), Statistics.std, last)
 (62 x 1) TS with Date Index
 
  Index       value_std
@@ -406,7 +406,7 @@ julia> apply(ts, Week, Statistics.std, last)
         43 rows omitted
 
 # do not rename column
-julia> apply(ts, Week, Statistics.std, last, renamecols=false)
+julia> apply(ts, Week(1), Statistics.std, last, renamecols=false)
 (62 x 1) TS with Date Index
 
  Index       value
