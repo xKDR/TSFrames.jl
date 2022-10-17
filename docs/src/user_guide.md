@@ -303,3 +303,52 @@ julia> log_ts = log.(ts[:, [:A, :B]])   # can specify multiple columns
      5  5.491    2.30259
 
 ```
+
+## [Tables.jl](https://github.com/JuliaData/Tables.jl) Integration
+
+`TS` objects are [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible. This integration enables easy conversion between the `TS` format and other formats which are [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible.
+
+As an example, first consider the following code which converts a `TS` object into a `DataFrame`, a `TimeArray` and a `CSV` file respectively.
+
+```julia
+julia> using TSx, TimeSeries, Dates, DataFrames, CSV;
+
+julia> dates = Date(2018, 1, 1):Day(1):Date(2018, 12, 31)
+Date("2018-01-01"):Day(1):Date("2018-12-31")
+
+julia> ts = TS(DataFrame(Index = dates, x1 = 1:365));
+
+# conversion to DataFrames
+julia> df = DataFrame(ts);
+
+# conversion to TimeArray
+julia> timeArray = TimeArray(ts, timestamp = :Index);
+
+# writing to CSV
+julia> CSV.write("ts.csv", ts);
+
+```
+
+Next, here is some code which converts a `DataFrame`, a `TimeArray` and a `CSV` file to a `TS` object.
+
+```julia-repl
+julia> using TSx, DataFrames, CSV, TimeSeries, Dates;
+
+# converting DataFrame to TS
+julia> ts = TS(DataFrame(Index=1:10, x1=1:10));
+
+# converting from TimeArray to TS
+julia> dates = Date(2018, 1, 1):Day(1):Date(2018, 12, 31)
+Date("2018-01-01"):Day(1):Date("2018-12-31")
+
+julia> ta = TimeArray(dates, rand(length(dates)));
+
+julia> ts = TS(ta);
+
+# converting from CSV to TS
+julia> CSV.read("ts.csv", TS);
+```
+
+!!! note
+
+    This discussion warrants a note about how we've implemented the [`Tables.jl`](https://github.com/JuliaData/Tables.jl) interfaces. Since `TS` objects are nothing but a wrapper around a `DataFrame`, our implementations of these interfaces just call [`DataFrames.jl`](https://github.com/JuliaData/DataFrames.jl)'s implementations. Moreover, while constructing `TS` objects out of other [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible types, our constructor first converts the input table to a `DataFrame`, and then converts the `DataFrame` to a `TS` object.
