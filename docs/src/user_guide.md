@@ -136,10 +136,10 @@ timeseries to monthly you may use `first()`, `last()`, or
 
 ```@repl e1
 using Statistics
-ts_monthly = apply(ts, Month, last) # convert to monthly series using the last value for each month
-ts_weekly = apply(ts, Week, Statistics.std) # compute weekly standard deviation
-apply(ts, Week, Statistics.std, last) # same as above but index contains the last date of the week
-apply(ts, Week, Statistics.std, last, renamecols=false) # do not rename column
+ts_monthly = apply(ts, Month(1), last) # convert to monthly series using the last value for each month
+ts_weekly = apply(ts, Week(1), Statistics.std) # compute weekly standard deviation
+apply(ts, Week(1), Statistics.std, last) # same as above but index contains the last date of the week
+apply(ts, Week(1), Statistics.std, last, renamecols=false) # do not rename column
 ```
 
 ## Joins: Row and column binding with other objects
