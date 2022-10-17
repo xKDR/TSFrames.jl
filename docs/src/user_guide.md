@@ -707,7 +707,7 @@ method retains `missing` values in the resulting object if they were
 present in the input.
 
 ```julia
-julia> log(ts)
+julia> log.(ts)
 (431 x 1) TS with Date Index
 
  Index       value_log
