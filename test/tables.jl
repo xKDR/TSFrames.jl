@@ -10,8 +10,8 @@ ts = TS(1:DAYS, dates)
 
 # testing Tables.rows
 @test Tables.rowaccess(ts)
-@test Tables.rows(ts).Index == dates
-@test Tables.rows(ts).x1 == 1:DAYS
+@test first(Tables.rows(ts))[:Index] == Date(YEAR, MONTH, 1)
+@test first(Tables.rows(ts))[:x1] == 1
 
 # testing Tables.columns
 @test Tables.columns(ts).Index == dates
@@ -32,23 +32,9 @@ columnTable = Tables.columntable(ts)
 namedtuple = first(Tables.namedtupleiterator(ts))
 @test namedtuple == first(Tables.rowtable(ts))
 
-# testing columnindex
-@test Tables.columnindex(ts, :Index) == 1
-@test Tables.columnindex(ts, "Index") == 1
-@test Tables.columnindex(ts, :x1) == 2
-@test Tables.columnindex(ts, "x1") == 2
-
 # testing Tables.schema
 @test Tables.schema(ts).names == (:Index, :x1)
 @test Tables.schema(ts).types == (Date, Int64)
 
 # testing Tables.materializer
 @test Tables.materializer(ts) == TS
-
-# testing Tables.getcolumn
-indexCol = Tables.getcolumn(ts, :Index)
-x1Col = Tables.getcolumn(ts, :x1)
-@test indexCol == dates
-@test x1Col == 1:DAYS
-@test indexCol == Tables.getcolumn(ts, 1)
-@test x1Col == Tables.getcolumn(ts, 2)
