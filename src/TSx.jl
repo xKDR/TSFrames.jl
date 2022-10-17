@@ -10,7 +10,6 @@ import Base.getindex
 import Base.join
 import Base.lastindex
 import Base.length
-import Base.log
 import Base.Matrix
 import Base.names
 import Base.print
@@ -55,7 +54,6 @@ export TS,
     ncol,
     pctchange,
     plot,
-    log,
     rbind,
     show,
     size,
@@ -76,7 +74,6 @@ include("getproperty.jl")
 include("join.jl")
 include("lag.jl")
 include("lead.jl")
-include("log.jl")
 include("matrix.jl")
 include("pctchange.jl")
 include("plot.jl")

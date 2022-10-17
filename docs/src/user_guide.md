@@ -701,13 +701,8 @@ julia> pctchange(ts)
 
 ## Computing log of data values
 
-The `log` method computes the log of each data value. The method
-throws an error if it encounters a negative number in the data. This
-method retains `missing` values in the resulting object if they were
-present in the input.
-
 ```julia
-julia> log(ts)
+julia> log.(ts)
 (431 x 1) TS with Date Index
 
  Index       value_log
