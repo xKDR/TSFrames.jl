@@ -3,7 +3,7 @@
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://xKDR.github.io/TSx.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://xKDR.github.io/TSx.jl/dev)
 ![Build Status](https://github.com/xKDR/TSx.jl/actions/workflows/documentation.yml/badge.svg)
-[![codecov](https://codecov.io/gh/xKDR/TSx.jl/branch/main/graph/badge.svg?token=9qkJUtdgrz)](https://codecov.io/gh/xKDR/TSx.jl) 
+[![codecov](https://codecov.io/gh/xKDR/TSx.jl/branch/main/graph/badge.svg?token=9qkJUtdgrz)](https://codecov.io/gh/xKDR/TSx.jl)
 
 TSx is a Julia package to handle timeseries data. It provides a
 convenient interface for the commonly used timeseries data
@@ -22,10 +22,12 @@ julia> Pkg.add(url="https://github.com/xKDR/TSx.jl")
 ## Basic usage
 
 ### Creating TS objects
+TSx is a [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible package. This helps in easy conversion between `TS` objects and other [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible types. For example, to load a `CSV` into a `TS` object, we do the following.
+
 ```julia
 julia> using CSV, Dates, DataFrames, TSx
 
-julia> ts = CSV.File("IBM.csv") |> DataFrame |> TS
+julia> ts = CSV.read("IBM.csv", TS)
 (252 x 6) TS with Dates.Date Index
 
  Index       Open     High     Low      Close    Adj Close  Volume
@@ -52,6 +54,48 @@ julia> ts = CSV.File("IBM.csv") |> DataFrame |> TS
  2022-04-21  138.23   141.88   137.35   139.85     139.85    9922300
  2022-04-22  139.7    140.44   137.35   138.25     138.25    6505500
                                                      233 rows omitted
+```
+
+As another example of this, consider the following code, which converts a `TimeArray` object to a `TS` object. For this, we use the `MarketData.yahoo` function from the [MarketData.jl](https://juliaquant.github.io/MarketData.jl/stable/) package, which returns a `TimeArray` object.
+
+```julia
+julia> using TSx, MarketData;
+
+julia> TS(MarketData.yahoo(:AAPL))
+10550×6 TS with Date Index
+ Index       Open        High        Low         Close       AdjClose    Volume
+ Date        Float64     Float64     Float64     Float64     Float64     Float64
+───────────────────────────────────────────────────────────────────────────────────
+ 1980-12-12    0.128348    0.128906    0.128348    0.128348    0.100039  4.69034e8
+ 1980-12-15    0.12221     0.12221     0.121652    0.121652    0.09482   1.75885e8
+ 1980-12-16    0.113281    0.113281    0.112723    0.112723    0.087861  1.05728e8
+ 1980-12-17    0.115513    0.116071    0.115513    0.115513    0.090035  8.64416e7
+ 1980-12-18    0.118862    0.11942     0.118862    0.118862    0.092646  7.34496e7
+ 1980-12-19    0.126116    0.126674    0.126116    0.126116    0.0983    4.86304e7
+ 1980-12-22    0.132254    0.132813    0.132254    0.132254    0.103084  3.73632e7
+ 1980-12-23    0.137835    0.138393    0.137835    0.137835    0.107434  4.69504e7
+ 1980-12-24    0.145089    0.145647    0.145089    0.145089    0.113088  4.80032e7
+ 1980-12-26    0.158482    0.15904     0.158482    0.158482    0.123527  5.55744e7
+ 1980-12-29    0.160714    0.161272    0.160714    0.160714    0.125267  9.31616e7
+ 1980-12-30    0.157366    0.157366    0.156808    0.156808    0.122222  6.888e7
+ 1980-12-31    0.152902    0.152902    0.152344    0.152344    0.118743  3.57504e7
+ 1981-01-02    0.154018    0.155134    0.154018    0.154018    0.120048  2.16608e7
+     ⋮           ⋮           ⋮           ⋮           ⋮           ⋮           ⋮
+ 2022-09-27  152.74      154.72      149.95      151.76      151.76      8.44427e7
+ 2022-09-28  147.64      150.64      144.84      149.84      149.84      1.46691e8
+ 2022-09-29  146.1       146.72      140.68      142.48      142.48      1.28138e8
+ 2022-09-30  141.28      143.1       138.0       138.2       138.2       1.24705e8
+ 2022-10-03  138.21      143.07      137.69      142.45      142.45      1.14312e8
+ 2022-10-04  145.03      146.22      144.26      146.1       146.1       8.78301e7
+ 2022-10-05  144.07      147.38      143.01      146.4       146.4       7.9471e7
+ 2022-10-06  145.81      147.54      145.22      145.43      145.43      6.84022e7
+ 2022-10-07  142.54      143.1       139.45      140.09      140.09      8.58591e7
+ 2022-10-10  140.42      141.89      138.57      140.42      140.42      7.4899e7
+ 2022-10-11  139.9       141.35      138.22      138.98      138.98      7.70337e7
+ 2022-10-12  139.13      140.36      138.16      138.34      138.34      7.04337e7
+ 2022-10-13  134.99      143.59      134.37      142.99      142.99      1.13224e8
+ 2022-10-14  144.31      144.52      138.19      138.38      138.38      8.85123e7
+                                                                 10522 rows omitted
 ```
 
 ### Indexing
@@ -114,7 +158,8 @@ julia> TSx.subset(ts, from, to)
 
 ### Frequency conversion
 ```julia
-julia> ts_weekly = apply(ts, Week, last, last)
+julia> ep = endpoints(ts, Week(1));
+julia> ts_weekly = ts[ep]
 (52 x 6) TS with Date Index
 
  Index       Open_last  High_last  Low_last  Close_last  Adj Close_last  Volume_last 

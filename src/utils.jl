@@ -2,12 +2,16 @@
 # Summary statistics
 
 ```julia
-describe(ts::TS)
+describe(ts::TS; cols=:)
+describe(ts::TS, stats::Union{Symbol, Pair}...; cols=:)
 ```
 
 Compute summary statistics of `ts`. The output is a `DataFrame`
 containing standard statistics along with number of missing values and
-data types of columns.
+data types of columns. The `cols` keyword controls which subset of columns
+from `ts` to be selected. The `stats` keyword is used to control which
+summary statistics are to be printed. For more information about these
+keywords, check out the corresponding [documentation from DataFrames.jl](https://dataframes.juliadata.org/stable/lib/functions/#DataAPI.describe).
 
 # Examples
 ```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
@@ -21,19 +25,56 @@ julia> describe(ts)
 ─────┼───────────────────────────────────────────────────────────────────────────
    1 │ Index        5.5       1      5.5     10         0  Int64
    2 │ x1           2.75      2      3.0      4         2  Union{Missing, Int64}
+julia> describe(ts, cols=:Index)
+1×7 DataFrame
+ Row │ variable  mean     min    median   max    nmissing  eltype
+     │ Symbol    Float64  Int64  Float64  Int64  Int64     DataType
+─────┼──────────────────────────────────────────────────────────────
+   1 │ Index         5.5      1      5.5     10         0  Int64
+julia> describe(ts, :min, :max, cols=:x1)
+1×3 DataFrame
+ Row │ variable  min    max
+     │ Symbol    Int64  Int64
+─────┼────────────────────────
+   1 │ x1            2      4
+julia> describe(ts, :min, sum => :sum)
+2×3 DataFrame
+ Row │ variable  min    sum
+     │ Symbol    Int64  Int64
+─────┼────────────────────────
+   1 │ Index         1     55
+   2 │ x1            2     22
+julia> describe(ts, :min, sum => :sum, cols=:x1)
+1×3 DataFrame
+ Row │ variable  min    sum
+     │ Symbol    Int64  Int64
+─────┼────────────────────────
+   1 │ x1            2     22
 
 ```
 """
-function describe(io::IO, ts::TS)
-    DataFrames.describe(ts.coredata)
+function describe(io::IO, ts::TS; cols=:)
+    DataFrames.describe(ts.coredata; cols=cols)
 end
-TSx.describe(ts::TS) = TSx.describe(stdout, ts)
+TSx.describe(ts::TS; cols=:) = TSx.describe(stdout, ts; cols=cols)
 
+function describe(
+    io::IO,
+    ts::TS,
+    stats::Union{Symbol, Pair{<:Base.Callable, <:Union{Symbol, AbstractString}}}...;
+    cols=:
+)
+    DataFrames.describe(ts.coredata, stats...; cols=cols)
+end
+TSx.describe(
+    ts::TS,
+    stats::Union{Symbol, Pair{<:Base.Callable, <:Union{Symbol, AbstractString}}}...;
+    cols=:
+) = TSx.describe(stdout, ts, stats...; cols=cols)
 
 function Base.show(io::IO, ts::TS)
-    println("(", TSx.nrow(ts), " x ", TSx.ncol(ts), ") TS with ", eltype(index(ts)), " Index")
-    println("")
-    DataFrames.show(ts.coredata, show_row_number=false, summary=false)
+    title = "$(TSx.nrow(ts))×$(TSx.ncol(ts)) TS with $(eltype(index(ts))) Index"
+    Base.show(io, ts.coredata; show_row_number=false, title=title)
     return nothing
 end
 Base.show(ts::TS) = show(stdout, ts)
@@ -199,7 +240,7 @@ julia> names(TS([1:10 11:20]))
  "x2"
 ```
 """
-            
+
 function names(ts::TS)
     names(ts.coredata[!, Not(:Index)])
 end
@@ -242,8 +283,8 @@ Returns the first `n` rows of `ts`.
 julia> head(TS(1:100))
 (10 x 1) TS with Int64 Index
 
- Index  x1    
- Int64  Int64 
+ Index  x1
+ Int64  Int64
 ──────────────
      1      1
      2      2
@@ -274,8 +315,8 @@ Returns the last `n` rows of `ts`.
 julia> tail(TS(1:100))
 (10 x 1) TS with Int64 Index
 
- Index  x1    
- Int64  Int64 
+ Index  x1
+ Int64  Int64
 ──────────────
     91     91
     92     92
@@ -291,4 +332,76 @@ julia> tail(TS(1:100))
 """
 function tail(ts::TS, n::Int = 10)
     TS(DataFrames.last(ts.coredata, n))
+end
+
+
+"""
+# Column Rename
+```julia
+rename!(ts::TS, colnames::AbstractVector{String})
+rename!(ts::TS, colnames::AbstractVector{Symbol})
+```
+
+Renames columns of `ts` to the values in `colnames`, in order. Input
+is a vector of either Strings or Symbols. The `Index` column name is reserved,
+and `rename!()` will throw an error if `colnames` contains the name `Index`.
+
+```jldoctest; setup = :(using TSx, DataFrames, Dates, Random)
+julia> ts
+(100 x 2) TS with Int64 Index
+
+ Index  x1     x2
+ Int64  Int64  Int64
+─────────────────────
+     1      2      1
+     2      3      2
+     3      4      3
+     4      5      4
+   ⋮      ⋮      ⋮
+    97     98     97
+    98     99     98
+    99    100     99
+   100    101    100
+      92 rows omitted
+
+julia> rename!(ts, ["Col1", "Col2"])
+(100 x 2) TS with Int64 Index
+
+Index  Col1   Col2
+Int64  Int64  Int64
+─────────────────────
+    1      2      1
+    2      3      2
+    3      4      3
+    4      5      4
+  ⋮      ⋮      ⋮
+   97     98     97
+   98     99     98
+   99    100     99
+  100    101    100
+     92 rows omitted
+```
+"""
+
+function rename!(ts::TS, colnames::AbstractVector{String})
+    rename!(ts, Symbol.(colnames))
+end
+
+function rename!(ts::TS, colnames::AbstractVector{Symbol})
+    idx = findall(i -> i == :Index, colnames)
+    if length(idx) > 0
+        error("Column name `Index` not allowed in TS object")
+    end
+    cols = copy(colnames)
+    insert!(cols, 1, :Index)
+    DataFrames.rename!(ts.coredata, cols)
+    return ts
+end
+
+"""
+Internal function to check consistency of the Index of a TS
+object.
+"""
+function _check_consistency(ts::TS)::Bool
+    issorted(index(ts))
 end

@@ -306,12 +306,21 @@ d = Date(2007, 10, 1)
 test_types(ts[ind])
 @test TSx.index(ts[ind]) == [d]
 
+# getindex(ts, i::Int, j::Int)
+i = 1; j = 1
+t = ts[i, [j]]
+test_types(t)
+@test t.coredata[!, :Index] == [df_timetype_index[i, 1]]
+@test t.coredata[!, :data] == [df_timetype_index[i, j+1]]
+
 # getindex(ts, i::UnitRange, j::Int)
 i = 1:10; j = 1
-t = ts[i, j]
-@test typeof(t) == typeof(df_timetype_index[i, j+1])
-@test length(t) == length(i)
-@test t == df_timetype_index[i, :data]
+t = ts[i, [j]]
+test_types(t)
+@test DataFrames.nrow(t.coredata) == length(i)
+@test DataFrames.ncol(t.coredata) == length(j)+1 # Index + Ncols
+@test t.coredata[!, :Index] == df_timetype_index[i, :Index]
+@test t.coredata[!, :data] == df_timetype_index[i, :data]
 
 # getindex(ts::TS, i::Int, j::UnitRange)
 i = 2; j = 1:1
@@ -320,19 +329,31 @@ test_types(t)
 @test DataFrames.nrow(t.coredata) == length(i)
 @test DataFrames.ncol(t.coredata) == length(j)+1
 @test t.coredata[!, :Index] == [df_timetype_index[i, :Index]]
-@test t.coredata[!, :data] == [df_timetype_index[i, :data]]
+@test t.coredata[!, :data] == df_timetype_index[[i], :data]
+
+# getindex(ts::TS, i::Int, j::Symbol)
+i = 1; j = :data
+t = ts[i, [j]]
+test_types(t)
+@test t.coredata[!, j] == [df_timetype_index[i, j]]
 
 # getindex(ts::TS, i::UnitRange, j::Symbol)
 i = 1:10; j = :data
-t = ts[i, j]
-@test typeof(t) == typeof(df_timetype_index[i,j])
-@test t == df_timetype_index[i, j]
+t = ts[i, [j]]
+test_types(t)
+@test t.coredata[!, j] == df_timetype_index[i, j]
+
+# getindex(ts::TS, i::Int, j::String)
+i = 1; j = "data"
+t = ts[i, [j]]
+test_types(t)
+@test t.coredata[!, j] == [df_timetype_index[i, j]]
 
 # getindex(ts::TS, i::UnitRange, j::String)
 i = 1:10; j = "data"
-t = ts[i, j]
-@test typeof(t) == typeof(df_timetype_index[i,j])
-@test t == df_timetype_index[i, j]
+t = ts[i, [j]]
+test_types(t)
+@test t.coredata[!, j] == df_timetype_index[i, j]
 
 # getindex(ts::TS, r::StepRange{T, V}) where {T<:TimeType, V<:Period}
 ind = Date(2007, 1, 1):Day(1):Date(2007, 2, 1)

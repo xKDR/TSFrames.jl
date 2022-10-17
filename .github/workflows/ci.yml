@@ -1,38 +1,41 @@
 name: CI
-
-on: 
+on:
     push:
-        branches:
-            - main
+        branches: '**'  # match all branches
+        tags: '*'
     pull_request:
-        branches: 
-            - main
+        branches: '**'  # match all branches
     # can add tags if needed
-
-jobs: 
-    test: 
-        name: Test
+jobs:
+    test:
+        name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
+        runs-on: ${{ matrix.os }}
+        strategy:
+            matrix:
+                version: ['1']
+                os: [ubuntu-latest, windows-latest, macos-latest]
+                arch: [x64]
+        steps:
+            - uses: actions/checkout@v2
+            - uses: julia-actions/setup-julia@latest
+              with:
+                version: ${{ matrix.version }}
+                arch: ${{ matrix.arch }}
+            - name: Install test dependencies
+              run: julia --project=test/ -e 'using Pkg; Pkg.instantiate()'
+            - name: Run tests
+              run: julia --project=. -e 'using Pkg; Pkg.test(; coverage=false)'
+    codecov:
+        name: Code Coverage
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
             - uses: julia-actions/setup-julia@latest
               with:
-                version: '1.7'
+                  version: '1'
             - name: Install test dependencies
               run: julia --project=test/ -e 'using Pkg; Pkg.instantiate()'
             - name: Run tests
-              run: julia --project=. -e 'using Pkg; Pkg.test()'
-
-    name: Test
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-            - uses: julia-actions/setup-julia@latest
-              with:
-                version: '1.7'
-            - name: Install test dependencies
-              run: julia --project=test/ -e 'using Pkg; Pkg.instantiate()'
-            - name: Run tests
-              run: julia --project=. -e 'using Pkg; Pkg.test("TSx", coverage=true)'
+              run: julia --project=. -e 'using Pkg; Pkg.test(; coverage=true)'
             - name: Codecov
               run: julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'

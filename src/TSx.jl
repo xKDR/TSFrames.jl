@@ -1,6 +1,6 @@
 module TSx
 
-using DataFrames, Dates, ShiftedArrays, RecipesBase, RollingFunctions
+using DataFrames, Dates, ShiftedArrays, RecipesBase, RollingFunctions, Tables
 
 import Base.convert
 import Base.diff
@@ -10,7 +10,6 @@ import Base.getindex
 import Base.join
 import Base.lastindex
 import Base.length
-import Base.log
 import Base.Matrix
 import Base.names
 import Base.print
@@ -35,6 +34,7 @@ export TS,
     cbind,
     describe,
     diff,
+    endpoints,
     first,
     getindex,
     head,
@@ -54,7 +54,6 @@ export TS,
     ncol,
     pctchange,
     plot,
-    log,
     rbind,
     show,
     size,
@@ -69,16 +68,19 @@ include("utils.jl")
 
 include("apply.jl")
 include("diff.jl")
+include("endpoints.jl")
 include("getindex.jl")
+include("getproperty.jl")
 include("join.jl")
 include("lag.jl")
 include("lead.jl")
-include("log.jl")
 include("matrix.jl")
 include("pctchange.jl")
 include("plot.jl")
 include("rollapply.jl")
 include("subset.jl")
 include("vcat.jl")
+include("broadcasting.jl")
+include("tables.jl")
 
 end                             # END module TSx

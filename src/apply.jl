@@ -2,11 +2,11 @@
 # Apply/Period conversion
 ```julia
 apply(ts::TS,
-      period::Union{T,Type{T}},
+      period::T,
       fun::V,
       index_at::Function=first;
       renamecols::Bool=true)
-     where {T <: Union{DatePeriod,TimePeriod}, V <: Function}
+     where {T<:Dates.Period, V <: Function}
 ```
 
 Apply `fun` to `ts` object based on `period` and return correctly
@@ -53,7 +53,7 @@ julia> show(ts[1:10])
  2017-01-09  0.26864
  2017-01-10  0.108871
 
-julia> apply(ts, Month, first)
+julia> apply(ts, Month(1), first)
 (15 x 1) TS with Date Index
 
  Index       x1_first
@@ -92,7 +92,7 @@ julia> apply(ts, Month(2), first)
  2018-03-01  0.87459
 
 
-julia> ts_weekly = apply(ts, Week, Statistics.std) # weekly standard deviation
+julia> ts_weekly = apply(ts, Week(1), Statistics.std) # weekly standard deviation
 julia> show(ts_weekly[1:10])
 (10 x 1) TS with Date Index
 
@@ -111,7 +111,7 @@ julia> show(ts_weekly[1:10])
  2017-02-27    0.23651
 
 
-julia> ts_weekly = apply(ts, Week, Statistics.std, last) # indexed by last date of the week
+julia> ts_weekly = apply(ts, Week(1), Statistics.std, last) # indexed by last date of the week
 julia> show(ts_weekly[1:10])
 (10 x 1) TS with Date Index
 
@@ -131,10 +131,19 @@ julia> show(ts_weekly[1:10])
 
 ```
 """
-function apply(ts::TS, period::Union{T,Type{T}}, fun::V, index_at::Function=first; renamecols::Bool=true) where {T<:Union{DatePeriod,TimePeriod}, V<:Function}
+function apply(ts::TS, period::T, fun::V, index_at::Function=first; renamecols::Bool=true) where {T<:Dates.Period, V<:Function}
+    ep = endpoints(ts, period)
+
+    j = 1
+    groupindices = Int[]
+    for i in eachindex(ep)
+        append!(groupindices, fill(ep[i], ep[i]-j+1))
+        j = ep[i] + 1
+    end
 
     local tmp_col::String = get_tmp_colname(names(ts.coredata))
-    sdf = transform(ts.coredata, :Index => (i -> Dates.floor.(i, period)) => tmp_col)
+    sdf = copy(ts.coredata)
+    sdf[!, tmp_col] = groupindices
     gd = groupby(sdf, tmp_col)
     df = combine(gd,
                  :Index => index_at => :Index,
