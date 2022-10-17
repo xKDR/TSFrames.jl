@@ -132,9 +132,18 @@ julia> show(ts_weekly[1:10])
 ```
 """
 function apply(ts::TS, period::Union{T,Type{T}}, fun::V, index_at::Function=first; renamecols::Bool=true) where {T<:Union{DatePeriod,TimePeriod}, V<:Function}
+    ep = endpoints(ts, period)
+
+    j = 1
+    groupindices = Int[]
+    for i in eachindex(ep)
+        append!(groupindices, fill(ep[i], ep[i]-j+1))
+        j = ep[i] + 1
+    end
 
     local tmp_col::String = get_tmp_colname(names(ts.coredata))
-    sdf = transform(ts.coredata, :Index => (i -> Dates.floor.(i, period)) => tmp_col)
+    sdf = copy(ts.coredata)
+    sdf[!, tmp_col] = groupindices
     gd = groupby(sdf, tmp_col)
     df = combine(gd,
                  :Index => index_at => :Index,
