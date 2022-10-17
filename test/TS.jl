@@ -58,6 +58,9 @@ function test_array()
 end
 
 function test_colnames()
+    random(x) = rand(MersenneTwister(123), x)
+    dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10))
+
     ts = TS(random(10), colnames=[:A])
     @test names(ts.coredata) == ["Index", "A"]
 
