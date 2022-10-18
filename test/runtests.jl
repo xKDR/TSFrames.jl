@@ -39,7 +39,14 @@ end
 
 @testset "getproperty" begin
     include("getproperty.jl")
+end
 
+@testset "diff" begin
+    include("diff.jl")
+end
+
+@testset "lag" begin
+    include("lag.jl")
 end
 
 @testset "lead" begin
