@@ -61,7 +61,8 @@ export TS,
     summary,
     tail,
     rollapply,
-    vcat
+    vcat,
+    isregular
 
 include("TS.jl")
 include("utils.jl")
