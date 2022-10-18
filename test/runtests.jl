@@ -42,6 +42,10 @@ end
 
 end
 
+@testset "lead" begin
+    include("lead.jl")
+end
+
 @testset "Tables.jl" begin
     include("tables.jl")
 end

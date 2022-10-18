@@ -5,6 +5,7 @@ COLUMN_NO = 100;
 # global variables
 random(x) = rand(MersenneTwister(123), x);
 data_vector = randn(DATA_SIZE);
+integer_data_vector = rand(1:100, DATA_SIZE);
 data_array = Array([data_vector data_vector]);
 data_array_long = reduce(hcat, [randn(DATA_SIZE) for i in 1:COLUMN_NO])
 
