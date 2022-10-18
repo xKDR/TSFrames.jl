@@ -38,6 +38,10 @@ end
 
 end
 
+@testset "lag" begin
+    include("lag.jl")
+end
+
 @testset "Tables.jl" begin
     include("tables.jl")
 end
