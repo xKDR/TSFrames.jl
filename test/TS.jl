@@ -1,4 +1,9 @@
 function test_df_index_integer()
+    df = DataFrame(A=["a", "b"], B=[1, 2])
+    @test_throws ArgumentError TS(df)
+    df = DataFrame(A=[:a, :b], B=[1, 2])
+    @test_throws ArgumentError TS(df)
+
     ts = TS(df_integer_index, 1)
     @test typeof(ts) == TSx.TS
     @test ts.coredata == df_integer_index
