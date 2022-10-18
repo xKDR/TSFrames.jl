@@ -5,7 +5,7 @@ dates = Date(2000, 1,1) + Day.(0:(DATA_SIZE - 1))
 ts = TS(rand(1:100, DATA_SIZE), dates)
 
 # lagging by something atmost DATA_SIZE
-for lagby in [0, floor(Int(DATA_SIZE/2)), DATA_SIZE]
+for lagby in [0, Int(floor(DATA_SIZE/2)), DATA_SIZE]
     lagged_ts = lag(ts, lagby)
 
     # test that Index remains the same
