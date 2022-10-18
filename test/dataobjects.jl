@@ -4,6 +4,7 @@ DATA_SIZE = 400;
 # global variables
 random(x) = rand(MersenneTwister(123), x);
 data_vector = randn(DATA_SIZE);
+integer_data_vector = rand(1:100, DATA_SIZE);
 data_array = Array([data_vector data_vector]);
 
 index_range = 1:DATA_SIZE;

@@ -1,9 +1,7 @@
-DATA_SIZE = 360
-dates = Date(2000, 1,1) + Day.(0:(DATA_SIZE - 1))
-ts = TS(rand(1:100, DATA_SIZE), dates)
+ts = TS(integer_data_vector, index_timetype)
 
 # when period is atmost DATA_SIZE
-for period in [rand(1:DATA_SIZE - 1), DATA_SIZE]
+for period in [1, DATA_SIZE]
     ts_diff = diff(ts, period)
 
     # Index should be the same
@@ -17,6 +15,6 @@ for period in [rand(1:DATA_SIZE - 1), DATA_SIZE]
 end
 
 # when period is greater than DATA_SIZE
-ts_diff = diff(ts, DATA_SIZE + 5)
+ts_diff = diff(ts, DATA_SIZE + 1)
 @test isequal(ts_diff[:, :Index], ts[:, :Index])
 @test isequal(Vector{Missing}(ts_diff[1:DATA_SIZE, :x1]), fill(missing, DATA_SIZE))
