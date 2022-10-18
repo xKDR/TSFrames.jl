@@ -56,7 +56,7 @@ t = ts_daily_1[:, "data"]
 @test typeof(ts_monthly.coredata) == DataFrame
 @test DataFrames.nrow(ts_monthly.coredata) == 12
 @test typeof(ts_monthly[:, "data_mean"]) == Vector{Float64}
-@test ts_monthly[1, "data_mean"] == Statistics.mean(t[1:31])
+@test ts_monthly[1, "data_mean"] ≈ Statistics.mean(t[1:31])
 
 ts_monthly = apply(ts_daily_1, Dates.Month(1), sum)
 t = ts_daily_1[:, "data"]
@@ -64,7 +64,7 @@ t = ts_daily_1[:, "data"]
 @test typeof(ts_monthly.coredata) == DataFrame
 @test DataFrames.nrow(ts_monthly.coredata) == 12
 @test typeof(ts_monthly[:, "data_sum"]) == Vector{Float64}
-@test ts_monthly[1, "data_sum"] == sum(t[1:31])
+@test ts_monthly[1, "data_sum"] ≈ sum(t[1:31])
 
 ts_monthly = apply(ts_daily_1, Dates.Month(1), sum, last)
 t = ts_daily_1[:, "data"]
@@ -72,7 +72,7 @@ t = ts_daily_1[:, "data"]
 @test typeof(ts_monthly.coredata) == DataFrame
 @test DataFrames.nrow(ts_monthly.coredata) == 12
 @test typeof(ts_monthly[:, "data_sum"]) == Vector{Float64}
-@test ts_monthly["2007-01-31"][1,1] == sum(t[1:31])
+@test ts_monthly["2007-01-31"][1,1] ≈ sum(t[1:31])
 
 # Daily -> Yearly
 ts_yearly = apply(ts_daily_1, Dates.Year(1), first)
