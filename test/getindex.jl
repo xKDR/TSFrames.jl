@@ -364,10 +364,10 @@ test_types(ts[ind])
 @test t.coredata[!, :Index] == collect(ind)
 
 # getindex(ts::TS, y::Year, m::Month, w::Week)
-@test index(getindex(ts_daily_1, Year(2007), Month(1), Week(6))) == []
-@test index(getindex(ts_daily_1, Year(2007), Month(1), Week(0))) == []
-@test index(getindex(ts_daily_1, Year(2007), Month(1), Week(-1))) == []
-@test index(getindex(ts_daily_1, Year(2007), Month(1), Week(2))) == [
+@test index(getindex(ts, Year(2007), Month(1), Week(6))) == []
+@test index(getindex(ts, Year(2007), Month(1), Week(0))) == []
+@test index(getindex(ts, Year(2007), Month(1), Week(-1))) == []
+@test index(getindex(ts, Year(2007), Month(1), Week(2))) == [
     Date(2007, 01, 08), Date(2007, 01, 09), Date(2007, 01, 10),
     Date(2007, 01, 11), Date(2007, 01, 12), Date(2007, 01, 13), Date(2007, 01, 14) ]
 
