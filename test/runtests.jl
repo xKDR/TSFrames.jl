@@ -17,6 +17,10 @@ end
     include("getindex.jl")
 end
 
+@testset "apply()" begin
+    include("apply.jl")
+end
+
 @testset "index()" begin
     include("index.jl")
 end
