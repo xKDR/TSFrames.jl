@@ -17,6 +17,10 @@ end
     include("getindex.jl")
 end
 
+@testset "apply()" begin
+    include("apply.jl")
+end
+
 @testset "index()" begin
     include("index.jl")
 end
@@ -35,7 +39,14 @@ end
 
 @testset "getproperty" begin
     include("getproperty.jl")
+end
 
+@testset "diff" begin
+    include("diff.jl")
+end
+
+@testset "lag" begin
+    include("lag.jl")
 end
 
 @testset "Tables.jl" begin

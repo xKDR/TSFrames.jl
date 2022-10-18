@@ -302,6 +302,10 @@ struct TS
 
     # From DataFrame, index number/name/symbol
     function TS(coredata::DataFrame, index::Union{String, Symbol, Int})
+        if ! (eltype(coredata[!, index]) <: Union{Int, TimeType})
+            throw(ArgumentError("only Int and TimeType index is supported"))
+        end
+
         if (DataFrames.ncol(coredata) == 1)
             TS(coredata, collect(Base.OneTo(DataFrames.nrow(coredata))))
         end
