@@ -581,3 +581,6 @@ t = ts_intraday_2[:, "data"]
 @test typeof(ts_secondly[:, "data_sum"]) == Vector{Float64}
 @test ts_secondly[1, "data_sum"] ≈ sum(t[1:2])
 @test ts_secondly[DateTime(2000, 1, 1, 0, 0, 1)][1,1] ≈ sum(t[1:2])
+
+# Check temp colname
+@test !all(occursin.(["A", "B", "C"], TSx.get_tmp_colname(["A", "B", "C"])))
