@@ -45,3 +45,7 @@ end
 @testset "Tables.jl" begin
     include("tables.jl")
 end
+
+@testset "rollapply()" begin
+    include("rollapply.jl")
+end
