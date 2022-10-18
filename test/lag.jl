@@ -1,11 +1,7 @@
-# constants
-DATA_SIZE = 360
-dates = Date(2000, 1,1) + Day.(0:(DATA_SIZE - 1))
-
-ts = TS(rand(1:100, DATA_SIZE), dates)
+ts = TS(integer_data_vector, index_timetype)
 
 # lagging by something atmost DATA_SIZE
-for lagby in [0, Int(floor(DATA_SIZE/2)), DATA_SIZE]
+for lagby in [0, 1, Int(floor(DATA_SIZE/2)), DATA_SIZE]
     lagged_ts = lag(ts, lagby)
 
     # test that Index remains the same
@@ -19,6 +15,11 @@ for lagby in [0, Int(floor(DATA_SIZE/2)), DATA_SIZE]
 end
 
 # lagging by something greater than DATA_SIZE
-lagged_ts = lag(ts, DATA_SIZE + 5)
+lagged_ts = lag(ts, DATA_SIZE + 1)
 @test isequal(lagged_ts[:, :Index], ts[:, :Index])
 @test isequal(Vector{Missing}(lagged_ts[1:DATA_SIZE, :x1]), fill(missing, DATA_SIZE))
+
+# lagging by a negative integer
+lagged_ts = lag(ts, -1)
+@test isequal(lagged_ts[:, :Index], ts[:, :Index])
+@test isequal(lagged_ts[TSx.nrow(ts), :x1], missing)
