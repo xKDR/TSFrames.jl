@@ -20,12 +20,12 @@ ts_daily_matrix_2 = TS(DataFrames.innerjoin(df_timetype_index_2, df_timetype_ind
 # Resampling
 
 # Daily -> Monthly
-ts_monthly = apply(ts_daily_1, Dates.Month, first)
+ts_monthly = apply(ts_daily_1, Dates.Month(1), first)
 @test typeof(ts_monthly) == TSx.TS
 @test typeof(ts_monthly.coredata) == DataFrame
 @test DataFrames.nrow(ts_monthly.coredata) == 12 # 360 days
 
-ts_monthly = apply(ts_daily_1, Dates.Month, last)
+ts_monthly = apply(ts_daily_1, Dates.Month(1), last)
 @test typeof(ts_monthly) == TSx.TS
 @test typeof(ts_monthly.coredata) == DataFrame
 @test DataFrames.nrow(ts_monthly.coredata) == 12
@@ -50,7 +50,7 @@ ts_monthly = apply(ts_daily_1, Dates.Month(100), first)
 @test typeof(ts_monthly.coredata) == DataFrame
 @test DataFrames.nrow(ts_monthly.coredata) == 1
 
-ts_monthly = apply(ts_daily_1, Dates.Month, Statistics.mean)
+ts_monthly = apply(ts_daily_1, Dates.Month(1), Statistics.mean)
 t = ts_daily_1[:, "data"]
 @test typeof(ts_monthly) == TSx.TS
 @test typeof(ts_monthly.coredata) == DataFrame
@@ -58,7 +58,7 @@ t = ts_daily_1[:, "data"]
 @test typeof(ts_monthly[:, "data_mean"]) == Vector{Float64}
 @test ts_monthly[1, "data_mean"] == Statistics.mean(t[1:31])
 
-ts_monthly = apply(ts_daily_1, Dates.Month, sum)
+ts_monthly = apply(ts_daily_1, Dates.Month(1), sum)
 t = ts_daily_1[:, "data"]
 @test typeof(ts_monthly) == TSx.TS
 @test typeof(ts_monthly.coredata) == DataFrame
@@ -66,7 +66,7 @@ t = ts_daily_1[:, "data"]
 @test typeof(ts_monthly[:, "data_sum"]) == Vector{Float64}
 @test ts_monthly[1, "data_sum"] == sum(t[1:31])
 
-ts_monthly = apply(ts_daily_1, Dates.Month, sum, last)
+ts_monthly = apply(ts_daily_1, Dates.Month(1), sum, last)
 t = ts_daily_1[:, "data"]
 @test typeof(ts_monthly) == TSx.TS
 @test typeof(ts_monthly.coredata) == DataFrame
@@ -75,12 +75,12 @@ t = ts_daily_1[:, "data"]
 @test ts_monthly["2007-01-31"][1,1] == sum(t[1:31])
 
 # Daily -> Yearly
-ts_yearly = apply(ts_daily_1, Dates.Year, first)
+ts_yearly = apply(ts_daily_1, Dates.Year(1), first)
 @test typeof(ts_yearly) == TSx.TS
 @test typeof(ts_yearly.coredata) == DataFrame
 @test DataFrames.nrow(ts_yearly.coredata) == 1
 
-ts_yearly = apply(ts_daily_1, Dates.Year, last)
+ts_yearly = apply(ts_daily_1, Dates.Year(1), last)
 @test typeof(ts_yearly) == TSx.TS
 @test typeof(ts_yearly.coredata) == DataFrame
 @test DataFrames.nrow(ts_yearly.coredata) == 1
@@ -100,7 +100,7 @@ ts_yearly = apply(ts_daily_1, Dates.Year(100), first)
 @test typeof(ts_yearly.coredata) == DataFrame
 @test DataFrames.nrow(ts_yearly.coredata) == 1
 
-ts_yearly = apply(ts_daily_1, Dates.Year, Statistics.mean)
+ts_yearly = apply(ts_daily_1, Dates.Year(1), Statistics.mean)
 t = ts_daily_1[:, "data"]
 @test typeof(ts_yearly) == TSx.TS
 @test typeof(ts_yearly.coredata) == DataFrame
@@ -108,7 +108,7 @@ t = ts_daily_1[:, "data"]
 @test typeof(ts_yearly[:, "data_mean"]) == Vector{Float64}
 @test ts_yearly[1, "data_mean"] ≈ Statistics.mean(t)
 
-ts_yearly = apply(ts_daily_1, Dates.Year, sum)
+ts_yearly = apply(ts_daily_1, Dates.Year(1), sum)
 t = ts_daily_1[:, "data"]
 @test typeof(ts_yearly) == TSx.TS
 @test typeof(ts_yearly.coredata) == DataFrame
@@ -116,7 +116,7 @@ t = ts_daily_1[:, "data"]
 @test typeof(ts_yearly[:, "data_sum"]) == Vector{Float64}
 @test ts_yearly[1, "data_sum"] ≈ sum(t)
 
-ts_yearly = apply(ts_daily_1, Dates.Year, sum, last)
+ts_yearly = apply(ts_daily_1, Dates.Year(1), sum, last)
 t = ts_daily_1[:, "data"]
 @test typeof(ts_yearly) == TSx.TS
 @test typeof(ts_yearly.coredata) == DataFrame
@@ -126,12 +126,12 @@ t = ts_daily_1[:, "data"]
 @test ts_yearly["2007-12-26"][1,1] ≈ sum(t)
 
 # Daily -> Weekly
-ts_weekly = apply(ts_daily_1, Dates.Week, first)
+ts_weekly = apply(ts_daily_1, Dates.Week(1), first)
 @test typeof(ts_weekly) == TSx.TS
 @test typeof(ts_weekly.coredata) == DataFrame
 @test DataFrames.nrow(ts_weekly.coredata) == 52
 
-ts_weekly = apply(ts_daily_1, Dates.Week, last)
+ts_weekly = apply(ts_daily_1, Dates.Week(1), last)
 @test typeof(ts_weekly) == TSx.TS
 @test typeof(ts_weekly.coredata) == DataFrame
 @test DataFrames.nrow(ts_weekly.coredata) == 52
@@ -149,7 +149,7 @@ ts_weekly = apply(ts_daily_1, Dates.Week(2), first)
 ts_weekly = apply(ts_daily_1, Dates.Week(52), first)
 @test typeof(ts_weekly) == TSx.TS
 @test typeof(ts_weekly.coredata) == DataFrame
-@test_broken DataFrames.nrow(ts_weekly.coredata) == 1
+@test DataFrames.nrow(ts_weekly.coredata) == 1
 
 ts_weekly = apply(ts_daily_1, Dates.Week(100), first)
 @test typeof(ts_weekly) == TSx.TS
@@ -157,12 +157,12 @@ ts_weekly = apply(ts_daily_1, Dates.Week(100), first)
 @test DataFrames.nrow(ts_weekly.coredata) == 1
 
 # Daily -> Quarterly
-ts_quarterly = apply(ts_daily_1, Dates.Quarter, first)
+ts_quarterly = apply(ts_daily_1, Dates.Quarter(1), first)
 @test typeof(ts_quarterly) == TSx.TS
 @test typeof(ts_quarterly.coredata) == DataFrame
 @test DataFrames.nrow(ts_quarterly.coredata) == 4
 
-ts_quarterly = apply(ts_daily_1, Dates.Quarter, last)
+ts_quarterly = apply(ts_daily_1, Dates.Quarter(1), last)
 @test typeof(ts_quarterly) == TSx.TS
 @test typeof(ts_quarterly.coredata) == DataFrame
 @test DataFrames.nrow(ts_quarterly.coredata) == 4
@@ -187,7 +187,7 @@ ts_quarterly = apply(ts_daily_1, Dates.Quarter(100), first)
 @test typeof(ts_quarterly.coredata) == DataFrame
 @test DataFrames.nrow(ts_quarterly.coredata) == 1
 
-ts_quarterly = apply(ts_daily_1, Dates.Quarter, Statistics.mean)
+ts_quarterly = apply(ts_daily_1, Dates.Quarter(1), Statistics.mean)
 t = ts_daily_1[:, "data"]
 @test typeof(ts_quarterly) == TSx.TS
 @test typeof(ts_quarterly.coredata) == DataFrame
@@ -195,7 +195,7 @@ t = ts_daily_1[:, "data"]
 @test typeof(ts_quarterly[:, "data_mean"]) == Vector{Float64}
 @test ts_quarterly[1, "data_mean"] ≈ Statistics.mean(t[1:90])
 
-ts_quarterly = apply(ts_daily_1, Dates.Quarter, sum)
+ts_quarterly = apply(ts_daily_1, Dates.Quarter(1), sum)
 t = ts_daily_1[:, "data"]
 @test typeof(ts_quarterly) == TSx.TS
 @test typeof(ts_quarterly.coredata) == DataFrame
@@ -203,7 +203,7 @@ t = ts_daily_1[:, "data"]
 @test typeof(ts_quarterly[:, "data_sum"]) == Vector{Float64}
 @test ts_quarterly[1, "data_sum"] ≈ sum(t[1:90])
 
-ts_quarterly = apply(ts_daily_1, Dates.Quarter, sum, last)
+ts_quarterly = apply(ts_daily_1, Dates.Quarter(1), sum, last)
 t = ts_daily_1[:, "data"]
 @test typeof(ts_quarterly) == TSx.TS
 @test typeof(ts_quarterly.coredata) == DataFrame
@@ -214,12 +214,12 @@ t = ts_daily_1[:, "data"]
 
 
 # Daily -> Daily
-ts_test_daily = apply(ts_daily_1, Dates.Day, first)
+ts_test_daily = apply(ts_daily_1, Dates.Day(1), first)
 @test typeof(ts_test_daily) == TSx.TS
 @test typeof(ts_test_daily.coredata) == DataFrame
 @test DataFrames.nrow(ts_test_daily.coredata) == 360
 
-ts_test_daily = apply(ts_daily_1, Dates.Day, last)
+ts_test_daily = apply(ts_daily_1, Dates.Day(1), last)
 @test typeof(ts_test_daily) == TSx.TS
 @test typeof(ts_test_daily.coredata) == DataFrame
 @test DataFrames.nrow(ts_test_daily.coredata) == 360
@@ -237,17 +237,17 @@ ts_test_daily = apply(ts_daily_1, Dates.Day(2), first)
 ts_test_daily = apply(ts_daily_1, Dates.Day(3), first)
 @test typeof(ts_test_daily) == TSx.TS
 @test typeof(ts_test_daily.coredata) == DataFrame
-@test DataFrames.nrow(ts_test_daily.coredata) == 121
+@test DataFrames.nrow(ts_test_daily.coredata) == 120
 
 ts_test_daily = apply(ts_daily_1, Dates.Day(180), first)
 @test typeof(ts_test_daily) == TSx.TS
 @test typeof(ts_test_daily.coredata) == DataFrame
-@test_broken DataFrames.nrow(ts_test_daily.coredata) == 2
+@test DataFrames.nrow(ts_test_daily.coredata) == 2
 
 ts_test_daily = apply(ts_daily_1, Dates.Day(360), first)
 @test typeof(ts_test_daily) == TSx.TS
 @test typeof(ts_test_daily.coredata) == DataFrame
-@test_broken DataFrames.nrow(ts_test_daily.coredata) == 1
+@test DataFrames.nrow(ts_test_daily.coredata) == 1
 
 ts_test_daily = apply(ts_daily_1, Dates.Day(1000), first)
 @test typeof(ts_test_daily) == TSx.TS
@@ -256,12 +256,12 @@ ts_test_daily = apply(ts_daily_1, Dates.Day(1000), first)
 
 
 # Secondly -> Yearly
-ts_yearly = apply(ts_intraday_2, Dates.Year, first)
+ts_yearly = apply(ts_intraday_2, Dates.Year(1), first)
 @test typeof(ts_yearly) == TSx.TS
 @test typeof(ts_yearly.coredata) == DataFrame
 @test DataFrames.nrow(ts_yearly.coredata) == 1
 
-ts_yearly = apply(ts_intraday_2, Dates.Year, last)
+ts_yearly = apply(ts_intraday_2, Dates.Year(1), last)
 @test typeof(ts_yearly) == TSx.TS
 @test typeof(ts_yearly.coredata) == DataFrame
 @test DataFrames.nrow(ts_yearly.coredata) == 1
@@ -278,12 +278,12 @@ ts_yearly = apply(ts_intraday_2, Dates.Year(100), first)
 
 
 # Secondly -> Monthly
-ts_monthly = apply(ts_intraday_2, Dates.Month, first)
+ts_monthly = apply(ts_intraday_2, Dates.Month(1), first)
 @test typeof(ts_monthly) == TSx.TS
 @test typeof(ts_monthly.coredata) == DataFrame
 @test DataFrames.nrow(ts_monthly.coredata) == 1
 
-ts_monthly = apply(ts_intraday_2, Dates.Month, last)
+ts_monthly = apply(ts_intraday_2, Dates.Month(1), last)
 @test typeof(ts_monthly) == TSx.TS
 @test typeof(ts_monthly.coredata) == DataFrame
 @test DataFrames.nrow(ts_monthly.coredata) == 1
@@ -300,12 +300,12 @@ ts_monthly = apply(ts_intraday_2, Dates.Month(100), first)
 
 
 # Secondly -> Weekly
-ts_weekly = apply(ts_intraday_2, Dates.Week, first)
+ts_weekly = apply(ts_intraday_2, Dates.Week(1), first)
 @test typeof(ts_weekly) == TSx.TS
 @test typeof(ts_weekly.coredata) == DataFrame
 @test DataFrames.nrow(ts_weekly.coredata) == 1
 
-ts_weekly = apply(ts_intraday_2, Dates.Week, last)
+ts_weekly = apply(ts_intraday_2, Dates.Week(1), last)
 @test typeof(ts_weekly) == TSx.TS
 @test typeof(ts_weekly.coredata) == DataFrame
 @test DataFrames.nrow(ts_weekly.coredata) == 1
@@ -322,12 +322,12 @@ ts_weekly = apply(ts_intraday_2, Dates.Week(100), first)
 
 
 # Secondly -> Quarterly
-ts_quarterly = apply(ts_intraday_2, Dates.Quarter, first)
+ts_quarterly = apply(ts_intraday_2, Dates.Quarter(1), first)
 @test typeof(ts_quarterly) == TSx.TS
 @test typeof(ts_quarterly.coredata) == DataFrame
 @test DataFrames.nrow(ts_quarterly.coredata) == 1
 
-ts_quarterly = apply(ts_intraday_2, Dates.Quarter, last)
+ts_quarterly = apply(ts_intraday_2, Dates.Quarter(1), last)
 @test typeof(ts_quarterly) == TSx.TS
 @test typeof(ts_quarterly.coredata) == DataFrame
 @test DataFrames.nrow(ts_quarterly.coredata) == 1
@@ -344,12 +344,12 @@ ts_quarterly = apply(ts_intraday_2, Dates.Quarter(100), first)
 
 
 # Secondly -> Daily
-ts_test_daily = apply(ts_intraday_2, Dates.Day, first)
+ts_test_daily = apply(ts_intraday_2, Dates.Day(1), first)
 @test typeof(ts_test_daily) == TSx.TS
 @test typeof(ts_test_daily.coredata) == DataFrame
 @test DataFrames.nrow(ts_test_daily.coredata) == 1
 
-ts_test_daily = apply(ts_intraday_2, Dates.Day, last)
+ts_test_daily = apply(ts_intraday_2, Dates.Day(1), last)
 @test typeof(ts_test_daily) == TSx.TS
 @test typeof(ts_test_daily.coredata) == DataFrame
 @test DataFrames.nrow(ts_test_daily.coredata) == 1
@@ -366,12 +366,12 @@ ts_test_daily = apply(ts_intraday_2, Dates.Day(100), first)
 
 
 # Secondly -> Hourly
-ts_hourly = apply(ts_intraday_2, Dates.Hour, first)
+ts_hourly = apply(ts_intraday_2, Dates.Hour(1), first)
 @test typeof(ts_hourly) == TSx.TS
 @test typeof(ts_hourly.coredata) == DataFrame
 @test DataFrames.nrow(ts_hourly.coredata) == 24
 
-ts_hourly = apply(ts_intraday_2, Dates.Hour, last)
+ts_hourly = apply(ts_intraday_2, Dates.Hour(1), last)
 @test typeof(ts_hourly) == TSx.TS
 @test typeof(ts_hourly.coredata) == DataFrame
 @test DataFrames.nrow(ts_hourly.coredata) == 24
@@ -406,7 +406,7 @@ ts_hourly = apply(ts_intraday_2, Dates.Hour(100), first)
 @test typeof(ts_hourly.coredata) == DataFrame
 @test DataFrames.nrow(ts_hourly.coredata) == 1
 
-ts_hourly = apply(ts_intraday_2, Dates.Hour, Statistics.mean)
+ts_hourly = apply(ts_intraday_2, Dates.Hour(1), Statistics.mean)
 t = ts_intraday_2[:, "data"]
 @test typeof(ts_hourly) == TSx.TS
 @test typeof(ts_hourly.coredata) == DataFrame
@@ -414,7 +414,7 @@ t = ts_intraday_2[:, "data"]
 @test typeof(ts_hourly[:, "data_mean"]) == Vector{Float64}
 @test ts_hourly[1, "data_mean"] ≈ Statistics.mean(t[1:3600])
 
-ts_hourly = apply(ts_intraday_2, Dates.Hour, sum)
+ts_hourly = apply(ts_intraday_2, Dates.Hour(1), sum)
 t = ts_intraday_2[:, "data"]
 @test typeof(ts_hourly) == TSx.TS
 @test typeof(ts_hourly.coredata) == DataFrame
@@ -422,7 +422,7 @@ t = ts_intraday_2[:, "data"]
 @test typeof(ts_hourly[:, "data_sum"]) == Vector{Float64}
 @test ts_hourly[1, "data_sum"] ≈ sum(t[1:3600])
 
-ts_hourly = apply(ts_intraday_2, Dates.Hour, sum, last)
+ts_hourly = apply(ts_intraday_2, Dates.Hour(1), sum, last)
 t = ts_intraday_2[:, "data"]
 @test typeof(ts_hourly) == TSx.TS
 @test typeof(ts_hourly.coredata) == DataFrame
@@ -441,12 +441,12 @@ t = ts_intraday_2[:, "data"]
 @test ts_hourly[DateTime(2000, 1, 1, 1, 59, 59)][1,1] ≈ sum(t[1:7200])
 
 # Secondly -> Minutely
-ts_minutely = apply(ts_intraday_2, Dates.Minute, first)
+ts_minutely = apply(ts_intraday_2, Dates.Minute(1), first)
 @test typeof(ts_minutely) == TSx.TS
 @test typeof(ts_minutely.coredata) == DataFrame
 @test DataFrames.nrow(ts_minutely.coredata) == 1440
 
-ts_minutely = apply(ts_intraday_2, Dates.Minute, last)
+ts_minutely = apply(ts_intraday_2, Dates.Minute(1), last)
 @test typeof(ts_minutely) == TSx.TS
 @test typeof(ts_minutely.coredata) == DataFrame
 @test DataFrames.nrow(ts_minutely.coredata) == 1440
@@ -476,7 +476,7 @@ ts_minutely = apply(ts_intraday_2, Dates.Minute(100000), first)
 @test typeof(ts_minutely.coredata) == DataFrame
 @test DataFrames.nrow(ts_minutely.coredata) == 1
 
-ts_minutely = apply(ts_intraday_2, Dates.Minute, Statistics.mean)
+ts_minutely = apply(ts_intraday_2, Dates.Minute(1), Statistics.mean)
 t = ts_intraday_2[:, "data"]
 @test typeof(ts_minutely) == TSx.TS
 @test typeof(ts_minutely.coredata) == DataFrame
@@ -484,7 +484,7 @@ t = ts_intraday_2[:, "data"]
 @test typeof(ts_minutely[:, "data_mean"]) == Vector{Float64}
 @test ts_minutely[1, "data_mean"] ≈ Statistics.mean(t[1:60])
 
-ts_minutely = apply(ts_intraday_2, Dates.Minute, sum)
+ts_minutely = apply(ts_intraday_2, Dates.Minute(1), sum)
 t = ts_intraday_2[:, "data"]
 @test typeof(ts_minutely) == TSx.TS
 @test typeof(ts_minutely.coredata) == DataFrame
@@ -492,7 +492,7 @@ t = ts_intraday_2[:, "data"]
 @test typeof(ts_minutely[:, "data_sum"]) == Vector{Float64}
 @test ts_minutely[1, "data_sum"] ≈ sum(t[1:60])
 
-ts_minutely = apply(ts_intraday_2, Dates.Minute, sum, last)
+ts_minutely = apply(ts_intraday_2, Dates.Minute(1), sum, last)
 t = ts_intraday_2[:, "data"]
 @test typeof(ts_minutely) == TSx.TS
 @test typeof(ts_minutely.coredata) == DataFrame
@@ -512,12 +512,12 @@ t = ts_intraday_2[:, "data"]
 
 
 # Secondly -> Secondly
-ts_secondly = apply(ts_intraday_2, Dates.Second, first)
+ts_secondly = apply(ts_intraday_2, Dates.Second(1), first)
 @test typeof(ts_secondly) == TSx.TS
 @test typeof(ts_secondly.coredata) == DataFrame
 @test DataFrames.nrow(ts_secondly.coredata) == 86400
 
-ts_secondly = apply(ts_intraday_2, Dates.Second, last)
+ts_secondly = apply(ts_intraday_2, Dates.Second(1), last)
 @test typeof(ts_secondly) == TSx.TS
 @test typeof(ts_secondly.coredata) == DataFrame
 @test DataFrames.nrow(ts_secondly.coredata) == 86400
@@ -548,7 +548,7 @@ ts_secondly = apply(ts_intraday_2, Dates.Second(100000), first)
 @test typeof(ts_secondly.coredata) == DataFrame
 @test DataFrames.nrow(ts_secondly.coredata) == 1
 
-ts_secondly = apply(ts_intraday_2, Dates.Second, Statistics.mean)
+ts_secondly = apply(ts_intraday_2, Dates.Second(1), Statistics.mean)
 t = ts_intraday_2[:, "data"]
 @test typeof(ts_secondly) == TSx.TS
 @test typeof(ts_secondly.coredata) == DataFrame
@@ -556,7 +556,7 @@ t = ts_intraday_2[:, "data"]
 @test typeof(ts_secondly[:, "data_mean"]) == Vector{Float64}
 @test ts_secondly[1, "data_mean"] ≈ Statistics.mean(t[1])
 
-ts_secondly = apply(ts_intraday_2, Dates.Second, sum)
+ts_secondly = apply(ts_intraday_2, Dates.Second(1), sum)
 t = ts_intraday_2[:, "data"]
 @test typeof(ts_secondly) == TSx.TS
 @test typeof(ts_secondly.coredata) == DataFrame
@@ -564,7 +564,7 @@ t = ts_intraday_2[:, "data"]
 @test typeof(ts_secondly[:, "data_sum"]) == Vector{Float64}
 @test ts_secondly[1, "data_sum"] ≈ sum(t[1])
 
-ts_secondly = apply(ts_intraday_2, Dates.Second, sum, last)
+ts_secondly = apply(ts_intraday_2, Dates.Second(1), sum, last)
 t = ts_intraday_2[:, "data"]
 @test typeof(ts_secondly) == TSx.TS
 @test typeof(ts_secondly.coredata) == DataFrame
