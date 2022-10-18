@@ -433,28 +433,35 @@ function Base.getindex(ts::TS, y::Year, m::Month)
     TS(sdf)
 end
 
-function Base.getindex(ts::TS, y::Year, m::Month, d::Day)
-    sdf = filter(:Index => x -> (Year(x), Month(x), Day(x)) == (y, m, d), ts.coredata)
-    TS(sdf)
-end
-
 function Base.getindex(ts::TS, y::Year, m::Month, w::Week)
     sdf = filter(:Index => x -> (Year(x), Month(x), Week(x)) == (y, m, w), ts.coredata)
     TS(sdf)
 end
 
+function Base.getindex(ts::TS, y::Year, m::Month, d::Day)
+    sdf = filter(:Index => x -> (Year(x), Month(x), Day(x)) == (y, m, d), ts.coredata)
+    TS(sdf)
+end
+
 function Base.getindex(ts::TS, y::Year, m::Month, d::Day, h::Hour)
-    sdf = filter(:Index => x -> (Year(x), Month(x), Day(x), Hour(x)) == (y, m, w, h), ts.coredata)
+    sdf = filter(:Index => x -> (Year(x), Month(x), Day(x), Hour(x)) == (y, m, d, h), ts.coredata)
     TS(sdf)
 end
 
 function Base.getindex(ts::TS, y::Year, m::Month, d::Day, h::Hour, min::Minute)
-    sdf = filter(:Index => x -> (Year(x), Month(x), Day(x), Hour(x), Minute(x)) == (y, m, w, h, m), ts.coredata)
+    sdf = filter(:Index => x -> (Year(x), Month(x), Day(x), Hour(x), Minute(x)) == (y, m, d, h, min), ts.coredata)
     TS(sdf)
 end
 
 function Base.getindex(ts::TS, y::Year, m::Month, d::Day, h::Hour, min::Minute, sec::Second)
-    sdf = filter(:Index => x -> (Year(x), Month(x), Day(x), Hour(x), Minute(x), Second(x)) == (y, m, w, h, min, sec), ts.coredata)
+    sdf = filter(:Index => x -> (Year(x), Month(x), Day(x), Hour(x), Minute(x), Second(x)) == (y, m, d, h, min, sec), ts.coredata)
+    TS(sdf)
+end
+
+function Base.getindex(ts::TS, y::Year, m::Month, d::Day, h::Hour, min::Minute, sec::Second, ms::Millisecond)
+    sdf = filter(:Index =>
+        x -> (Year(x), Month(x), Day(x), Hour(x), Minute(x), Second(x), Millisecond(x)) ==
+        (y, m, d, h, min, sec, ms), ts.coredata)
     TS(sdf)
 end
 

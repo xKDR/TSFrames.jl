@@ -1,5 +1,7 @@
 ts = TS(df_timetype_index)
 ts_long = TS(df_timetype_index_long_columns)
+datetimes = collect(DateTime(2007, 1, 2):Hour(1):DateTime(2007, 1, 10));
+tsdatetimes = TS(random(length(datetimes)), datetimes);
 
 function test_types(obj::TS)
     @test typeof(obj.coredata) == DataFrame
@@ -360,3 +362,38 @@ ind = Date(2007, 1, 1):Day(1):Date(2007, 2, 1)
 t = ts[ind]
 test_types(ts[ind])
 @test t.coredata[!, :Index] == collect(ind)
+
+# getindex(ts::TS, y::Year, m::Month, w::Week)
+@test index(getindex(ts_daily_1, Year(2007), Month(1), Week(6))) == []
+@test index(getindex(ts_daily_1, Year(2007), Month(1), Week(0))) == []
+@test index(getindex(ts_daily_1, Year(2007), Month(1), Week(-1))) == []
+@test index(getindex(ts_daily_1, Year(2007), Month(1), Week(2))) == [
+    Date(2007, 01, 08), Date(2007, 01, 09), Date(2007, 01, 10),
+    Date(2007, 01, 11), Date(2007, 01, 12), Date(2007, 01, 13), Date(2007, 01, 14) ]
+
+# getindex(ts::TS, y::Year, m::Month, d::Day, h::Hour)
+@test index(getindex(tsdatetimes, Year(2007), Month(1), Day(2), Hour(25))) == []
+@test index(getindex(tsdatetimes, Year(2007), Month(1), Day(2), Hour(-1))) == []
+@test index(getindex(tsdatetimes, Year(2007), Month(1), Day(2), Hour(3))) ==
+    [DateTime(2007, 01, 02, 03, 00, 00)]
+
+# getindex(ts::TS, y::Year, m::Month, d::Day, h::Hour, min::Minute)
+@test index(getindex(tsdatetimes, Year(2007), Month(1), Day(2), Hour(1), Minute(-1))) == []
+@test index(getindex(tsdatetimes, Year(2007), Month(1), Day(2), Hour(-1), Minute(0))) == []
+@test index(getindex(tsdatetimes, Year(2007), Month(1), Day(2), Hour(-1), Minute(61))) == []
+@test index(getindex(tsdatetimes, Year(2007), Month(1), Day(2), Hour(0), Minute(0))) ==
+    [DateTime(2007, 01, 02, 0, 0, 0)]
+
+# getindex(ts::TS, y::Year, m::Month, d::Day, h::Hour, min::Minute, sec::Second)
+@test index(getindex(tsdatetimes, Year(2007), Month(1), Day(2), Hour(1), Minute(0), Second(-1))) == []
+@test index(getindex(tsdatetimes, Year(2007), Month(1), Day(2), Hour(-1), Minute(0), Second(61))) == []
+@test index(getindex(tsdatetimes, Year(2007), Month(1), Day(2), Hour(0), Minute(0), Second(0))) ==
+    [DateTime(2007, 01, 02, 0, 0, 0)]
+
+# getindex(ts::TS, y::Year, m::Month, d::Day, h::Hour, min::Minute, sec::Second, ms::Millisecond)
+@test index(getindex(tsdatetimes, Year(2007), Month(1), Day(2),
+                     Hour(1), Minute(0), Second(0), Millisecond(-1))) == []
+@test index(getindex(tsdatetimes, Year(2007), Month(1), Day(2),
+                     Hour(-1), Minute(0), Second(0), Millisecond(1001))) == []
+@test index(getindex(tsdatetimes, Year(2007), Month(1), Day(2),
+                     Hour(0), Minute(0), Second(0), Millisecond(0))) == [DateTime(2007, 01, 02, 0, 0, 0)]
