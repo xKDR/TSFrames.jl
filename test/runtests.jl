@@ -4,6 +4,7 @@ using Random
 using StatsBase
 using Statistics
 using Test
+using Tables
 using TSx
 
 include("dataobjects.jl")
@@ -35,4 +36,8 @@ end
 @testset "getproperty" begin
     include("getproperty.jl")
 
+end
+
+@testset "Tables.jl" begin
+    include("tables.jl")
 end

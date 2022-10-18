@@ -1,6 +1,6 @@
 module TSx
 
-using DataFrames, Dates, ShiftedArrays, RecipesBase, RollingFunctions
+using DataFrames, Dates, ShiftedArrays, RecipesBase, RollingFunctions, Tables
 
 import Base.convert
 import Base.diff
@@ -82,5 +82,6 @@ include("rollapply.jl")
 include("subset.jl")
 include("vcat.jl")
 include("broadcasting.jl")
+include("tables.jl")
 
 end                             # END module TSx
