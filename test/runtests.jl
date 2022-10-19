@@ -61,6 +61,10 @@ end
     include("subset.jl")
 end
 
+@testset "matrix" begin
+    include("matrix.jl")
+end
+
 @testset "Tables.jl" begin
     include("tables.jl")
 end
