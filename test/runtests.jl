@@ -53,6 +53,10 @@ end
     include("lead.jl")
 end
 
+@testset "pctchange" begin
+    include("pctchange.jl")
+end
+
 @testset "Tables.jl" begin
     include("tables.jl")
 end
