@@ -57,6 +57,10 @@ end
     include("pctchange.jl")
 end
 
+@testset "subset" begin
+    include("subset.jl")
+end
+
 @testset "Tables.jl" begin
     include("tables.jl")
 end
