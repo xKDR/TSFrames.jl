@@ -65,6 +65,10 @@ end
     include("matrix.jl")
 end
 
+@testset "vcat" begin
+    include("vcat.jl")
+end
+
 @testset "Tables.jl" begin
     include("tables.jl")
 end
