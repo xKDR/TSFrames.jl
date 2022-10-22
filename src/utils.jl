@@ -420,8 +420,8 @@ isregular(ts::TS, unit::T) where {T<:Dates.Period}
 julia> using Random;
 julia> random(x) = rand(MersenneTwister(123), x);
 
-julia> dates=Vector{TimeType}(collect(Date(2017,1,1):Day(1):Date(2017,1,10)))
-10-element Vector{TimeType}:
+julia> dates=collect(Date(2017,1,1):Day(1):Date(2017,1,10))
+10-element Vector{Date}:
  2017-01-01
  2017-01-02
  2017-01-03
@@ -443,7 +443,7 @@ julia> isregular(dates, Day(2)) # check if regular with a time difference of 2 d
 false
 
 julia> ts = TS(random(10), dates)
-10×1 TS with TimeType Index
+10×1 TS with Date Index
  Index       x1        
  TimeType    Float64   
 ───────────────────────
@@ -470,7 +470,7 @@ false
 ```
 """
 
-function isregular(timestamps::V, unit::T) where {V<:AbstractVector{TimeType}, T<:Dates.Period}
+function isregular(timestamps::AbstractVector{V}, unit::T) where {V<:TimeType, T<:Dates.Period}
     s = size(timestamps, 1)
 
     if s == 1
@@ -486,7 +486,7 @@ function isregular(timestamps::V, unit::T) where {V<:AbstractVector{TimeType}, T
     return true
 end
 
-function isregular(timestamps::T) where {T<:AbstractVector{TimeType}}
+function isregular(timestamps::AbstractVector{T}) where {T<:TimeType}
     s = size(timestamps, 1)
     
     if s == 1

@@ -11,9 +11,9 @@ ts.coredata.Index = sample(index_integer, length(data_vector), replace=true);
 function test_isregular()
     random(x) = rand(MersenneTwister(123), x)
 
-    dates_day = Vector{TimeType}(collect(Date(2017,1,1):Day(1):Date(2017,1,10)))
-    dates_month = Vector{TimeType}(collect(Date(2017,1,1):Month(1):Date(2017,10,1)))
-    dates_rep = Vector{TimeType}(fill(Date(2017,1,1), 10))
+    dates_day = collect(Date(2017,1,1):Day(1):Date(2017,1,10))
+    dates_month = collect(Date(2017,1,1):Month(1):Date(2017,10,1))
+    dates_rep = fill(Date(2017,1,1), 10)
     dates_rand = copy(dates_day)
     dates_rand[2] = Date(2017,10,9)
     dates_rand[4] = Date(2017, 7,27)
