@@ -69,6 +69,10 @@ end
     include("vcat.jl")
 end
 
+@testset "join" begin
+    include("join.jl")
+end
+
 @testset "Tables.jl" begin
     include("tables.jl")
 end
