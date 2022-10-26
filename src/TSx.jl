@@ -61,7 +61,9 @@ export TS,
     summary,
     tail,
     rollapply,
-    vcat
+    vcat,
+    DataFrame,
+    Date
 
 include("TS.jl")
 include("utils.jl")
