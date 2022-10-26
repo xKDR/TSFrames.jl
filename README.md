@@ -180,7 +180,7 @@ julia> using Plots
 julia> plot(ts_weekly[:, [:Close_last]], size = (600, 400))
 ```
 
-![](./docs/src/assets/ts-plot.svg)
+![](./ts-plot.svg)
 
 ## Documentation
 
