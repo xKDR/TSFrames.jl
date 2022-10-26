@@ -68,7 +68,7 @@ julia> rollapply(Statistics.mean, ts, 1, 5)
 """
 function rollapply(fun::Function, ts::TS, column::Any, windowsize::Int) # TODO: multiple columns
     if windowsize < 1
-        error("windowsize must be greater than or equal to 1")
+        throw(ArgumentError("windowsize must be greater than or equal to 1"))
     end
     col = Int(1)
     if typeof(column) <: Int

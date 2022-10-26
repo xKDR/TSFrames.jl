@@ -49,6 +49,34 @@ end
     include("lag.jl")
 end
 
+@testset "lead" begin
+    include("lead.jl")
+end
+
+@testset "pctchange" begin
+    include("pctchange.jl")
+end
+
+@testset "subset" begin
+    include("subset.jl")
+end
+
+@testset "matrix" begin
+    include("matrix.jl")
+end
+
+@testset "vcat" begin
+    include("vcat.jl")
+end
+
+@testset "join" begin
+    include("join.jl")
+end
+
 @testset "Tables.jl" begin
     include("tables.jl")
+end
+
+@testset "rollapply()" begin
+    include("rollapply.jl")
 end
