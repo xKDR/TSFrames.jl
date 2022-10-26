@@ -1,5 +1,8 @@
 ts = TS(integer_data_vector, index_timetype)
 
+@test_throws ArgumentError pctchange(ts, 0)
+@test_throws ArgumentError pctchange(ts, -1)
+
 # when period is something less than DATA_SIZE
 for periods in [1, Int(floor(DATA_SIZE/2))]
     pctchange_ts = pctchange(ts, periods)

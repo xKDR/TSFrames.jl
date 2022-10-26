@@ -80,7 +80,7 @@ julia> pctchange(ts, 3)
 # Pctchange
 function pctchange(ts::TS, periods::Int = 1)
     if periods <= 0
-        error("periods must be a positive int")
+        throw(ArgumentError("periods must be a positive int"))
     end
     ddf = (ts.coredata[:, Not(:Index)] ./ TSx.lag(ts, periods).coredata[:, Not(:Index)]) .- 1
     insertcols!(ddf, 1, "Index" => ts.coredata[:, :Index])
