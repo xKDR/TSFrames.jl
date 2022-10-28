@@ -324,12 +324,9 @@ test_types(t)
 
 # getindex(ts, i::UnitRange, j::Int)
 i = 1:10; j = 1
-t = ts[i, [j]]
-test_types(t)
-@test DataFrames.nrow(t.coredata) == length(i)
-@test DataFrames.ncol(t.coredata) == length(j)+1 # Index + Ncols
-@test t.coredata[!, :Index] == df_timetype_index[i, :Index]
-@test t.coredata[!, :data] == df_timetype_index[i, :data]
+t = ts[i, j]
+@test typeof(t) <: Vector
+@test t == data_vector[i]
 
 # getindex(ts::TS, i::Int, j::UnitRange)
 i = 2; j = 1:1
