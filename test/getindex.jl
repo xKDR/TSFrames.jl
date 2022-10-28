@@ -401,3 +401,18 @@ test_types(ts[ind])
                      Hour(-1), Minute(0), Second(0), Millisecond(1001))) == []
 @test index(getindex(tsdatetimes, Year(2007), Month(1), Day(2),
                      Hour(0), Minute(0), Second(0), Millisecond(0))) == [DateTime(2007, 01, 02, 0, 0, 0)]
+
+# getindex(ts::TS, y::Year, q::Quarter)
+y = Year(2007); q = Quarter(1)
+dates = Date(2007, 1, 1):Day(1):Date(2007, 3, 31)
+t = ts[y, q]
+test_types(t)
+@test t[:, :Index] == dates
+@test t[:, :data] == data_vector[1:length(dates)]
+
+# getindex(ts::TS, y::Year, m::Month, d::Day)
+y = Year(2007); m = Month(1); d = Day(1)
+t = ts[y, m, d]
+test_types(t)
+@test t[:, :Index] == [Date(2007, 1, 1)]
+@test t[:, :data] == data_vector[1, :]
