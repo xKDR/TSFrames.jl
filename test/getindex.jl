@@ -416,3 +416,9 @@ t = ts[y, m, d]
 test_types(t)
 @test t[:, :Index] == [Date(2007, 1, 1)]
 @test t[:, :data] == data_vector[1, :]
+
+# getindex(ts::TS, ::Colon, j::Int)
+j = 10
+t = ts_long[:, j]
+@test typeof(t) <: Vector
+@test t == data_array_long[:, j]
