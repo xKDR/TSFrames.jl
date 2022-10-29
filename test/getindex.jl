@@ -421,12 +421,29 @@ test_types(t)
 @test t[:, :Index] == dates
 @test t[:, :data] == data_vector[start_index:end_index]
 
+y = Year(2007); q = Quarter(5)
+t = ts[y, q]
+test_types(t)
+@test TSx.nrow(t) == 0
+
 # getindex(ts::TS, y::Year, m::Month, d::Day)
 y = Year(2007); m = Month(1); d = Day(1)
 t = ts[y, m, d]
 test_types(t)
 @test t[:, :Index] == [Date(2007, 1, 1)]
 @test t[:, :data] == data_vector[1, :]
+
+y = Year(2007); m = Month(12); d = Day(1)
+t = ts[y, m, d]
+start_index = (Date(2007, 12, 1) - Date(2007, 1, 1)).value + 1
+test_types(t)
+@test t[:, :Index] == [Date(2007, 12, 1)]
+@test t[:, :data] == data_vector[start_index, :]
+
+y = Year(2007); m = Month(13); d = Day(1)
+t = ts[y, m, d]
+test_types(t)
+@test TSx.nrow(t) == 0
 
 # getindex(ts::TS, ::Colon, j::Int)
 j = 10
