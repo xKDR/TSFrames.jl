@@ -403,12 +403,23 @@ test_types(ts[ind])
                      Hour(0), Minute(0), Second(0), Millisecond(0))) == [DateTime(2007, 01, 02, 0, 0, 0)]
 
 # getindex(ts::TS, y::Year, q::Quarter)
-y = Year(2007); q = Quarter(1)
-dates = Date(2007, 1, 1):Day(1):Date(2007, 3, 31)
+y = Year(2007); q = Quarter(2)
+dates = Date(2007, 4, 1):Day(1):Date(2007, 6, 30)
+start_index = (Date(2007, 4, 1) - Date(2007, 1, 1)).value + 1
+end_index = start_index + length(dates) - 1
 t = ts[y, q]
 test_types(t)
 @test t[:, :Index] == dates
-@test t[:, :data] == data_vector[1:length(dates)]
+@test t[:, :data] == data_vector[start_index:end_index]
+
+y = Year(2007); q = Quarter(4)
+dates = Date(2007, 10, 1):Day(1):Date(2007, 12, 31)
+start_index = (Date(2007, 10, 1) - Date(2007, 1, 1)).value + 1
+end_index = start_index + length(dates) - 1
+t = ts[y, q]
+test_types(t)
+@test t[:, :Index] == dates
+@test t[:, :data] == data_vector[start_index:end_index]
 
 # getindex(ts::TS, y::Year, m::Month, d::Day)
 y = Year(2007); m = Month(1); d = Day(1)
