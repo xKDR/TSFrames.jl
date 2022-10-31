@@ -299,6 +299,7 @@ julia> ts = TS([random(10) random(10)], dates, colnames=[:A, :B]) # columns are 
 struct TS
 
     coredata :: DataFrame
+    keysindex :: Dict{T, V} where {T<:Union{Date, Int}, V<:Int}
 
     # From DataFrame, index number/name/symbol
     function TS(coredata::DataFrame, index::Union{String, Symbol, Int})
@@ -316,7 +317,8 @@ struct TS
         cd = sorted_cd[:, Not(index)]
         insertcols!(cd, 1, :Index => index_vals, after=false, copycols=true)
 
-        new(cd)
+        k = Dict(zip(index_vals, 1:length(index_vals)))
+        new(cd, k)
     end
 
     # From DataFrame, external index
@@ -326,7 +328,8 @@ struct TS
         cd = copy(coredata)
         insertcols!(cd, 1, :Index => sorted_index, after=false, copycols=true)
 
-        new(cd)
+        k = Dict(zip(sorted_index, 1:length(sorted_index)))
+        new(cd, k)
     end
 
 end
