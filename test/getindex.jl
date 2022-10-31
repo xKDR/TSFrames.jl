@@ -91,43 +91,43 @@ test_types(t)
 
 # getindex(ts::TS, dt::T, j::AbstractVector{Int}) where {T<:TimeType}
 i = 1; dt = ts.coredata[:, :Index][i]; n = 10; j = collect(1:n)
-t = ts_long[i, j]
+t = ts_long[dt, j]
 test_types(t)
 @test t.coredata == DataFrame(df_timetype_index_long_columns[i, collect(1:n+1)])
 
 i = 10; dt = ts.coredata[:, :Index][i]; n = 1; j = collect(1:n)
-t = ts_long[i, j]
+t = ts_long[dt, j]
 test_types(t)
 @test t.coredata == DataFrame(df_timetype_index_long_columns[i, collect(1:n+1)])
 
 i = 100; dt = ts.coredata[:, :Index][i]; n = 100; j = collect(1:n)
-t = ts_long[i, j]
+t = ts_long[dt, j]
 test_types(t)
 @test t.coredata == DataFrame(df_timetype_index_long_columns[i, collect(1:n+1)])
 
 i = 100; dt = ts.coredata[:, :Index][i]; n = 100; j = [1,100]
-t = ts_long[i, j]
+t = ts_long[dt, j]
 test_types(t)
 @test t.coredata == DataFrame(df_timetype_index_long_columns[i, [1,2,101]])
 
 # getindex(ts::TS, dt::D, j::AbstractVector{T}) where {D<:TimeType, T<:Union{String, Symbol}}
 i = 1; dt = ts.coredata[:, :Index][i]; n = 10; j = ["data$x" for x in 1:n]
-t = ts_long[i, j]
+t = ts_long[dt, j]
 test_types(t)
 @test t.coredata == DataFrame(df_timetype_index_long_columns[i, Cols(:Index, j)])
 
 i = 10; dt = ts.coredata[:, :Index][i]; n = 1; j = ["data$x" for x in 1:n]
-t = ts_long[i, j]
+t = ts_long[dt, j]
 test_types(t)
 @test t.coredata == DataFrame(df_timetype_index_long_columns[i, Cols(:Index, j)])
 
 i = 100; dt = ts.coredata[:, :Index][i]; n = 100; j = ["data$x" for x in 1:n]
-t = ts_long[i, j]
+t = ts_long[dt, j]
 test_types(t)
 @test t.coredata == DataFrame(df_timetype_index_long_columns[i, Cols(:Index, j)])
 
 i = 100; dt = ts.coredata[:, :Index][i]; n = 100; j = ["data1", "data100"]
-t = ts_long[i, j]
+t = ts_long[dt, j]
 test_types(t)
 @test t.coredata == DataFrame(df_timetype_index_long_columns[i, Cols(:Index, j)])
 
@@ -217,6 +217,10 @@ t = ts[i, j]
 @test t == df_timetype_index[i, "data"]
 
 # getindex(ts::TS, dt::AbstractVector{T}, j::Int) where {T<:TimeType}
+dt = Date(2007, 1, 1):Day(1):Date(2007, 1, 15)
+t = ts_long[dt, 10]
+@test typeof(t) <: Vector
+@test t == data_array_long[:, 10][1:15]
 
 # getindex(ts::TS, dt::AbstractVector{T}, j::Union{String, Symbol}) where {T<:TimeType}
 
@@ -264,10 +268,13 @@ t = ts_long[i, j]
 @test typeof(t.coredata) == typeof(df_timetype_index_long_columns[i, j])
 @test t.coredata == df_timetype_index_long_columns[i, j]
 
-
-
-
-
+# getindex(ts::TS, dt::AbstractVector{D}, j::AbstractVector{T}) where {D<:TimeType, T<:Union{String, Symbol}}
+dt = Date(2007, 1, 1):Day(1):Date(2007, 1, 15); j = 1:5
+t = ts_long[dt, j]
+test_types(t)
+for i in j
+    @test t[:, i] == data_array_long[:, i][1:length(dt)]
+end
 
 # Row Indexing
 
@@ -317,12 +324,9 @@ test_types(t)
 
 # getindex(ts, i::UnitRange, j::Int)
 i = 1:10; j = 1
-t = ts[i, [j]]
-test_types(t)
-@test DataFrames.nrow(t.coredata) == length(i)
-@test DataFrames.ncol(t.coredata) == length(j)+1 # Index + Ncols
-@test t.coredata[!, :Index] == df_timetype_index[i, :Index]
-@test t.coredata[!, :data] == df_timetype_index[i, :data]
+t = ts[i, j]
+@test typeof(t) <: Vector
+@test t == data_vector[i]
 
 # getindex(ts::TS, i::Int, j::UnitRange)
 i = 2; j = 1:1
@@ -397,3 +401,52 @@ test_types(ts[ind])
                      Hour(-1), Minute(0), Second(0), Millisecond(1001))) == []
 @test index(getindex(tsdatetimes, Year(2007), Month(1), Day(2),
                      Hour(0), Minute(0), Second(0), Millisecond(0))) == [DateTime(2007, 01, 02, 0, 0, 0)]
+
+# getindex(ts::TS, y::Year, q::Quarter)
+y = Year(2007); q = Quarter(2)
+dates = Date(2007, 4, 1):Day(1):Date(2007, 6, 30)
+start_index = (Date(2007, 4, 1) - Date(2007, 1, 1)).value + 1
+end_index = start_index + length(dates) - 1
+t = ts[y, q]
+test_types(t)
+@test t[:, :Index] == dates
+@test t[:, :data] == data_vector[start_index:end_index]
+
+y = Year(2007); q = Quarter(4)
+dates = Date(2007, 10, 1):Day(1):Date(2007, 12, 31)
+start_index = (Date(2007, 10, 1) - Date(2007, 1, 1)).value + 1
+end_index = start_index + length(dates) - 1
+t = ts[y, q]
+test_types(t)
+@test t[:, :Index] == dates
+@test t[:, :data] == data_vector[start_index:end_index]
+
+y = Year(2007); q = Quarter(5)
+t = ts[y, q]
+test_types(t)
+@test TSx.nrow(t) == 0
+
+# getindex(ts::TS, y::Year, m::Month, d::Day)
+y = Year(2007); m = Month(1); d = Day(1)
+t = ts[y, m, d]
+test_types(t)
+@test t[:, :Index] == [Date(2007, 1, 1)]
+@test t[:, :data] == data_vector[1, :]
+
+y = Year(2007); m = Month(12); d = Day(1)
+t = ts[y, m, d]
+start_index = (Date(2007, 12, 1) - Date(2007, 1, 1)).value + 1
+test_types(t)
+@test t[:, :Index] == [Date(2007, 12, 1)]
+@test t[:, :data] == data_vector[start_index, :]
+
+y = Year(2007); m = Month(13); d = Day(1)
+t = ts[y, m, d]
+test_types(t)
+@test TSx.nrow(t) == 0
+
+# getindex(ts::TS, ::Colon, j::Int)
+j = 10
+t = ts_long[:, j]
+@test typeof(t) <: Vector
+@test t == data_array_long[:, j]
