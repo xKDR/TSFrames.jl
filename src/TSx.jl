@@ -21,7 +21,7 @@ import Base.vcat
 
 import Dates.Period
 
-export TS,
+export TimeFrame,
     JoinBoth,
     JoinAll,
     JoinInner,
@@ -65,7 +65,7 @@ export TS,
     DataFrame,
     Date
 
-include("TS.jl")
+include("TimeFrame.jl")
 include("utils.jl")
 
 include("apply.jl")

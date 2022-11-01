@@ -10,7 +10,7 @@ end
 """
 # Indexing
 
-`TS` can be indexed using row and column indices. The row selector
+`TimeFrame` can be indexed using row and column indices. The row selector
 could be an integer, a range, an array or it could also be a `Date`
 object or an ISO-formatted date string ("2007-04-10"). There are
 methods to subset on year, year-month, and year-quarter. The latter
@@ -31,12 +31,12 @@ julia> using Random;
 
 julia> random(x) = rand(MersenneTwister(123), x);
 
-julia> ts = TS([random(10) random(10) random(10)])
+julia> ts = TimeFrame([random(10) random(10) random(10)])
 julia> show(ts)
 
 # first row
 julia> ts[1]
-(1 x 3) TS with Int64 Index
+(1 x 3) TimeFrame with Int64 Index
 
  Index  x1        x2        x3
  Int64  Float64   Float64   Float64
@@ -45,7 +45,7 @@ julia> ts[1]
 
 # first five rows
 julia> ts[1:5]
-(5 x 3) TS with Int64 Index
+(5 x 3) TimeFrame with Int64 Index
 
  Index  x1        x2        x3
  Int64  Float64   Float64   Float64
@@ -66,7 +66,7 @@ julia> ts[1:5, :x2]
  0.3132439558075186
 
 julia> ts[1:5, 2:3]
-(5 x 2) TS with Int64 Index
+(5 x 2) TimeFrame with Int64 Index
 
  Index  x2        x3
  Int64  Float64   Float64
@@ -79,7 +79,7 @@ julia> ts[1:5, 2:3]
 
 # individual rows
 julia> ts[[1, 9]]
-(2 x 3) TS with Int64 Index
+(2 x 3) TimeFrame with Int64 Index
 
  Index  x1        x2        x3
  Int64  Float64   Float64   Float64
@@ -102,7 +102,7 @@ julia> ts[:, :x1]            # returns a Vector
 
 
 julia> ts[:, [:x1, :x2]]
-(10 x 2) TS with Int64 Index
+(10 x 2) TimeFrame with Int64 Index
 
  Index  x1         x2
  Int64  Float64    Float64
@@ -120,9 +120,9 @@ julia> ts[:, [:x1, :x2]]
 
 
 julia> dates = collect(Date(2007):Day(1):Date(2008, 2, 22));
-julia> ts = TS(random(length(dates)), dates)
+julia> ts = TimeFrame(random(length(dates)), dates)
 julia> show(ts[1:10])
-(10 x 1) TS with Date Index
+(10 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -139,7 +139,7 @@ julia> show(ts[1:10])
  2007-01-10  0.108871
 
 julia> ts[Date(2007, 01, 01)]
-(1 x 1) TS with Dates.Date Index
+(1 x 1) TimeFrame with Dates.Date Index
 
  Index       x1
  Date        Float64
@@ -148,7 +148,7 @@ julia> ts[Date(2007, 01, 01)]
 
 
 julia> ts[[Date(2007, 1, 1), Date(2007, 1, 2)]]
-(2 x 1) TS with Date Index
+(2 x 1) TimeFrame with Date Index
 
  Index       x1       
  Date        Float64  
@@ -164,7 +164,7 @@ julia> ts[[Date(2007, 1, 1), Date(2007, 1, 2)], :x1]
 
 
 julia> ts[Date(2007)]
-(1 x 1) TS with Dates.Date Index
+(1 x 1) TimeFrame with Dates.Date Index
 
  Index       x1
  Date        Float64
@@ -173,7 +173,7 @@ julia> ts[Date(2007)]
 
 
 julia> ts[Year(2007)]
-(365 x 1) TS with Dates.Date Index
+(365 x 1) TimeFrame with Dates.Date Index
 
  Index       x1
  Date        Float64
@@ -199,7 +199,7 @@ julia> ts[Year(2007)]
 
 
 julia> ts[Year(2007), Month(11)]
-(30 x 1) TS with Date Index
+(30 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -240,7 +240,7 @@ julia> ts[Year(2007), Quarter(2)];
 
 
 julia> ts["2007-01-01"]
-(1 x 1) TS with Date Index
+(1 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -261,61 +261,61 @@ julia> ts[1, "x1"]; # same as above
 ###
 
 ### Inputs: row scalar, column scalar; Output: scalar
-function Base.getindex(ts::TS, i::Int, j::Int)
+function Base.getindex(ts::TimeFrame, i::Int, j::Int)
     return ts.coredata[i,j+1]
 end
 
-function Base.getindex(ts::TS, i::Int, j::Union{Symbol, String})
+function Base.getindex(ts::TimeFrame, i::Int, j::Union{Symbol, String})
     return ts.coredata[i, j]
 end
 
-function Base.getindex(ts::TS, dt::T, j::Int) where {T<:TimeType}
+function Base.getindex(ts::TimeFrame, dt::T, j::Int) where {T<:TimeType}
     idx = findfirst(x -> x == dt, index(ts))
     ts.coredata[idx, j+1]
 end
 
-function Base.getindex(ts::TS, dt::T, j::Union{String, Symbol}) where {T<:TimeType}
+function Base.getindex(ts::TimeFrame, dt::T, j::Union{String, Symbol}) where {T<:TimeType}
     idx = findfirst(x -> x == dt, index(ts))
     ts.coredata[idx, j]
 end
 ###
 
-### Inputs: row scalar, column vector; Output: TS
-function Base.getindex(ts::TS, i::Int, j::AbstractVector{Int})
-    TS(ts.coredata[[i], Cols(:Index, j.+1)]) # increment: account for Index
+### Inputs: row scalar, column vector; Output: TimeFrame
+function Base.getindex(ts::TimeFrame, i::Int, j::AbstractVector{Int})
+    TimeFrame(ts.coredata[[i], Cols(:Index, j.+1)]) # increment: account for Index
 end
 
-function Base.getindex(ts::TS, i::Int, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
-    TS(ts.coredata[[i], Cols(:Index, j)])
+function Base.getindex(ts::TimeFrame, i::Int, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
+    TimeFrame(ts.coredata[[i], Cols(:Index, j)])
 end
 
-function Base.getindex(ts::TS, dt::T, j::AbstractVector{Int}) where {T<:TimeType}
+function Base.getindex(ts::TimeFrame, dt::T, j::AbstractVector{Int}) where {T<:TimeType}
     idx = findfirst(x -> x == dt, index(ts))
     ts[idx, j]
 end
 
-function Base.getindex(ts::TS, dt::D, j::AbstractVector{T}) where {D<:TimeType, T<:Union{String, Symbol}}
+function Base.getindex(ts::TimeFrame, dt::D, j::AbstractVector{T}) where {D<:TimeType, T<:Union{String, Symbol}}
     idx = findfirst(x -> x == dt, index(ts))
     ts[idx, j]
 end
 ###
 
-### Inputs: row scalar, column range; Output: TS
-function Base.getindex(ts::TS, i::Int, j::UnitRange)
-    return TS(ts.coredata[[i], Cols(:Index, 1 .+(j))])
+### Inputs: row scalar, column range; Output: TimeFrame
+function Base.getindex(ts::TimeFrame, i::Int, j::UnitRange)
+    return TimeFrame(ts.coredata[[i], Cols(:Index, 1 .+(j))])
 end
 ###
 
 ### Inputs: row vector, column scalar; Output: vector
-function Base.getindex(ts::TS, i::AbstractVector{Int}, j::Int)
+function Base.getindex(ts::TimeFrame, i::AbstractVector{Int}, j::Int)
     ts.coredata[i, j+1] # increment: account for Index
 end
 
-function Base.getindex(ts::TS, i::AbstractVector{Int}, j::Union{String, Symbol})
+function Base.getindex(ts::TimeFrame, i::AbstractVector{Int}, j::Union{String, Symbol})
     ts.coredata[i, j]
 end
 
-function Base.getindex(ts::TS, dt::AbstractVector{T}, j::Int) where {T<:TimeType}
+function Base.getindex(ts::TimeFrame, dt::AbstractVector{T}, j::Int) where {T<:TimeType}
     idx = map(d -> findfirst(x -> x == d, index(ts)), dt)
     if length(idx) == 0
         return nothing
@@ -323,7 +323,7 @@ function Base.getindex(ts::TS, dt::AbstractVector{T}, j::Int) where {T<:TimeType
     ts[idx, j]
 end
 
-function Base.getindex(ts::TS, dt::AbstractVector{T}, j::Union{String, Symbol}) where {T<:TimeType}
+function Base.getindex(ts::TimeFrame, dt::AbstractVector{T}, j::Union{String, Symbol}) where {T<:TimeType}
     idx = map(d -> findfirst(x -> x == d, index(ts)), dt)
     if length(idx) == 0
         return nothing
@@ -332,16 +332,16 @@ function Base.getindex(ts::TS, dt::AbstractVector{T}, j::Union{String, Symbol}) 
 end
 ###
 
-### Inputs: row vector, column vector; Output: TS
-function Base.getindex(ts::TS, i::AbstractVector{Int}, j::AbstractVector{Int})
-    TS(ts.coredata[i, Cols(:Index, j.+1)]) # increment: account for Index
+### Inputs: row vector, column vector; Output: TimeFrame
+function Base.getindex(ts::TimeFrame, i::AbstractVector{Int}, j::AbstractVector{Int})
+    TimeFrame(ts.coredata[i, Cols(:Index, j.+1)]) # increment: account for Index
 end
 
-function Base.getindex(ts::TS, i::AbstractVector{Int}, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
-    TS(ts.coredata[i, Cols(:Index, j)])
+function Base.getindex(ts::TimeFrame, i::AbstractVector{Int}, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
+    TimeFrame(ts.coredata[i, Cols(:Index, j)])
 end
 
-function Base.getindex(ts::TS, dt::AbstractVector{T}, j::AbstractVector{Int}) where {T<:TimeType}
+function Base.getindex(ts::TimeFrame, dt::AbstractVector{T}, j::AbstractVector{Int}) where {T<:TimeType}
     idx = map(d -> findfirst(x -> x == d, index(ts)), dt)
     if length(idx) == 0
         return nothing
@@ -349,45 +349,45 @@ function Base.getindex(ts::TS, dt::AbstractVector{T}, j::AbstractVector{Int}) wh
     ts[idx, j]
 end
 
-function Base.getindex(ts::TS, dt::AbstractVector{D}, j::AbstractVector{T}) where {D<:TimeType, T<:Union{String, Symbol}}
+function Base.getindex(ts::TimeFrame, dt::AbstractVector{D}, j::AbstractVector{T}) where {D<:TimeType, T<:Union{String, Symbol}}
     idx = map(d -> findfirst(x -> x == d, index(ts)), dt)
     ts[idx, j]
 end
 ###
 
-### Inputs: row vector, column range; Output: TS
-function Base.getindex(ts::TS, i::AbstractVector{Int}, j::UnitRange)
+### Inputs: row vector, column range; Output: TimeFrame
+function Base.getindex(ts::TimeFrame, i::AbstractVector{Int}, j::UnitRange)
     ts[i, collect(j)]
 end
 
-function Base.getindex(ts::TS, dt::AbstractVector{T}, j::UnitRange) where {T<:TimeType}
+function Base.getindex(ts::TimeFrame, dt::AbstractVector{T}, j::UnitRange) where {T<:TimeType}
     ts[dt, collect(j)]
 end
 ###
 
 
 ### Inputs: row range, column scalar: return a vector
-function Base.getindex(ts::TS, i::UnitRange, j::Int)
+function Base.getindex(ts::TimeFrame, i::UnitRange, j::Int)
     ts[collect(i), j]
 end
 
-function Base.getindex(ts::TS, i::UnitRange, j::Union{String, Symbol})
-    ts[collect(i), j]
-end
-###
-
-### Inputs: row range, column vector: return TS
-function Base.getindex(ts::TS, i::UnitRange, j::AbstractVector{Int})
-    ts[collect(i), j]
-end
-
-function Base.getindex(ts::TS, i::UnitRange, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
+function Base.getindex(ts::TimeFrame, i::UnitRange, j::Union{String, Symbol})
     ts[collect(i), j]
 end
 ###
 
-### Inputs: row range, column range: return TS
-function Base.getindex(ts::TS, i::UnitRange, j::UnitRange)
+### Inputs: row range, column vector: return TimeFrame
+function Base.getindex(ts::TimeFrame, i::UnitRange, j::AbstractVector{Int})
+    ts[collect(i), j]
+end
+
+function Base.getindex(ts::TimeFrame, i::UnitRange, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
+    ts[collect(i), j]
+end
+###
+
+### Inputs: row range, column range: return TimeFrame
+function Base.getindex(ts::TimeFrame, i::UnitRange, j::UnitRange)
     ts[collect(i), collect(j)]
 end
 
@@ -396,83 +396,83 @@ end
 ## Row indexing interfaces
 ###
 
-function Base.getindex(ts::TS, i::Int)
+function Base.getindex(ts::TimeFrame, i::Int)
     ts[i, 1:TSx.ncol(ts)]
 end
 
-function Base.getindex(ts::TS, i::UnitRange)
+function Base.getindex(ts::TimeFrame, i::UnitRange)
     ts[i, 1:TSx.ncol(ts)]
 end
 
-function Base.getindex(ts::TS, i::AbstractVector{Int64})
+function Base.getindex(ts::TimeFrame, i::AbstractVector{Int64})
     ts[i, 1:TSx.ncol(ts)]
 end
 
-function Base.getindex(ts::TS, dt::AbstractVector{T}) where {T<:TimeType}
+function Base.getindex(ts::TimeFrame, dt::AbstractVector{T}) where {T<:TimeType}
     ts[dt, 1:TSx.ncol(ts)]
 end
 
-function Base.getindex(ts::TS, d::T) where {T<:TimeType}
+function Base.getindex(ts::TimeFrame, d::T) where {T<:TimeType}
     ts[[d], 1:TSx.ncol(ts)]
 end
 
 # By period
-function Base.getindex(ts::TS, y::Year)
+function Base.getindex(ts::TimeFrame, y::Year)
     sdf = filter(:Index => x -> Dates.Year(x) == y, ts.coredata)
-    TS(sdf)
+    TimeFrame(sdf)
 end
 
-function Base.getindex(ts::TS, y::Year, q::Quarter)
+function Base.getindex(ts::TimeFrame, y::Year, q::Quarter)
     sdf = filter(:Index => x -> (Year(x), Quarter(x)) == (y, q), ts.coredata)
-    TS(sdf)
+    TimeFrame(sdf)
 end
 
 # XXX: ideally, Dates.YearMonth class should exist
-function Base.getindex(ts::TS, y::Year, m::Month)
+function Base.getindex(ts::TimeFrame, y::Year, m::Month)
     sdf = filter(:Index => x -> (Year(x), Month(x)) == (y, m), ts.coredata)
-    TS(sdf)
+    TimeFrame(sdf)
 end
 
-function Base.getindex(ts::TS, y::Year, m::Month, w::Week)
+function Base.getindex(ts::TimeFrame, y::Year, m::Month, w::Week)
     sdf = filter(:Index => x -> (Year(x), Month(x), Week(x)) == (y, m, w), ts.coredata)
-    TS(sdf)
+    TimeFrame(sdf)
 end
 
-function Base.getindex(ts::TS, y::Year, m::Month, d::Day)
+function Base.getindex(ts::TimeFrame, y::Year, m::Month, d::Day)
     sdf = filter(:Index => x -> (Year(x), Month(x), Day(x)) == (y, m, d), ts.coredata)
-    TS(sdf)
+    TimeFrame(sdf)
 end
 
-function Base.getindex(ts::TS, y::Year, m::Month, d::Day, h::Hour)
+function Base.getindex(ts::TimeFrame, y::Year, m::Month, d::Day, h::Hour)
     sdf = filter(:Index => x -> (Year(x), Month(x), Day(x), Hour(x)) == (y, m, d, h), ts.coredata)
-    TS(sdf)
+    TimeFrame(sdf)
 end
 
-function Base.getindex(ts::TS, y::Year, m::Month, d::Day, h::Hour, min::Minute)
+function Base.getindex(ts::TimeFrame, y::Year, m::Month, d::Day, h::Hour, min::Minute)
     sdf = filter(:Index => x -> (Year(x), Month(x), Day(x), Hour(x), Minute(x)) == (y, m, d, h, min), ts.coredata)
-    TS(sdf)
+    TimeFrame(sdf)
 end
 
-function Base.getindex(ts::TS, y::Year, m::Month, d::Day, h::Hour, min::Minute, sec::Second)
+function Base.getindex(ts::TimeFrame, y::Year, m::Month, d::Day, h::Hour, min::Minute, sec::Second)
     sdf = filter(:Index => x -> (Year(x), Month(x), Day(x), Hour(x), Minute(x), Second(x)) == (y, m, d, h, min, sec), ts.coredata)
-    TS(sdf)
+    TimeFrame(sdf)
 end
 
-function Base.getindex(ts::TS, y::Year, m::Month, d::Day, h::Hour, min::Minute, sec::Second, ms::Millisecond)
+function Base.getindex(ts::TimeFrame, y::Year, m::Month, d::Day, h::Hour, min::Minute, sec::Second, ms::Millisecond)
     sdf = filter(:Index =>
         x -> (Year(x), Month(x), Day(x), Hour(x), Minute(x), Second(x), Millisecond(x)) ==
         (y, m, d, h, min, sec, ms), ts.coredata)
-    TS(sdf)
+    TimeFrame(sdf)
 end
 
 # By string timestamp
-function Base.getindex(ts::TS, i::String)
+function Base.getindex(ts::TimeFrame, i::String)
     ind = findall(x -> x == TSx._convert(eltype(ts.coredata[!, :Index]), i), ts.coredata[!, :Index]) # XXX: may return duplicate indices
-    TS(ts.coredata[ind, :])     # XXX: check if data is being copied
+    TimeFrame(ts.coredata[ind, :])     # XXX: check if data is being copied
 end
 
 # By {TimeType, Period} range
-# function Base.getindex(ts::TS, r::StepRange{T, V}) where {T<:TimeType, V<:Period}
+# function Base.getindex(ts::TimeFrame, r::StepRange{T, V}) where {T<:TimeType, V<:Period}
 # end
 
 ###
@@ -480,27 +480,27 @@ end
 ###
 
 ### Inputs: row colon, column scalar: return vector
-function Base.getindex(ts::TS, ::Colon, j::Int)
+function Base.getindex(ts::TimeFrame, ::Colon, j::Int)
     ts[1:TSx.nrow(ts), j]
 end
 
-function Base.getindex(ts::TS, ::Colon, j::Union{String, Symbol})
-    ts[1:TSx.nrow(ts), j]
-end
-###
-
-### Inputs: row colon, column vector: return TS
-function Base.getindex(ts::TS, ::Colon, j::AbstractVector{Int})
-    ts[1:TSx.nrow(ts), j]
-end
-
-function Base.getindex(ts::TS, ::Colon, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
+function Base.getindex(ts::TimeFrame, ::Colon, j::Union{String, Symbol})
     ts[1:TSx.nrow(ts), j]
 end
 ###
 
-### Inputs: row colon, column range: return TS
-function Base.getindex(ts::TS, i::Colon, j::UnitRange)
+### Inputs: row colon, column vector: return TimeFrame
+function Base.getindex(ts::TimeFrame, ::Colon, j::AbstractVector{Int})
+    ts[1:TSx.nrow(ts), j]
+end
+
+function Base.getindex(ts::TimeFrame, ::Colon, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
+    ts[1:TSx.nrow(ts), j]
+end
+###
+
+### Inputs: row colon, column range: return TimeFrame
+function Base.getindex(ts::TimeFrame, i::Colon, j::UnitRange)
     ts[1:TSx.nrow(ts), collect(j)]
 end
 ###

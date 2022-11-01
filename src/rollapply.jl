@@ -2,14 +2,14 @@
 # Rolling Functions
 
 ```julia
-rollapply(fun::Function, ts::TS, column::Any, windowsize::Int)
+rollapply(fun::Function, ts::TimeFrame, column::Any, windowsize::Int)
 ```
 
 Apply a function to a column of `ts` for each continuous set of rows
 of size `windowsize`. `column` could be any of the `DataFrame` column
 selectors.
 
-The output is a TS object with `(nrow(ts) - windowsize + 1)` rows
+The output is a TimeFrame object with `(nrow(ts) - windowsize + 1)` rows
 indexed with the last index value of each window.
 
 This method uses `RollingFunctions` package to implement this
@@ -18,10 +18,10 @@ functionality.
 # Examples
 
 ```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
-julia> ts = TS(1:12, Date("2022-02-01"):Month(1):Date("2022-02-01")+Month(11))
+julia> ts = TimeFrame(1:12, Date("2022-02-01"):Month(1):Date("2022-02-01")+Month(11))
 
 julia> show(ts)
-(12 x 1) TS with Dates.Date Index
+(12 x 1) TimeFrame with Dates.Date Index
 
  Index       x1
  Date        Int64
@@ -40,7 +40,7 @@ julia> show(ts)
  2023-01-01     12
 
 julia> rollapply(sum, ts, :x1, 10)
-(3 x 1) TS with Dates.Date Index
+(3 x 1) TimeFrame with Dates.Date Index
 
  Index       x1_rolling_sum
  Date        Float64
@@ -50,7 +50,7 @@ julia> rollapply(sum, ts, :x1, 10)
  2023-01-01            75.0
 
 julia> rollapply(Statistics.mean, ts, 1, 5)
-(8 x 1) TS with Dates.Date Index
+(8 x 1) TimeFrame with Dates.Date Index
 
  Index       x1_rolling_mean
  Date        Float64
@@ -66,7 +66,7 @@ julia> rollapply(Statistics.mean, ts, 1, 5)
 
 ```
 """
-function rollapply(fun::Function, ts::TS, column::Any, windowsize::Int) # TODO: multiple columns
+function rollapply(fun::Function, ts::TimeFrame, column::Any, windowsize::Int) # TODO: multiple columns
     if windowsize < 1
         throw(ArgumentError("windowsize must be greater than or equal to 1"))
     end
@@ -81,5 +81,5 @@ function rollapply(fun::Function, ts::TS, column::Any, windowsize::Int) # TODO: 
     idx = TSx.index(ts)[windowsize:end]
     colname = names(ts.coredata[!, [col]])[1]
     res_df = DataFrame([idx, res], ["Index", "$(colname)_rolling_$(fun)"])
-    return TS(res_df)
+    return TimeFrame(res_df)
 end

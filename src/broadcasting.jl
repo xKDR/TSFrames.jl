@@ -1,5 +1,5 @@
-function Base.Broadcast.broadcasted(f, ts::TS)
-    return TS(
+function Base.Broadcast.broadcasted(f, ts::TimeFrame)
+    return TimeFrame(
         select(
             ts.coredata,
             :Index,

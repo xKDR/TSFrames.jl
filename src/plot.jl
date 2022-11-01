@@ -2,12 +2,12 @@
 # Plotting
 
 ```julia
-plot(ts::TS, cols::Vector{Int} = collect(1:TSx.ncol(ts)))
-plot(ts::TS, cols::Vector{T}) where {T<:Union{String, Symbol}}
-plot(ts::TS, cols::T) where {T<:Union{Int, String, Symbol}}
+plot(ts::TimeFrame, cols::Vector{Int} = collect(1:TSx.ncol(ts)))
+plot(ts::TimeFrame, cols::Vector{T}) where {T<:Union{String, Symbol}}
+plot(ts::TimeFrame, cols::T) where {T<:Union{Int, String, Symbol}}
 ```
 
-Plots a TS object with the index on the x-axis and selected `cols` on
+Plots a TimeFrame object with the index on the x-axis and selected `cols` on
 the y-axis. By default, plot all the columns. Columns can be selected
 using Int indexes, String(s), or Symbol(s).
 
@@ -22,9 +22,9 @@ julia> df = DataFrame(Index = dates,
         val2 = random(12),
         val3 = random(12));
 
-julia> ts = TS(df)
+julia> ts = TimeFrame(df)
 julia> show(ts)
-(12 x 3) TS with Dates.Date Index
+(12 x 3) TimeFrame with Dates.Date Index
 
  Index       val1        val2        val3
  Date        Float64     Float64     Float64
@@ -54,7 +54,7 @@ julia> # plot(ts[1:6], [:val1, :val3]);
 julia> # plot(ts, [1, 2], size=(600, 400));
 ```
 """
-@recipe function f(ts::TS, cols::Vector{Int} = collect(1:TSx.ncol(ts)))
+@recipe function f(ts::TimeFrame, cols::Vector{Int} = collect(1:TSx.ncol(ts)))
     seriestype := :line
     size --> (1200, 1200)
     xlabel --> :Index
@@ -64,12 +64,12 @@ julia> # plot(ts, [1, 2], size=(600, 400));
     (TSx.index(ts), Matrix(ts.coredata[!, cols.+1])) # increment to account for Index
 end
 
-@recipe function f(ts::TS, cols::Vector{T}) where {T<:Union{String, Symbol}}
+@recipe function f(ts::TimeFrame, cols::Vector{T}) where {T<:Union{String, Symbol}}
     colindices = [DataFrames.columnindex(ts.coredata, i) for i in cols]
     colindices .-= 1            # decrement to account for Index
     (ts, colindices)
 end
 
-@recipe function f(ts::TS, cols::T) where {T<:Union{Int, String, Symbol}}
+@recipe function f(ts::TimeFrame, cols::T) where {T<:Union{Int, String, Symbol}}
     (ts, [cols])
 end

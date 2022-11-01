@@ -1,7 +1,7 @@
 """
 # Upsampling
 ```julia
-upsample(ts::TS,
+upsample(ts::TimeFrame,
       period::T
     where {T<:Union{DatePeriod, TimePeriod}}
 ```
@@ -17,9 +17,9 @@ julia> using Random, Statistics;
 julia> random(x) = rand(MersenneTwister(123), x);
 julia> dates = collect(DateTime(2017,1,1):Day(1):DateTime(2018,3,10));
 
-julia> ts = TS(random(length(dates)), dates)
+julia> ts = TimeFrame(random(length(dates)), dates)
 julia> show(ts[1:10])
-(10 x 1) TS with DateTime Index
+(10 x 1) TimeFrame with DateTime Index
 
  Index                x1        
  DateTime             Float64   
@@ -36,7 +36,7 @@ julia> show(ts[1:10])
  2017-01-10T00:00:00  0.108871
 
  julia> upsample(ts, Hour(1))
-(10393 x 1) TS with DateTime Index
+(10393 x 1) TimeFrame with DateTime Index
 
  Index                x1              
  DateTime             Float64?        
@@ -53,7 +53,7 @@ julia> show(ts[1:10])
                     10385 rows omitted
 
 upsample(ts, Hour(12))
-(867 x 1) TS with DateTime Index
+(867 x 1) TimeFrame with DateTime Index
 
 Index                x1              
 DateTime             Float64?        
@@ -70,7 +70,7 @@ DateTime             Float64?
                     859 rows omitted
 """
 
-function upsample(ts::TS, period::T) where {T<:Union{DatePeriod, TimePeriod}}
+function upsample(ts::TimeFrame, period::T) where {T<:Union{DatePeriod, TimePeriod}}
     dex = collect(first(index(ts)):period:last(index(ts)))
-    join(ts, TS(DataFrame(index = dex), :index))
+    join(ts, TimeFrame(DataFrame(index = dex), :index))
 end
