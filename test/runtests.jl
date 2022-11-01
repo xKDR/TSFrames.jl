@@ -5,7 +5,7 @@ using StatsBase
 using Statistics
 using Test
 using Tables
-using TSx
+using TimeFrames
 
 include("dataobjects.jl")
 

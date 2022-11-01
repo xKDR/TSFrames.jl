@@ -1,10 +1,10 @@
-using TSx
+using TimeFrames
 
 ts = TimeFrame(DataFrame(a=["a", "b", "c"], b=[1,2, missing]), [1, 2, 3]) ;
 
 ###
 # describe()
-dd = TSx.describe(ts) ;
+dd = TimeFrames.describe(ts) ;
 @test names(dd) == [ "variable", "mean", "min", "median", "max", "nmissing", "eltype" ] ;
 @test dd[1, :variable] == :Index ;
 @test dd[1, :min] == 1 ;
@@ -20,12 +20,12 @@ dd = TSx.describe(ts) ;
 @test dd[3, :nmissing] == 1 ;
 @test dd[3, :eltype] == Union{Missing, Int64} ;
 
-dd = TSx.describe(ts, :mean) ;
+dd = TimeFrames.describe(ts, :mean) ;
 @test "mean" in names(dd) ;
 @test !("median" in names(dd)) ;
 @test dd[3, :mean] == 1.5 ;
 
-dd = TSx.describe(ts, :mean, cols=:b) ;
+dd = TimeFrames.describe(ts, :mean, cols=:b) ;
 @test DataFrames.nrow(dd) == 1 ;
 @test DataFrames.ncol(dd) == 2 ;
 @test dd[1, :variable] == :b ;
@@ -71,10 +71,10 @@ dd = TSx.describe(ts, :mean, cols=:b) ;
 
 ###
 # _check_consistency()
-@test TSx._check_consistency(ts) == true
-@test TSx._check_consistency(TimeFrame([:a, :b], [2,1])) == true;
+@test TimeFrames._check_consistency(ts) == true
+@test TimeFrames._check_consistency(TimeFrame([:a, :b], [2,1])) == true;
 
 ts = TimeFrame(data_vector, 1:length(data_vector));
 ts.coredata.Index = sample(index_integer, length(data_vector), replace=true);
-@test TSx._check_consistency(ts) == false;
+@test TimeFrames._check_consistency(ts) == false;
 ###

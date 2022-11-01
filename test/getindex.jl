@@ -296,24 +296,24 @@ test_types(ts[ind])
 # getindex(ts, d::Date)
 ind = Date(2007, 2, 1)
 test_types(ts[ind])
-@test TSx.index(ts[ind]) == [ind]
+@test TimeFrames.index(ts[ind]) == [ind]
 
 # getindex(ts, y::Year)
 ind = Year(2007)
 test_types(ts[ind])
-@test unique(Dates.year.(TSx.index(ts[ind]))) == [2007]
+@test unique(Dates.year.(TimeFrames.index(ts[ind]))) == [2007]
 
 # getindex(ts, y::Year, m::Month)
 y = Year(2007)
 m = Month(3)
 test_types(ts[y, m])
-@test unique(Dates.yearmonth.(TSx.index(ts[y, m]))) == [(2007, 3)]
+@test unique(Dates.yearmonth.(TimeFrames.index(ts[y, m]))) == [(2007, 3)]
 
 # getindex(ts, i::String)
 ind = "2007-10-01"
 d = Date(2007, 10, 1)
 test_types(ts[ind])
-@test TSx.index(ts[ind]) == [d]
+@test TimeFrames.index(ts[ind]) == [d]
 
 # getindex(ts, i::Int, j::Int)
 i = 1; j = 1
@@ -424,7 +424,7 @@ test_types(t)
 y = Year(2007); q = Quarter(5)
 t = ts[y, q]
 test_types(t)
-@test TSx.nrow(t) == 0
+@test TimeFrames.nrow(t) == 0
 
 # getindex(ts::TimeFrame, y::Year, m::Month, d::Day)
 y = Year(2007); m = Month(1); d = Day(1)
@@ -443,7 +443,7 @@ test_types(t)
 y = Year(2007); m = Month(13); d = Day(1)
 t = ts[y, m, d]
 test_types(t)
-@test TSx.nrow(t) == 0
+@test TimeFrames.nrow(t) == 0
 
 # getindex(ts::TimeFrame, ::Colon, j::Int)
 j = 10
