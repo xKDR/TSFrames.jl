@@ -1,4 +1,4 @@
-ts = TS(integer_data_vector, index_timetype)
+ts = TimeFrame(integer_data_vector, index_timetype)
 
 @test_throws ArgumentError pctchange(ts, 0)
 @test_throws ArgumentError pctchange(ts, -1)

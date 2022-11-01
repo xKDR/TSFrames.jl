@@ -4,7 +4,7 @@ MONTH = 1
 DAYS = 15
 
 dates = Date(YEAR, MONTH, 1):Day(1):Date(YEAR, MONTH, DAYS)
-ts = TS(1:DAYS, dates)
+ts = TimeFrame(1:DAYS, dates)
 
 @test Tables.istable(ts)
 
@@ -37,4 +37,4 @@ namedtuple = first(Tables.namedtupleiterator(ts))
 @test Tables.schema(ts).types == (Date, Int64)
 
 # testing Tables.materializer
-@test Tables.materializer(ts) == TS
+@test Tables.materializer(ts) == TimeFrame

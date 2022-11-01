@@ -1,4 +1,4 @@
-ts = TS(integer_data_vector, index_timetype)
+ts = TimeFrame(integer_data_vector, index_timetype)
 
 # lagging by something atmost DATA_SIZE
 for lagby in [0, 1, Int(floor(DATA_SIZE/2)), DATA_SIZE]

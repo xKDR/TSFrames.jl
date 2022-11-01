@@ -3,14 +3,14 @@ index_timetype = Date(2000, 1,1) + Day.(0:(DATA_SIZE - 1))
 vec1 = collect(1:DATA_SIZE)
 vec2 = collect(1:DATA_SIZE)
 vec3 = collect(1:DATA_SIZE)
-ts = TS([vec1 vec2 vec3], index_timetype, colnames=[:A, :B, :C])
+ts = TimeFrame([vec1 vec2 vec3], index_timetype, colnames=[:A, :B, :C])
 
 windowsize = 0
 @test_throws ArgumentError rollapply(first, ts, :A, windowsize)
 
 windowsize = 1
 rp = rollapply(first, ts, :A, windowsize)
-@test typeof(rp) == TSx.TS      # test type
+@test typeof(rp) == TSx.TimeFrame      # test type
 @test occursin("A", names(rp)[1]) # test colname
 
 @test TSx.nrow(rp) == TSx.nrow(ts) - windowsize + 1 # nrow
@@ -19,14 +19,14 @@ rp = rollapply(first, ts, :A, windowsize)
 
 windowsize = 5
 rp = rollapply(sum, ts, :A, windowsize)
-@test typeof(rp) == TSx.TS
+@test typeof(rp) == TSx.TimeFrame
 @test first(index(rp)) == index(ts)[windowsize]
 @test TSx.nrow(rp) == TSx.nrow(ts) - windowsize + 1
 @test rp[1, 1] == sum(ts[1:windowsize, :A])
 @test occursin("A", names(rp)[1])
 
 windowsize = DATA_SIZE
-@test typeof(rp) == TSx.TS
+@test typeof(rp) == TSx.TimeFrame
 rp = rollapply(sum, ts, :A, windowsize)
 @test first(index(rp)) == index(ts)[windowsize]
 @test TSx.nrow(rp) == 1

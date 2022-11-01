@@ -8,8 +8,8 @@ index_timetype2 = Date(2007, 1, 1) + Day(DATA_SIZE_1) + Day.(0:(DATA_SIZE_2 - 1)
 # testing setequal and orderequal
 df1 = DataFrame(x1 = random(200), x2 = random(200))
 df2 = DataFrame(x2 = random(200), x1 = random(200))
-ts1 = TS(df1, index_timetype1)
-ts2 = TS(df2, index_timetype2)
+ts1 = TimeFrame(df1, index_timetype1)
+ts2 = TimeFrame(df2, index_timetype2)
 ts_setequal = TSx.vcat(ts1, ts2, colmerge=:setequal)
 
 @test propertynames(ts_setequal.coredata) == [:Index, :x1, :x2]
@@ -21,7 +21,7 @@ ts_setequal = TSx.vcat(ts1, ts2, colmerge=:setequal)
 @test ts_setequal[DATA_SIZE_1 + 1:DATA_SIZE_1 + DATA_SIZE_2, :x2] == ts2[:, :x2]
 
 df2 = DataFrame(x1 = random(200), x2 = random(200))
-ts2 = TS(df2, index_timetype2)
+ts2 = TimeFrame(df2, index_timetype2)
 ts_orderequal = TSx.vcat(ts1, ts2, colmerge=:orderequal)
 
 @test propertynames(ts_orderequal.coredata) == [:Index, :x1, :x2]
@@ -35,8 +35,8 @@ ts_orderequal = TSx.vcat(ts1, ts2, colmerge=:orderequal)
 # testing union and intersection
 df1 = DataFrame(x1 = random(200), x2 = random(200))
 df2 = DataFrame(x2 = random(200), x3 = random(200))
-ts1 = TS(df1, index_timetype1)
-ts2 = TS(df2, index_timetype2)
+ts1 = TimeFrame(df1, index_timetype1)
+ts2 = TimeFrame(df2, index_timetype2)
 
 ts_intersect = TSx.vcat(ts1, ts2, colmerge=:intersect)
 

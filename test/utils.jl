@@ -1,6 +1,6 @@
 using TSx
 
-ts = TS(DataFrame(a=["a", "b", "c"], b=[1,2, missing]), [1, 2, 3]) ;
+ts = TimeFrame(DataFrame(a=["a", "b", "c"], b=[1,2, missing]), [1, 2, 3]) ;
 
 ###
 # describe()
@@ -72,9 +72,9 @@ dd = TSx.describe(ts, :mean, cols=:b) ;
 ###
 # _check_consistency()
 @test TSx._check_consistency(ts) == true
-@test TSx._check_consistency(TS([:a, :b], [2,1])) == true;
+@test TSx._check_consistency(TimeFrame([:a, :b], [2,1])) == true;
 
-ts = TS(data_vector, 1:length(data_vector));
+ts = TimeFrame(data_vector, 1:length(data_vector));
 ts.coredata.Index = sample(index_integer, length(data_vector), replace=true);
 @test TSx._check_consistency(ts) == false;
 ###

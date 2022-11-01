@@ -5,7 +5,7 @@ MIDDATE = Date(2008, 1, 1)
 LASTDATE = Date(2008, 2, 4)
 
 # testing for integer index
-ts_integer = TS(rand(DATA_SIZE), index_integer)
+ts_integer = TimeFrame(rand(DATA_SIZE), index_integer)
 
 ## subsetting from -1 to 0
 ts_subset = TSx.subset(ts_integer, -1, 0)
@@ -42,7 +42,7 @@ ts_subset = TSx.subset(ts_integer, DATA_SIZE + 1, DATA_SIZE + 5)
 @test TSx.nrow(TSx.subset(ts_integer, DATA_SIZE + 1, :)) == 0
 
 # testing for time index
-ts_timetype = TS(rand(DATA_SIZE), index_timetype)
+ts_timetype = TimeFrame(rand(DATA_SIZE), index_timetype)
 
 ## subsetting from 2006-12-30 to 2006-12-31
 @test TSx.nrow(TSx.subset(ts_timetype, Date(2006, 12, 30), Date(2006, 12, 31))) == 0

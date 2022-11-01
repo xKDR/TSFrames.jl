@@ -1,5 +1,5 @@
-ts1 = TS(rand(DATA_SIZE), index_timetype)
-ts2 = TS(rand(Int(floor(DATA_SIZE/2))), index_timetype[1:Int(floor(DATA_SIZE/2))])
+ts1 = TimeFrame(rand(DATA_SIZE), index_timetype)
+ts2 = TimeFrame(rand(Int(floor(DATA_SIZE/2))), index_timetype[1:Int(floor(DATA_SIZE/2))])
 
 # testing JoinInner/JoinBoth
 ts_innerjoin = join(ts1, ts2, JoinInner)
