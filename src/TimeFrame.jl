@@ -38,7 +38,7 @@ TimeFrame(coredata::AbstractArray{T,2}, index::AbstractVector{V}; colnames=:auto
 ```
 
 # Examples
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random;
 julia> random(x) = rand(MersenneTwister(123), x);
 

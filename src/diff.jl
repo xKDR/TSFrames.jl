@@ -11,7 +11,7 @@ of rows to be shifted over. The skipped rows are rendered as `missing`.
 `diff` returns an error if column type does not have the method `-`.
 
 # Examples
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random, Statistics;
 
 julia> random(x) = rand(MersenneTwister(123), x);
@@ -78,7 +78,7 @@ function diff(ts::TimeFrame, periods::Int = 1)
     if periods <= 0
         error("periods must be a postive int")
     end
-    ddf = ts.coredata[:, Not(:Index)] .- TSx.lag(ts, periods).coredata[:, Not(:Index)]
+    ddf = ts.coredata[:, Not(:Index)] .- TimeFrames.lag(ts, periods).coredata[:, Not(:Index)]
     insertcols!(ddf, 1, "Index" => ts.coredata[:, :Index])
     TimeFrame(ddf, :Index)
 end

@@ -17,7 +17,7 @@ functionality.
 
 # Examples
 
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
 julia> ts = TimeFrame(1:12, Date("2022-02-01"):Month(1):Date("2022-02-01")+Month(11))
 
 julia> show(ts)
@@ -78,7 +78,7 @@ function rollapply(fun::Function, ts::TimeFrame, column::Any, windowsize::Int) #
         col = column
     end
     res = RollingFunctions.rolling(fun, ts.coredata[!, col], windowsize)
-    idx = TSx.index(ts)[windowsize:end]
+    idx = TimeFrames.index(ts)[windowsize:end]
     colname = names(ts.coredata[!, [col]])[1]
     res_df = DataFrame([idx, res], ["Index", "$(colname)_rolling_$(fun)"])
     return TimeFrame(res_df)

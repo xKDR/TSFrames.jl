@@ -2,7 +2,7 @@
 # Plotting
 
 ```julia
-plot(ts::TimeFrame, cols::Vector{Int} = collect(1:TSx.ncol(ts)))
+plot(ts::TimeFrame, cols::Vector{Int} = collect(1:TimeFrames.ncol(ts)))
 plot(ts::TimeFrame, cols::Vector{T}) where {T<:Union{String, Symbol}}
 plot(ts::TimeFrame, cols::T) where {T<:Union{Int, String, Symbol}}
 ```
@@ -12,7 +12,7 @@ the y-axis. By default, plot all the columns. Columns can be selected
 using Int indexes, String(s), or Symbol(s).
 
 # Example
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Plots, Random, Statistics)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Plots, Random, Statistics)
 julia> using Random;
 julia> random(x) = rand(MersenneTwister(123), x);
 julia> dates = Date("2022-01-01"):Month(1):Date("2022-01-01")+Month(11);
@@ -54,14 +54,14 @@ julia> # plot(ts[1:6], [:val1, :val3]);
 julia> # plot(ts, [1, 2], size=(600, 400));
 ```
 """
-@recipe function f(ts::TimeFrame, cols::Vector{Int} = collect(1:TSx.ncol(ts)))
+@recipe function f(ts::TimeFrame, cols::Vector{Int} = collect(1:TimeFrames.ncol(ts)))
     seriestype := :line
     size --> (1200, 1200)
     xlabel --> :Index
-    ylabel --> join(TSx.names(ts)[cols], ", ")
+    ylabel --> join(TimeFrames.names(ts)[cols], ", ")
     legend := true
-    label := permutedims(TSx.names(ts)[cols])
-    (TSx.index(ts), Matrix(ts.coredata[!, cols.+1])) # increment to account for Index
+    label := permutedims(TimeFrames.names(ts)[cols])
+    (TimeFrames.index(ts), Matrix(ts.coredata[!, cols.+1])) # increment to account for Index
 end
 
 @recipe function f(ts::TimeFrame, cols::Vector{T}) where {T<:Union{String, Symbol}}

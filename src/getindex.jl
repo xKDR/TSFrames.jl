@@ -26,7 +26,7 @@ For fetching the index column vector use the `index()` method.
 
 # Examples
 
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random;
 
 julia> random(x) = rand(MersenneTwister(123), x);
@@ -397,23 +397,23 @@ end
 ###
 
 function Base.getindex(ts::TimeFrame, i::Int)
-    ts[i, 1:TSx.ncol(ts)]
+    ts[i, 1:TimeFrames.ncol(ts)]
 end
 
 function Base.getindex(ts::TimeFrame, i::UnitRange)
-    ts[i, 1:TSx.ncol(ts)]
+    ts[i, 1:TimeFrames.ncol(ts)]
 end
 
 function Base.getindex(ts::TimeFrame, i::AbstractVector{Int64})
-    ts[i, 1:TSx.ncol(ts)]
+    ts[i, 1:TimeFrames.ncol(ts)]
 end
 
 function Base.getindex(ts::TimeFrame, dt::AbstractVector{T}) where {T<:TimeType}
-    ts[dt, 1:TSx.ncol(ts)]
+    ts[dt, 1:TimeFrames.ncol(ts)]
 end
 
 function Base.getindex(ts::TimeFrame, d::T) where {T<:TimeType}
-    ts[[d], 1:TSx.ncol(ts)]
+    ts[[d], 1:TimeFrames.ncol(ts)]
 end
 
 # By period
@@ -467,7 +467,7 @@ end
 
 # By string timestamp
 function Base.getindex(ts::TimeFrame, i::String)
-    ind = findall(x -> x == TSx._convert(eltype(ts.coredata[!, :Index]), i), ts.coredata[!, :Index]) # XXX: may return duplicate indices
+    ind = findall(x -> x == TimeFrames._convert(eltype(ts.coredata[!, :Index]), i), ts.coredata[!, :Index]) # XXX: may return duplicate indices
     TimeFrame(ts.coredata[ind, :])     # XXX: check if data is being copied
 end
 
@@ -481,26 +481,26 @@ end
 
 ### Inputs: row colon, column scalar: return vector
 function Base.getindex(ts::TimeFrame, ::Colon, j::Int)
-    ts[1:TSx.nrow(ts), j]
+    ts[1:TimeFrames.nrow(ts), j]
 end
 
 function Base.getindex(ts::TimeFrame, ::Colon, j::Union{String, Symbol})
-    ts[1:TSx.nrow(ts), j]
+    ts[1:TimeFrames.nrow(ts), j]
 end
 ###
 
 ### Inputs: row colon, column vector: return TimeFrame
 function Base.getindex(ts::TimeFrame, ::Colon, j::AbstractVector{Int})
-    ts[1:TSx.nrow(ts), j]
+    ts[1:TimeFrames.nrow(ts), j]
 end
 
 function Base.getindex(ts::TimeFrame, ::Colon, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
-    ts[1:TSx.nrow(ts), j]
+    ts[1:TimeFrames.nrow(ts), j]
 end
 ###
 
 ### Inputs: row colon, column range: return TimeFrame
 function Base.getindex(ts::TimeFrame, i::Colon, j::UnitRange)
-    ts[1:TSx.nrow(ts), collect(j)]
+    ts[1:TimeFrames.nrow(ts), collect(j)]
 end
 ###

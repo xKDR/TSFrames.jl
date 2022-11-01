@@ -6,10 +6,10 @@ lead(ts::TimeFrame, lead_value::Int = 1)
 
 Similar to lag, this method leads the `ts` object by `lead_value`. The
 lead rows are inserted with `missing`. Negative values of lead are
-also accepted (see `TSx.lag`).
+also accepted (see `TimeFrames.lag`).
 
 # Examples
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random, Statistics;
 
 julia> random(x) = rand(MersenneTwister(123), x);
@@ -80,7 +80,7 @@ julia> lead(ts, 2)[1:10]     # leads by 2 values
 ```
 """
 function lead(ts::TimeFrame, lead_value::Int = 1)
-    sdf = DataFrame(ShiftedArrays.lead.(eachcol(ts.coredata[!, Not(:Index)]), lead_value), TSx.names(ts))
+    sdf = DataFrame(ShiftedArrays.lead.(eachcol(ts.coredata[!, Not(:Index)]), lead_value), TimeFrames.names(ts))
     insertcols!(sdf, 1, :Index => ts.coredata[!, :Index])
     TimeFrame(sdf, :Index)
 end

@@ -14,7 +14,7 @@ summary statistics are to be printed. For more information about these
 keywords, check out the corresponding [documentation from DataFrames.jl](https://dataframes.juliadata.org/stable/lib/functions/#DataAPI.describe).
 
 # Examples
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random;
 julia> random(x) = rand(MersenneTwister(123), x...);
 julia> ts = TimeFrame(random(([1, 2, 3, 4, missing], 10)))
@@ -56,7 +56,7 @@ julia> describe(ts, :min, sum => :sum, cols=:x1)
 function describe(io::IO, ts::TimeFrame; cols=:)
     DataFrames.describe(ts.coredata; cols=cols)
 end
-TSx.describe(ts::TimeFrame; cols=:) = TSx.describe(stdout, ts; cols=cols)
+TimeFrames.describe(ts::TimeFrame; cols=:) = TimeFrames.describe(stdout, ts; cols=cols)
 
 function describe(
     io::IO,
@@ -66,14 +66,14 @@ function describe(
 )
     DataFrames.describe(ts.coredata, stats...; cols=cols)
 end
-TSx.describe(
+TimeFrames.describe(
     ts::TimeFrame,
     stats::Union{Symbol, Pair{<:Base.Callable, <:Union{Symbol, AbstractString}}}...;
     cols=:
-) = TSx.describe(stdout, ts, stats...; cols=cols)
+) = TimeFrames.describe(stdout, ts, stats...; cols=cols)
 
 function Base.show(io::IO, ts::TimeFrame)
-    title = "$(TSx.nrow(ts))×$(TSx.ncol(ts)) TimeFrame with $(eltype(index(ts))) Index"
+    title = "$(TimeFrames.nrow(ts))×$(TimeFrames.ncol(ts)) TimeFrame with $(eltype(index(ts))) Index"
     Base.show(io, ts.coredata; show_row_number=false, title=title)
     return nothing
 end
@@ -95,9 +95,9 @@ nr(ts::TimeFrame)
 Return the number of rows of `ts`. `nr` is an alias for `nrow`.
 
 # Examples
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
 julia> ts = TimeFrame(collect(1:10))
-julia> TSx.nrow(ts)
+julia> TimeFrames.nrow(ts)
 10
 ```
 """
@@ -105,14 +105,14 @@ function nrow(ts::TimeFrame)
     DataFrames.size(ts.coredata)[1]
 end
 # alias
-nr = TSx.nrow
+nr = TimeFrames.nrow
 
 function Base.lastindex(ts::TimeFrame)
     lastindex(index(ts))
 end
 
 function Base.length(ts::TimeFrame)
-    TSx.nrow(ts)
+    TimeFrames.nrow(ts)
 end
 
 # Number of columns
@@ -126,12 +126,12 @@ ncol(ts::TimeFrame)
 Return the number of columns of `ts`. `nc` is an alias for `ncol`.
 
 # Examples
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random;
 
 julia> random(x) = rand(MersenneTwister(123), x);
 
-julia> TSx.ncol(TimeFrame([random(100) random(100) random(100)]))
+julia> TimeFrames.ncol(TimeFrame([random(100) random(100) random(100)]))
 3
 
 julia> nc(TimeFrame([random(100) random(100) random(100)]))
@@ -142,7 +142,7 @@ function ncol(ts::TimeFrame)
     DataFrames.size(ts.coredata)[2] - 1
 end
 # alias
-nc = TSx.ncol
+nc = TimeFrames.ncol
 
 # Size of
 """
@@ -154,14 +154,14 @@ size(ts::TimeFrame)
 Return the number of rows and columns of `ts` as a tuple.
 
 # Examples
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
-julia> TSx.size(TimeFrame([collect(1:100) collect(1:100) collect(1:100)]))
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
+julia> TimeFrames.size(TimeFrame([collect(1:100) collect(1:100) collect(1:100)]))
 (100, 3)
 ```
 """
 function size(ts::TimeFrame)
-    nr = TSx.nrow(ts)
-    nc = TSx.ncol(ts)
+    nr = TimeFrames.nrow(ts)
+    nc = TimeFrames.ncol(ts)
     (nr, nc)
 end
 
@@ -177,7 +177,7 @@ Return the index vector from the `coredata` DataFrame.
 
 # Examples
 
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random;
 
 julia> random(x) = rand(MersenneTwister(123), x);
@@ -233,7 +233,7 @@ Return a `Vector{String}` containing column names of the TimeFrame object,
 excludes index.
 
 # Examples
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
 julia> names(TimeFrame([1:10 11:20]))
 2-element Vector{String}:
  "x1"
@@ -255,7 +255,7 @@ first(ts::TimeFrame)
 Returns the first row of `ts` as a TimeFrame object.
 
 # Examples
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random)
 julia> first(TimeFrame(1:10))
 (10 x 1) TimeFrame with Dates.Date Index
 
@@ -279,7 +279,7 @@ head(ts::TimeFrame, n::Int = 10)
 Returns the first `n` rows of `ts`.
 
 # Examples
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random)
 julia> head(TimeFrame(1:100))
 (10 x 1) TimeFrame with Int64 Index
 
@@ -311,7 +311,7 @@ tail(ts::TimeFrame, n::Int = 10)
 
 Returns the last `n` rows of `ts`.
 
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random)
 julia> tail(TimeFrame(1:100))
 (10 x 1) TimeFrame with Int64 Index
 
@@ -346,7 +346,7 @@ Renames columns of `ts` to the values in `colnames`, in order. Input
 is a vector of either Strings or Symbols. The `Index` column name is reserved,
 and `rename!()` will throw an error if `colnames` contains the name `Index`.
 
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random)
 julia> ts
 (100 x 2) TimeFrame with Int64 Index
 

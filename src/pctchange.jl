@@ -12,7 +12,7 @@ of rows to be shifted over. The skipped rows are rendered as `missing`.
 `pctchange` returns an error if column type does not have the method `/`.
 
 # Examples
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random, Statistics;
 
 julia> random(x) = rand(MersenneTwister(123), x);
@@ -82,7 +82,7 @@ function pctchange(ts::TimeFrame, periods::Int = 1)
     if periods <= 0
         throw(ArgumentError("periods must be a positive int"))
     end
-    ddf = (ts.coredata[:, Not(:Index)] .- TSx.lag(ts, periods).coredata[:, Not(:Index)]) ./ abs.(TSx.lag(ts, periods).coredata[:, Not(:Index)])
+    ddf = (ts.coredata[:, Not(:Index)] .- TimeFrames.lag(ts, periods).coredata[:, Not(:Index)]) ./ abs.(TimeFrames.lag(ts, periods).coredata[:, Not(:Index)])
     insertcols!(ddf, 1, "Index" => ts.coredata[:, :Index])
     TimeFrame(ddf, :Index)
 end

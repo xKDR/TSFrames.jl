@@ -1,4 +1,4 @@
-module TSx
+module TimeFrames
 
 using DataFrames, Dates, ShiftedArrays, RecipesBase, RollingFunctions, Tables
 
@@ -85,4 +85,4 @@ include("vcat.jl")
 include("broadcasting.jl")
 include("tables.jl")
 
-end                             # END module TSx
+end                             # END module TimeFrames
