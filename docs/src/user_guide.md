@@ -1,22 +1,22 @@
 # User guide
 
-This page describes how to use the TSx package for timeseries data
+This page describes how to use the TimeFrames package for timeseries data
 handling.
 
 ## Installation
 
 ```julia
 julia> using Pkg
-julia> Pkg.add(url="https://github.com/xKDR/TSx.jl")
+julia> Pkg.add(url="https://github.com/xKDR/TimeFrames.jl")
 ```
 
 ## Constructing TimeFrame objects
 
-After installing TSx you need to load the package in Julia
+After installing TimeFrames you need to load the package in Julia
 environment. Then, create a basic `TimeFrame` object.
 
 ```@repl
-using TSx;
+using TimeFrames;
 ts = TimeFrame(1:10)
 ts.coredata
 ```
@@ -30,7 +30,7 @@ as a `DataFrame` and then operate on it. You can easily convert a
 `DataFrame` to a `TimeFrame` object.
 
 ```@repl e1
-using CSV, DataFrames, TSx, Dates
+using CSV, DataFrames, TimeFrames, Dates
 dates = Date(2007, 1, 1):Day(1):Date(2008, 03, 06)
 ts = TimeFrame(DataFrame(Index=dates, value=10*rand(431)))
 ```
@@ -73,7 +73,7 @@ julia> ts = CSV.File(filename, TimeFrame)
 ## Indexing and subsetting
 
 One of the primary features of a timeseries package is to provide ways
-to index or subset a dataset using convenient interfaces. TSx makes it
+to index or subset a dataset using convenient interfaces. TimeFrames makes it
 easier to index a `TimeFrame` object by providing multiple intuitive
 `getindex` methods which work by just using the regular square
 parentheses(`[ ]`).
@@ -86,7 +86,7 @@ ts[1, [:value]] # using the column name
 ```
 
 Apart from integer-based row indexing and integer, name based column
-indexing, TSx provides special subsetting methods for date and time
+indexing, TimeFrames provides special subsetting methods for date and time
 types defined inside the `Dates` module.
 
 ```@repl e1
@@ -110,7 +110,7 @@ missing values, data types of columns along with computed statistical
 values.
 
 ```@repl e1
-TSx.describe(ts)
+TimeFrames.describe(ts)
 ```
 
 
@@ -144,7 +144,7 @@ apply(ts, Week(1), Statistics.std, last, renamecols=false) # do not rename colum
 
 ## Joins: Row and column binding with other objects
 
-TSx provides methods to join two TimeFrame objects by columns: `join` (alias:
+TimeFrames provides methods to join two TimeFrame objects by columns: `join` (alias:
 `cbind`) or by rows: `vcat` (alias: `rbind`). Both the methods provide
 some basic intelligence while doing the merge.
 
@@ -230,7 +230,7 @@ lead(ts, 2)
 ## Converting to Matrix and DataFrame
 
 You can easily convert a TimeFrame object into a `Matrix` or fetch the
-`DataFrame` for doing operations which are outside of the TSx scope.
+`DataFrame` for doing operations which are outside of the TimeFrames scope.
 
 ```@repl e1
 ts[:, 1] # convert column 1 to a vector of floats
@@ -252,7 +252,7 @@ CSV.write("/tmp/demo_ts.csv", ts)
 Broadcasting can be used on a `TimeFrame` object to apply a function to a subset of it's columns.
 
 ```jldoctest
-julia> using TSx, DataFrames;
+julia> using TimeFrames, DataFrames;
 
 julia> ts = TimeFrame(DataFrame(Index = [1, 2, 3, 4, 5], A = [10.1, 12.4, 42.4, 24.1, 242.5], B = [2, 4, 6, 8, 10]))
 (5 x 2) TimeFrame with Int64 Index
@@ -311,7 +311,7 @@ julia> log_ts = log.(ts[:, [:A, :B]])   # can specify multiple columns
 As an example, first consider the following code which converts a `TimeFrame` object into a `DataFrame`, a `TimeArray` and a `CSV` file respectively.
 
 ```julia
-julia> using TSx, TimeSeries, Dates, DataFrames, CSV;
+julia> using TimeFrames, TimeSeries, Dates, DataFrames, CSV;
 
 julia> dates = Date(2018, 1, 1):Day(1):Date(2018, 12, 31)
 Date("2018-01-01"):Day(1):Date("2018-12-31")
@@ -332,7 +332,7 @@ julia> CSV.write("ts.csv", ts);
 Next, here is some code which converts a `DataFrame`, a `TimeArray` and a `CSV` file to a `TimeFrame` object.
 
 ```julia-repl
-julia> using TSx, DataFrames, CSV, TimeSeries, Dates;
+julia> using TimeFrames, DataFrames, CSV, TimeSeries, Dates;
 
 # converting DataFrame to TimeFrame
 julia> ts = TimeFrame(DataFrame(Index=1:10, x1=1:10));

@@ -1,21 +1,21 @@
-using TSx
+using TimeFrames
 using Documenter
 
-DocMeta.setdocmeta!(TSx, :DocTestSetup, :(using TSx, DataFrames, Dates, Statistics); recursive=true)
+DocMeta.setdocmeta!(TimeFrames, :DocTestSetup, :(using TimeFrames, DataFrames, Dates, Statistics); recursive=true)
 
 makedocs(;
-    modules=[TSx],
+    modules=[TimeFrames],
     authors="xKDR Forum",
-    repo="https://github.com/xKDR/TSx.jl/blob/{commit}{path}#{line}",
-    sitename="TSx.jl",
+    repo="https://github.com/xKDR/TimeFrames.jl/blob/{commit}{path}#{line}",
+    sitename="TimeFrames.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://xKDR.github.io/TSx.jl",
+        canonical="https://xKDR.github.io/TimeFrames.jl",
         assets=String[],
     ),
     pages=[
         "Introduction" => "index.md",
-        "Basic demo of TSx" => "demo_finance.md",
+        "Basic demo of TimeFrames" => "demo_finance.md",
         "User guide" => "user_guide.md",
         "API reference" => "api.md",
     ],
@@ -24,7 +24,7 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/xKDR/TSx.jl",
+    repo="github.com/xKDR/TimeFrames.jl",
     devbranch="main",
     target = "build",
 )

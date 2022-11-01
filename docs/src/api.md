@@ -1,14 +1,14 @@
 ```@meta
-CurrentModule = TSx
+CurrentModule = TimeFrames
 ```
 
-# TSx API reference
+# TimeFrames API reference
 
-API reference of [TSx](https://github.com/xKDR/TSx.jl).
+API reference of [TimeFrames](https://github.com/xKDR/TimeFrames.jl).
 
 ```@index
 ```
 
 ```@autodocs
-Modules = [TSx]
+Modules = [TimeFrames]
 ```
