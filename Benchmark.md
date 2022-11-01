@@ -26,7 +26,7 @@ Rows: 500
 
 Columns: timestamp, Open, High, Low, Close
 
-## Creating TimeFrames object from DataFrame
+## Creating a TimeFrame object from DataFrame
 ```
 @benchmark TimeFrames.TimeFrame(data) setup=(data = df)
 ```
