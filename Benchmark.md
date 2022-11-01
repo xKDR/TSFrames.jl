@@ -28,7 +28,7 @@ Columns: timestamp, Open, High, Low, Close
 
 ## Creating TSx object from DataFrame
 ```
-@benchmark TSx.TS(data) setup=(data = df)
+@benchmark TSx.TimeFrame(data) setup=(data = df)
 ```
 ```
  Range (min … max):  20.400 μs … 59.300 μs  ┊ GC (min … max): 0.00% … 0.00%
@@ -138,7 +138,7 @@ Time  (mean ± σ):   104.520 μs ±  34.220 μs  ┊ GC (mean ± σ):  0.00% ±
 v = [i for i in 1:2:500]
 df2 = df[v,[:timestamp,:Open,:High,:Low,:Close]]
 rename!(df2, :Open => :open1, :High => :high1, :Low => :low1, :Close => :close1)
-ts2 = TSx.TS(df2)
+ts2 = TSx.TimeFrame(df2)
 ```
 ### Left Join
 
@@ -189,8 +189,8 @@ ts2 = TSx.TS(df2)
 ```
 df3 = df[1:300,[:timestamp,:Open,:High,:Low,:Close]]
 df4 = df[300:end,[:timestamp,:Open,:High,:Low,:Close]]
-ts3 = TSx.TS(df3)
-ts4 = TSx.TS(df4)
+ts3 = TSx.TimeFrame(df3)
+ts4 = TSx.TimeFrame(df4)
 ```
 
 ```

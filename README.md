@@ -21,14 +21,14 @@ julia> Pkg.add(url="https://github.com/xKDR/TSx.jl")
 
 ## Basic usage
 
-### Creating TS objects
-TSx is a [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible package. This helps in easy conversion between `TS` objects and other [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible types. For example, to load a `CSV` into a `TS` object, we do the following.
+### Creating TimeFrame objects
+TSx is a [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible package. This helps in easy conversion between `TimeFrame` objects and other [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible types. For example, to load a `CSV` into a `TimeFrame` object, we do the following.
 
 ```julia
 julia> using CSV, Dates, DataFrames, TSx
 
-julia> ts = CSV.read("IBM.csv", TS)
-(252 x 6) TS with Dates.Date Index
+julia> ts = CSV.read("IBM.csv", TimeFrame)
+(252 x 6) TimeFrame with Dates.Date Index
 
  Index       Open     High     Low      Close    Adj Close  Volume
  Date        Float64  Float64  Float64  Float64  Float64    Int64
@@ -56,13 +56,13 @@ julia> ts = CSV.read("IBM.csv", TS)
                                                      233 rows omitted
 ```
 
-As another example of this, consider the following code, which converts a `TimeArray` object to a `TS` object. For this, we use the `MarketData.yahoo` function from the [MarketData.jl](https://juliaquant.github.io/MarketData.jl/stable/) package, which returns a `TimeArray` object.
+As another example of this, consider the following code, which converts a `TimeArray` object to a `TimeFrame` object. For this, we use the `MarketData.yahoo` function from the [MarketData.jl](https://juliaquant.github.io/MarketData.jl/stable/) package, which returns a `TimeArray` object.
 
 ```julia
 julia> using TSx, MarketData;
 
-julia> TS(MarketData.yahoo(:AAPL))
-10550×6 TS with Date Index
+julia> TimeFrame(MarketData.yahoo(:AAPL))
+10550×6 TimeFrame with Date Index
  Index       Open        High        Low         Close       AdjClose    Volume
  Date        Float64     Float64     Float64     Float64     Float64     Float64
 ───────────────────────────────────────────────────────────────────────────────────
@@ -101,7 +101,7 @@ julia> TS(MarketData.yahoo(:AAPL))
 ### Indexing
 ```julia
 julia> ts[1:10, [:Close]]
-(10 x 1) TS with Dates.Date Index
+(10 x 1) TimeFrame with Dates.Date Index
 
  Index       Close
  Date        Float64
@@ -124,7 +124,7 @@ julia> ts[1:10, [:Close]]
 julia> from = Date(2021, 04, 29); to = Date(2021, 06, 02);
 
 julia> TSx.subset(ts, from, to)
-(24 x 6) TS with Date Index
+(24 x 6) TimeFrame with Date Index
 
  Index       Open     High     Low      Close    Adj Close  Volume  
  Date        Float64  Float64  Float64  Float64  Float64    Int64   
@@ -160,7 +160,7 @@ julia> TSx.subset(ts, from, to)
 ```julia
 julia> ep = endpoints(ts, Week(1));
 julia> ts_weekly = ts[ep]
-(52 x 6) TS with Date Index
+(52 x 6) TimeFrame with Date Index
 
  Index       Open_last  High_last  Low_last  Close_last  Adj Close_last  Volume_last 
  Date        Float64    Float64    Float64   Float64     Float64         Int64       
