@@ -1,31 +1,31 @@
-# TSx
+# TimeFrames
 
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://xKDR.github.io/TSx.jl/stable)
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://xKDR.github.io/TSx.jl/dev)
-![Build Status](https://github.com/xKDR/TSx.jl/actions/workflows/documentation.yml/badge.svg)
-[![codecov](https://codecov.io/gh/xKDR/TSx.jl/branch/main/graph/badge.svg?token=9qkJUtdgrz)](https://codecov.io/gh/xKDR/TSx.jl)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://xKDR.github.io/TimeFrames.jl/stable)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://xKDR.github.io/TimeFrames.jl/dev)
+![Build Status](https://github.com/xKDR/TimeFrames.jl/actions/workflows/documentation.yml/badge.svg)
+[![codecov](https://codecov.io/gh/xKDR/TimeFrames.jl/branch/main/graph/badge.svg?token=9qkJUtdgrz)](https://codecov.io/gh/xKDR/TimeFrames.jl)
 
-TSx is a Julia package to handle timeseries data. It provides a
+TimeFrames is a Julia package to handle timeseries data. It provides a
 convenient interface for the commonly used timeseries data
-manipulations. TSx is built on top of the powerful and mature
+manipulations. TimeFrames is built on top of the powerful and mature
 [DataFrames.jl](https://github.com/JuliaData/DataFrames.jl) making
 use of the many capabilities of the `DataFrame` type and being easily
 extensible at the same time.
 
-## Installing TSx
+## Installing TimeFrames
 
 ```julia
 julia> using Pkg
-julia> Pkg.add(url="https://github.com/xKDR/TSx.jl")
+julia> Pkg.add(url="https://github.com/xKDR/TimeFrames.jl")
 ```
 
 ## Basic usage
 
 ### Creating TimeFrame objects
-TSx is a [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible package. This helps in easy conversion between `TimeFrame` objects and other [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible types. For example, to load a `CSV` into a `TimeFrame` object, we do the following.
+TimeFrames is a [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible package. This helps in easy conversion between `TimeFrame` objects and other [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible types. For example, to load a `CSV` into a `TimeFrame` object, we do the following.
 
 ```julia
-julia> using CSV, Dates, DataFrames, TSx
+julia> using CSV, Dates, DataFrames, TimeFrames
 
 julia> ts = CSV.read("IBM.csv", TimeFrame)
 (252 x 6) TimeFrame with Dates.Date Index
@@ -59,7 +59,7 @@ julia> ts = CSV.read("IBM.csv", TimeFrame)
 As another example of this, consider the following code, which converts a `TimeArray` object to a `TimeFrame` object. For this, we use the `MarketData.yahoo` function from the [MarketData.jl](https://juliaquant.github.io/MarketData.jl/stable/) package, which returns a `TimeArray` object.
 
 ```julia
-julia> using TSx, MarketData;
+julia> using TimeFrames, MarketData;
 
 julia> TimeFrame(MarketData.yahoo(:AAPL))
 10550×6 TimeFrame with Date Index
@@ -123,7 +123,7 @@ julia> ts[1:10, [:Close]]
 ```julia
 julia> from = Date(2021, 04, 29); to = Date(2021, 06, 02);
 
-julia> TSx.subset(ts, from, to)
+julia> TimeFrames.subset(ts, from, to)
 (24 x 6) TimeFrame with Date Index
 
  Index       Open     High     Low      Close    Adj Close  Volume  
@@ -184,9 +184,9 @@ julia> plot(ts_weekly[:, [:Close_last]], size = (600, 400))
 
 ## Documentation
 
-Head to the TSx [user guide](https://xkdr.github.io/TSx.jl/dev/user_guide/) for more
+Head to the TimeFrames [user guide](https://xkdr.github.io/TimeFrames.jl/dev/user_guide/) for more
 examples and functionality. The API reference is available on the
-[documentation](https://xkdr.github.io/TSx.jl/dev/api/) page.
+[documentation](https://xkdr.github.io/TimeFrames.jl/dev/api/) page.
 
 ## Contributions
 

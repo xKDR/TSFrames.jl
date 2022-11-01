@@ -1,7 +1,7 @@
-# TSx Benchmarks
+# TimeFrames Benchmarks
 
 ```
-import .TSx
+import .TimeFrames
 using DataFrames, Dates, BenchmarkTools, MarketData
 BenchmarkTools.DEFAULT_PARAMETERS.samples = 10
 df = DataFrame(ohlc)
@@ -26,9 +26,9 @@ Rows: 500
 
 Columns: timestamp, Open, High, Low, Close
 
-## Creating TSx object from DataFrame
+## Creating TimeFrames object from DataFrame
 ```
-@benchmark TSx.TimeFrame(data) setup=(data = df)
+@benchmark TimeFrames.TimeFrame(data) setup=(data = df)
 ```
 ```
  Range (min … max):  20.400 μs … 59.300 μs  ┊ GC (min … max): 0.00% … 0.00%
@@ -63,7 +63,7 @@ BenchmarkTools.Trial: 10 samples with 1 evaluation.
 ## Apply methods
 
 ```
-@benchmark TSx.apply(data, Month, mean,[:Open, :Close]) setup=(data=ts)
+@benchmark TimeFrames.apply(data, Month, mean,[:Open, :Close]) setup=(data=ts)
 ```
 
 ```
@@ -73,7 +73,7 @@ BenchmarkTools.Trial: 10 samples with 1 evaluation.
 ```
 
 ```
-@benchmark TSx.apply(data, Year, sum,[:Low, :Close]) setup=(data=ts)
+@benchmark TimeFrames.apply(data, Year, sum,[:Low, :Close]) setup=(data=ts)
 ```
 ```
  Range (min … max):  279.600 μs … 508.600 μs  ┊ GC (min … max): 0.00% … 0.00%
@@ -85,7 +85,7 @@ BenchmarkTools.Trial: 10 samples with 1 evaluation.
 
 ### Lag
 ```
- @benchmark TSx.lag(data,2) setup=(data = ts)
+ @benchmark TimeFrames.lag(data,2) setup=(data = ts)
 ```
 ```
  Range (min … max):  47.400 μs … 117.900 μs  ┊ GC (min … max): 0.00% … 0.00%
@@ -95,7 +95,7 @@ BenchmarkTools.Trial: 10 samples with 1 evaluation.
 ### Diff
 
 ```
- @benchmark TSx.diff(data,1) setup=(data = ts)
+ @benchmark TimeFrames.diff(data,1) setup=(data = ts)
 ```
 ```
 Range (min … max):  155.300 μs … 257.700 μs  ┊ GC (min … max): 0.00% … 0.00%        
@@ -105,7 +105,7 @@ Range (min … max):  155.300 μs … 257.700 μs  ┊ GC (min … max): 0.00% �
 ### pctchange
 
 ```
-@benchmark TSx.pctchange(data,1) setup=(data = ts)
+@benchmark TimeFrames.pctchange(data,1) setup=(data = ts)
 ```
 ```
  Range (min … max):  161.300 μs … 263.900 μs  ┊ GC (min … max): 0.00% … 0.00%       
@@ -116,7 +116,7 @@ Range (min … max):  155.300 μs … 257.700 μs  ┊ GC (min … max): 0.00% �
 ## Log returns
 
 ```
-@benchmark TSx.computelogreturns(data[1:500,2]) setup = (data = ts)
+@benchmark TimeFrames.computelogreturns(data[1:500,2]) setup = (data = ts)
 ```
 ```
 Range (min … max):   86.000 μs … 199.600 μs  ┊ GC (min … max): 0.00% … 0.00%
@@ -125,7 +125,7 @@ Time  (mean ± σ):   104.520 μs ±  34.220 μs  ┊ GC (mean ± σ):  0.00% ±
 ```
 
 ```
-@benchmark TSx.rollapply(mean, data, 3, 5) setup = (data = ts)
+@benchmark TimeFrames.rollapply(mean, data, 3, 5) setup = (data = ts)
 ```
 ```
  Range (min … max):  29.600 μs … 82.700 μs  ┊ GC (min … max): 0.00% … 0.00%
@@ -138,12 +138,12 @@ Time  (mean ± σ):   104.520 μs ±  34.220 μs  ┊ GC (mean ± σ):  0.00% ±
 v = [i for i in 1:2:500]
 df2 = df[v,[:timestamp,:Open,:High,:Low,:Close]]
 rename!(df2, :Open => :open1, :High => :high1, :Low => :low1, :Close => :close1)
-ts2 = TSx.TimeFrame(df2)
+ts2 = TimeFrames.TimeFrame(df2)
 ```
 ### Left Join
 
 ```
-@benchmark TSx.leftjoin(ts,ts2)
+@benchmark TimeFrames.leftjoin(ts,ts2)
 ```
 ```
  Range (min … max):  107.100 μs … 220.100 μs  ┊ GC (min … max): 0.00% … 0.00%       
@@ -154,7 +154,7 @@ ts2 = TSx.TimeFrame(df2)
 ### Right Join
 
 ```
-@benchmark TSx.rightjoin(ts,ts2)
+@benchmark TimeFrames.rightjoin(ts,ts2)
 ```
 ```
  Range (min … max):   96.700 μs … 206.400 μs  ┊ GC (min … max): 0.00% … 0.00%       
@@ -165,7 +165,7 @@ ts2 = TSx.TimeFrame(df2)
 ### Inner Join
 
 ```
-@benchmark TSx.innerjoin(ts,ts2)
+@benchmark TimeFrames.innerjoin(ts,ts2)
 ```
 ```
  Range (min … max):  71.800 μs … 180.400 μs  ┊ GC (min … max): 0.00% … 0.00%
@@ -176,7 +176,7 @@ ts2 = TSx.TimeFrame(df2)
 ### Outer Join
 
 ```
- @benchmark TSx.outerjoin(ts,ts2)
+ @benchmark TimeFrames.outerjoin(ts,ts2)
 ```
 ```
  Range (min … max):  114.300 μs … 228.800 μs  ┊ GC (min … max): 0.00% … 0.00%
@@ -189,8 +189,8 @@ ts2 = TSx.TimeFrame(df2)
 ```
 df3 = df[1:300,[:timestamp,:Open,:High,:Low,:Close]]
 df4 = df[300:end,[:timestamp,:Open,:High,:Low,:Close]]
-ts3 = TSx.TimeFrame(df3)
-ts4 = TSx.TimeFrame(df4)
+ts3 = TimeFrames.TimeFrame(df3)
+ts4 = TimeFrames.TimeFrame(df4)
 ```
 
 ```
