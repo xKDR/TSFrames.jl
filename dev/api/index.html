@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>API reference · TSx.jl</title><script data-outdated-warner src="../assets/warner.js"></script><link rel="canonical" href="https://xKDR.github.io/TSx.jl/api/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">TSx.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Introduction</a></li><li><a class="tocitem" href="../demo_finance/">Basic demo of TSx</a></li><li><a class="tocitem" href="../user_guide/">User guide</a></li><li class="is-active"><a class="tocitem" href>API reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>API reference</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>API reference</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/xKDR/TSx.jl/blob/main/docs/src/api.md#" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="TSx-API-reference"><a class="docs-heading-anchor" href="#TSx-API-reference">TSx API reference</a><a id="TSx-API-reference-1"></a><a class="docs-heading-anchor-permalink" href="#TSx-API-reference" title="Permalink"></a></h1><p>API reference of <a href="https://github.com/xKDR/TSx.jl">TSx</a>.</p><ul><li><a href="#Base.Matrix-Tuple{TS}"><code>Base.Matrix</code></a></li><li><a href="#TSx.TS"><code>TSx.TS</code></a></li><li><a href="#Base.first-Tuple{TS}"><code>Base.first</code></a></li><li><a href="#Base.join-Tuple{TS, TS}"><code>Base.join</code></a></li><li><a href="#Base.size-Tuple{TS}"><code>Base.size</code></a></li><li><a href="#Base.vcat-Tuple{TS, TS}"><code>Base.vcat</code></a></li><li><a href="#RecipesBase.apply_recipe"><code>RecipesBase.apply_recipe</code></a></li><li><a href="#TSx._check_consistency-Tuple{TS}"><code>TSx._check_consistency</code></a></li><li><a href="#TSx.apply-Union{Tuple{V}, Tuple{T}, Tuple{TS, T, V}, Tuple{TS, T, V, Function}} where {T&lt;:Dates.Period, V&lt;:Function}"><code>TSx.apply</code></a></li><li><a href="#TSx.describe-Tuple{IO, TS}"><code>TSx.describe</code></a></li><li><a href="#TSx.endpoints"><code>TSx.endpoints</code></a></li><li><a href="#TSx.head"><code>TSx.head</code></a></li><li><a href="#TSx.index-Tuple{TS}"><code>TSx.index</code></a></li><li><a href="#TSx.lag"><code>TSx.lag</code></a></li><li><a href="#TSx.lead"><code>TSx.lead</code></a></li><li><a href="#TSx.ncol-Tuple{TS}"><code>TSx.ncol</code></a></li><li><a href="#TSx.nrow-Tuple{TS}"><code>TSx.nrow</code></a></li><li><a href="#TSx.rollapply-Tuple{Function, TS, Any, Int64}"><code>TSx.rollapply</code></a></li><li><a href="#TSx.subset-Union{Tuple{T}, Tuple{TS, T, T}} where T&lt;:Union{Int64, Dates.TimeType}"><code>TSx.subset</code></a></li><li><a href="#TSx.tail"><code>TSx.tail</code></a></li></ul><article class="docstring"><header><a class="docstring-binding" id="Base.Matrix-Tuple{TS}" href="#Base.Matrix-Tuple{TS}"><code>Base.Matrix</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Conversion of non-Index data to Matrix</strong></p><p>Data in non-index columns of a TS object can be converted into a <code>Matrix</code> type for further numerical analysis using the <code>Matrix()</code> constructor.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>API reference · TimeFrames.jl</title><script data-outdated-warner src="../assets/warner.js"></script><link rel="canonical" href="https://xKDR.github.io/TimeFrames.jl/api/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">TimeFrames.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Introduction</a></li><li><a class="tocitem" href="../demo_finance/">Basic demo of TimeFrames</a></li><li><a class="tocitem" href="../user_guide/">User guide</a></li><li class="is-active"><a class="tocitem" href>API reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>API reference</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>API reference</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/xKDR/TimeFrames.jl/blob/main/docs/src/api.md#" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="TimeFrames-API-reference"><a class="docs-heading-anchor" href="#TimeFrames-API-reference">TimeFrames API reference</a><a id="TimeFrames-API-reference-1"></a><a class="docs-heading-anchor-permalink" href="#TimeFrames-API-reference" title="Permalink"></a></h1><p>API reference of <a href="https://github.com/xKDR/TimeFrames.jl">TimeFrames</a>.</p><ul><li><a href="#Base.Matrix-Tuple{TimeFrame}"><code>Base.Matrix</code></a></li><li><a href="#TimeFrames.TimeFrame"><code>TimeFrames.TimeFrame</code></a></li><li><a href="#Base.first-Tuple{TimeFrame}"><code>Base.first</code></a></li><li><a href="#Base.join-Tuple{TimeFrame, TimeFrame}"><code>Base.join</code></a></li><li><a href="#Base.size-Tuple{TimeFrame}"><code>Base.size</code></a></li><li><a href="#Base.vcat-Tuple{TimeFrame, TimeFrame}"><code>Base.vcat</code></a></li><li><a href="#RecipesBase.apply_recipe"><code>RecipesBase.apply_recipe</code></a></li><li><a href="#TimeFrames._check_consistency-Tuple{TimeFrame}"><code>TimeFrames._check_consistency</code></a></li><li><a href="#TimeFrames.apply-Union{Tuple{V}, Tuple{T}, Tuple{TimeFrame, T, V}, Tuple{TimeFrame, T, V, Function}} where {T&lt;:Dates.Period, V&lt;:Function}"><code>TimeFrames.apply</code></a></li><li><a href="#TimeFrames.describe-Tuple{IO, TimeFrame}"><code>TimeFrames.describe</code></a></li><li><a href="#TimeFrames.endpoints"><code>TimeFrames.endpoints</code></a></li><li><a href="#TimeFrames.head"><code>TimeFrames.head</code></a></li><li><a href="#TimeFrames.index-Tuple{TimeFrame}"><code>TimeFrames.index</code></a></li><li><a href="#TimeFrames.lag"><code>TimeFrames.lag</code></a></li><li><a href="#TimeFrames.lead"><code>TimeFrames.lead</code></a></li><li><a href="#TimeFrames.ncol-Tuple{TimeFrame}"><code>TimeFrames.ncol</code></a></li><li><a href="#TimeFrames.nrow-Tuple{TimeFrame}"><code>TimeFrames.nrow</code></a></li><li><a href="#TimeFrames.rollapply-Tuple{Function, TimeFrame, Any, Int64}"><code>TimeFrames.rollapply</code></a></li><li><a href="#TimeFrames.subset-Union{Tuple{T}, Tuple{TimeFrame, T, T}} where T&lt;:Union{Int64, Dates.TimeType}"><code>TimeFrames.subset</code></a></li><li><a href="#TimeFrames.tail"><code>TimeFrames.tail</code></a></li></ul><article class="docstring"><header><a class="docstring-binding" id="Base.Matrix-Tuple{TimeFrame}" href="#Base.Matrix-Tuple{TimeFrame}"><code>Base.Matrix</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Conversion of non-Index data to Matrix</strong></p><p>Data in non-index columns of a TimeFrame object can be converted into a <code>Matrix</code> type for further numerical analysis using the <code>Matrix()</code> constructor.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
 julia&gt; random(x) = rand(MersenneTwister(123), x);
-julia&gt; ts = TS([random(10) random(10)])
+julia&gt; ts = TimeFrame([random(10) random(10)])
 julia&gt; show(ts)
-(10 x 2) TS with Int64 Index
+(10 x 2) TimeFrame with Int64 Index
 
  Index  x1         x2
  Int64  Float64    Float64
@@ -30,16 +30,16 @@ julia&gt; Matrix(ts)
  0.586022   0.586022
  0.0521332  0.0521332
  0.26864    0.26864
- 0.108871   0.108871</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/7794c54a421d2fadbd74a3ced0cd0fe789119177/src/matrix.jl#L1-L44">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.TS" href="#TSx.TS"><code>TSx.TS</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct TS
+ 0.108871   0.108871</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TimeFrames.jl/blob/a7e6aa9a1ce719601744c11acd5ba31a10ea977c/src/matrix.jl#L1-L44">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TimeFrames.TimeFrame" href="#TimeFrames.TimeFrame"><code>TimeFrames.TimeFrame</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">struct TimeFrame
   coredata :: DataFrame
-end</code></pre><p><code>::TS</code> - A type to hold ordered data with an index.</p><p>A TS object is essentially a <code>DataFrame</code> with a specific column marked as an index. The input <code>DataFrame</code> is sorted during construction and is stored under the property <code>coredata</code>. The index is stored in the <code>Index</code> column of <code>coredata</code>.</p><p>Permitted data inputs to the constructors are <code>DataFrame</code>, <code>Vector</code>, and 2-dimensional <code>Array</code>. If an index is already not present in the constructor then a sequential integer index is created automatically.</p><p><code>TS(coredata::DataFrame)</code>: Here, the constructor looks for a column named <code>Index</code> in <code>coredata</code> as the index column, if this is not found then the first column of <code>coredata</code> is made the index by default. If <code>coredata</code> only has a single column then a new sequential index is generated.</p><p>Since <code>TS.coredata</code> is a DataFrame it can be operated upon independently using methods provided by the DataFrames package (ex. <code>transform</code>, <code>combine</code>, etc.).</p><p><strong>Constructors</strong></p><pre><code class="language-julia hljs">TS(coredata::DataFrame, index::Union{String, Symbol, Int})
-TS(coredata::DataFrame, index::AbstractVector{T}) where {T&lt;:Union{Int, TimeType}}
-TS(coredata::DataFrame)
-TS(coredata::DataFrame, index::UnitRange{Int})
-TS(coredata::AbstractVector{T}, index::AbstractVector{V}; colnames=:auto) where {T, V}
-TS(coredata::AbstractVector{T}; colnames=:auto) where {T}
-TS(coredata::AbstractArray{T,2}; colnames=:auto) where {T}
-TS(coredata::AbstractArray{T,2}, index::AbstractVector{V}; colnames=:auto) where {T, V}</code></pre><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
+end</code></pre><p><code>::TimeFrame</code> - A type to hold ordered data with an index.</p><p>A TimeFrame object is essentially a <code>DataFrame</code> with a specific column marked as an index. The input <code>DataFrame</code> is sorted during construction and is stored under the property <code>coredata</code>. The index is stored in the <code>Index</code> column of <code>coredata</code>.</p><p>Permitted data inputs to the constructors are <code>DataFrame</code>, <code>Vector</code>, and 2-dimensional <code>Array</code>. If an index is already not present in the constructor then a sequential integer index is created automatically.</p><p><code>TimeFrame(coredata::DataFrame)</code>: Here, the constructor looks for a column named <code>Index</code> in <code>coredata</code> as the index column, if this is not found then the first column of <code>coredata</code> is made the index by default. If <code>coredata</code> only has a single column then a new sequential index is generated.</p><p>Since <code>TimeFrame.coredata</code> is a DataFrame it can be operated upon independently using methods provided by the DataFrames package (ex. <code>transform</code>, <code>combine</code>, etc.).</p><p><strong>Constructors</strong></p><pre><code class="language-julia hljs">TimeFrame(coredata::DataFrame, index::Union{String, Symbol, Int})
+TimeFrame(coredata::DataFrame, index::AbstractVector{T}) where {T&lt;:Union{Int, TimeType}}
+TimeFrame(coredata::DataFrame)
+TimeFrame(coredata::DataFrame, index::UnitRange{Int})
+TimeFrame(coredata::AbstractVector{T}, index::AbstractVector{V}; colnames=:auto) where {T, V}
+TimeFrame(coredata::AbstractVector{T}; colnames=:auto) where {T}
+TimeFrame(coredata::AbstractArray{T,2}; colnames=:auto) where {T}
+TimeFrame(coredata::AbstractArray{T,2}, index::AbstractVector{V}; colnames=:auto) where {T, V}</code></pre><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
 julia&gt; random(x) = rand(MersenneTwister(123), x);
 
 julia&gt; df = DataFrame(x1 = random(10))
@@ -58,8 +58,8 @@ julia&gt; df = DataFrame(x1 = random(10))
    9 │ 0.26864
   10 │ 0.108871
 
-julia&gt; ts = TS(df)   # generates index
-(10 x 1) TS with Int64 Index
+julia&gt; ts = TimeFrame(df)   # generates index
+(10 x 1) TimeFrame with Int64 Index
 
  Index  x1
  Int64  Float64
@@ -92,8 +92,8 @@ julia&gt; df = DataFrame(ind = [1, 2, 3], x1 = random(3))
    2 │     2  0.940515
    3 │     3  0.673959
 
-julia&gt; ts = TS(df, 1)        # the first column is index
-(3 x 1) TS with Int64 Index
+julia&gt; ts = TimeFrame(df, 1)        # the first column is index
+(3 x 1) TimeFrame with Int64 Index
 
  Index  x1
  Int64  Float64
@@ -111,8 +111,8 @@ julia&gt; df = DataFrame(x1 = random(3), x2 = random(3), Index = [1, 2, 3]);
    2 │ 0.940515  0.940515      2
    3 │ 0.673959  0.673959      3
 
-julia&gt; ts = TS(df)   # uses existing `Index` column
-(3 x 2) TS with Int64 Index
+julia&gt; ts = TimeFrame(df)   # uses existing `Index` column
+(3 x 2) TimeFrame with Int64 Index
 
  Index  x1        x2
  Int64  Float64   Float64
@@ -139,8 +139,8 @@ julia&gt; df = DataFrame(dates = dates, x1 = random(10))
    9 │ 2017-01-09  0.26864
   10 │ 2017-01-10  0.108871
 
-julia&gt; ts = TS(df, :dates)
-(10 x 1) TS with Date Index
+julia&gt; ts = TimeFrame(df, :dates)
+(10 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -156,10 +156,10 @@ julia&gt; ts = TS(df, :dates)
  2017-01-09  0.26864
  2017-01-10  0.108871
 
-julia&gt; ts = TS(DataFrame(x1=random(10)), dates);
+julia&gt; ts = TimeFrame(DataFrame(x1=random(10)), dates);
 
-julia&gt; ts = TS(random(10))
-(10 x 1) TS with Int64 Index
+julia&gt; ts = TimeFrame(random(10))
+(10 x 1) TimeFrame with Int64 Index
 
  Index  x1
  Int64  Float64
@@ -175,8 +175,8 @@ julia&gt; ts = TS(random(10))
      9  0.26864
     10  0.108871
 
-julia&gt; ts = TS(random(10), colnames=[:A]) # column is named A
-(10 x 1) TS with Int64 Index
+julia&gt; ts = TimeFrame(random(10), colnames=[:A]) # column is named A
+(10 x 1) TimeFrame with Int64 Index
 
  Index  A
  Int64  Float64
@@ -192,8 +192,8 @@ julia&gt; ts = TS(random(10), colnames=[:A]) # column is named A
      9  0.26864
     10  0.108871
 
-julia&gt; ts = TS(random(10), dates)
-(10 x 1) TS with Date Index
+julia&gt; ts = TimeFrame(random(10), dates)
+(10 x 1) TimeFrame with Date Index
 
  Index       x1        
  Date        Float64   
@@ -209,8 +209,8 @@ julia&gt; ts = TS(random(10), dates)
  2017-01-09  0.26864
  2017-01-10  0.108871
 
-julia&gt; ts = TS(random(10), dates, colnames=[:A]) # column is named A
-(10 x 1) TS with Date Index
+julia&gt; ts = TimeFrame(random(10), dates, colnames=[:A]) # column is named A
+(10 x 1) TimeFrame with Date Index
 
  Index       A         
  Date        Float64   
@@ -226,8 +226,8 @@ julia&gt; ts = TS(random(10), dates, colnames=[:A]) # column is named A
  2017-01-09  0.26864
  2017-01-10  0.108871
 
-julia&gt; ts = TS([random(10) random(10)]) # matrix object
-(10 x 2) TS with Int64 Index
+julia&gt; ts = TimeFrame([random(10) random(10)]) # matrix object
+(10 x 2) TimeFrame with Int64 Index
 
  Index  x1         x2        
  Int64  Float64    Float64   
@@ -243,8 +243,8 @@ julia&gt; ts = TS([random(10) random(10)]) # matrix object
      9  0.26864    0.26864
     10  0.108871   0.108871
 
-julia&gt; ts = TS([random(10) random(10)], colnames=[:A, :B]) # columns are named A and B
-(10 x 2) TS with Int64 Index
+julia&gt; ts = TimeFrame([random(10) random(10)], colnames=[:A, :B]) # columns are named A and B
+(10 x 2) TimeFrame with Int64 Index
 
  Index  A          B       
  Int64  Float64    Float64   
@@ -260,8 +260,8 @@ julia&gt; ts = TS([random(10) random(10)], colnames=[:A, :B]) # columns are name
      9  0.26864    0.26864
     10  0.108871   0.108871
 
-julia&gt; ts = TS([random(10) random(10)], dates) 
-(10 x 2) TS with Date Index
+julia&gt; ts = TimeFrame([random(10) random(10)], dates) 
+(10 x 2) TimeFrame with Date Index
 
  Index       x1         x2
  Date        Float64    Float64
@@ -277,8 +277,8 @@ julia&gt; ts = TS([random(10) random(10)], dates)
  2017-01-09  0.26864    0.26864
  2017-01-10  0.108871   0.108871
 
-julia&gt; ts = TS([random(10) random(10)], dates, colnames=[:A, :B]) # columns are named A and B
-(10 x 2) TS with Date Index
+julia&gt; ts = TimeFrame([random(10) random(10)], dates, colnames=[:A, :B]) # columns are named A and B
+(10 x 2) TimeFrame with Date Index
 
  Index       A          B         
  Date        Float64    Float64   
@@ -293,22 +293,22 @@ julia&gt; ts = TS([random(10) random(10)], dates, colnames=[:A, :B]) # columns a
  2017-01-08  0.0521332  0.0521332
  2017-01-09  0.26864    0.26864
  2017-01-10  0.108871   0.108871
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/7794c54a421d2fadbd74a3ced0cd0fe789119177/src/TS.jl#L1-L298">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Base.first-Tuple{TS}" href="#Base.first-Tuple{TS}"><code>Base.first</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>First Row</strong></p><pre><code class="language-julia hljs">first(ts::TS)</code></pre><p>Returns the first row of <code>ts</code> as a TS object.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; first(TS(1:10))
-(10 x 1) TS with Dates.Date Index
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TimeFrames.jl/blob/a7e6aa9a1ce719601744c11acd5ba31a10ea977c/src/TimeFrame.jl#L1-L298">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Base.first-Tuple{TimeFrame}" href="#Base.first-Tuple{TimeFrame}"><code>Base.first</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>First Row</strong></p><pre><code class="language-julia hljs">first(ts::TimeFrame)</code></pre><p>Returns the first row of <code>ts</code> as a TimeFrame object.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; first(TimeFrame(1:10))
+(10 x 1) TimeFrame with Dates.Date Index
 
  Index       x1
  Date        Float64
 ───────────────────────
  2022-02-01  0.768448
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/7794c54a421d2fadbd74a3ced0cd0fe789119177/src/utils.jl#L249-L268">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Base.join-Tuple{TS, TS}" href="#Base.join-Tuple{TS, TS}"><code>Base.join</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Joins/Column-binding</strong></p><p><code>TS</code> objects can be combined together column-wise using <code>Index</code> as the column key. There are four kinds of column-binding operations possible as of now. Each join operation works by performing a Set operation on the <code>Index</code> column and then merging the datasets based on the output from the Set operation. Each operation changes column names in the final object automatically if the operation encounters duplicate column names amongst the TS objects.</p><p>The following join types are supported:</p><p><code>join(ts1::TS, ts2::TS, ::Type{JoinInner})</code> and <code>join(ts1::TS, ts2::TS, ::Type{JoinBoth})</code></p><p>a.k.a. inner join, takes the intersection of the indexes of <code>ts1</code> and <code>ts2</code>, and then merges the columns of both the objects. The resulting object will only contain rows which are present in both the objects&#39; indexes. The function will rename columns in the final object if they had same names in the TS objects.</p><p><code>join(ts1::TS, ts2::TS, ::Type{JoinOuter})</code> and <code>join(ts1::TS, ts2::TS, ::Type{JoinAll})</code>:</p><p>a.k.a. outer join, takes the union of the indexes of <code>ts1</code> and <code>ts2</code> before merging the other columns of input objects. The output will contain rows which are present in all the input objects while inserting <code>missing</code> values where a row was not present in any of the objects. This is the default behaviour if no <code>JoinType</code> object is provided.</p><p><code>join(ts1::TS, ts2::TS, ::Type{JoinLeft})</code>:</p><p>Left join takes the index values which are present in the left object <code>ts1</code> and finds matching index values in the right object <code>ts2</code>. The resulting object includes all the rows from the left object, the column values from the left object, and the values associated with matching index rows on the right. The operation inserts <code>missing</code> values where in the unmatched rows of the right object.</p><p><code>join(ts1::TS, ts2::TS, ::Type{JoinRight})</code></p><p>Right join, similar to left join but works in the opposite direction. The final object contains all the rows from the right object while inserting <code>missing</code> values in rows missing from the left object.</p><p>The default behaviour is to assume <code>JoinAll</code> if no <code>JoinType</code> object is provided to the <code>join</code> method.</p><p><code>cbind</code> is an alias for <code>join</code> method.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TimeFrames.jl/blob/a7e6aa9a1ce719601744c11acd5ba31a10ea977c/src/utils.jl#L249-L268">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Base.join-Tuple{TimeFrame, TimeFrame}" href="#Base.join-Tuple{TimeFrame, TimeFrame}"><code>Base.join</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Joins/Column-binding</strong></p><p><code>TimeFrame</code> objects can be combined together column-wise using <code>Index</code> as the column key. There are four kinds of column-binding operations possible as of now. Each join operation works by performing a Set operation on the <code>Index</code> column and then merging the datasets based on the output from the Set operation. Each operation changes column names in the final object automatically if the operation encounters duplicate column names amongst the TimeFrame objects.</p><p>The following join types are supported:</p><p><code>join(ts1::TimeFrame, ts2::TimeFrame, ::Type{JoinInner})</code> and <code>join(ts1::TimeFrame, ts2::TimeFrame, ::Type{JoinBoth})</code></p><p>a.k.a. inner join, takes the intersection of the indexes of <code>ts1</code> and <code>ts2</code>, and then merges the columns of both the objects. The resulting object will only contain rows which are present in both the objects&#39; indexes. The function will rename columns in the final object if they had same names in the TimeFrame objects.</p><p><code>join(ts1::TimeFrame, ts2::TimeFrame, ::Type{JoinOuter})</code> and <code>join(ts1::TimeFrame, ts2::TimeFrame, ::Type{JoinAll})</code>:</p><p>a.k.a. outer join, takes the union of the indexes of <code>ts1</code> and <code>ts2</code> before merging the other columns of input objects. The output will contain rows which are present in all the input objects while inserting <code>missing</code> values where a row was not present in any of the objects. This is the default behaviour if no <code>JoinType</code> object is provided.</p><p><code>join(ts1::TimeFrame, ts2::TimeFrame, ::Type{JoinLeft})</code>:</p><p>Left join takes the index values which are present in the left object <code>ts1</code> and finds matching index values in the right object <code>ts2</code>. The resulting object includes all the rows from the left object, the column values from the left object, and the values associated with matching index rows on the right. The operation inserts <code>missing</code> values where in the unmatched rows of the right object.</p><p><code>join(ts1::TimeFrame, ts2::TimeFrame, ::Type{JoinRight})</code></p><p>Right join, similar to left join but works in the opposite direction. The final object contains all the rows from the right object while inserting <code>missing</code> values in rows missing from the left object.</p><p>The default behaviour is to assume <code>JoinAll</code> if no <code>JoinType</code> object is provided to the <code>join</code> method.</p><p><code>cbind</code> is an alias for <code>join</code> method.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
 
 julia&gt; random(x) = rand(MersenneTwister(123), x);
 
 julia&gt; dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10));
 
-julia&gt; ts1 = TS(random(length(dates)), dates)
+julia&gt; ts1 = TimeFrame(random(length(dates)), dates)
 julia&gt; show(ts1)
-(10 x 1) TS with Dates.Date Index
+(10 x 1) TimeFrame with Dates.Date Index
 
  Index       x1
  Date        Float64
@@ -326,9 +326,9 @@ julia&gt; show(ts1)
 
 julia&gt; dates = collect(Date(2017,1,1):Day(1):Date(2017,1,30));
 
-julia&gt; ts2 = TS(random(length(dates)), dates);
+julia&gt; ts2 = TimeFrame(random(length(dates)), dates);
 julia&gt; show(ts2)
-(30 x 1) TS with Dates.Date Index
+(30 x 1) TimeFrame with Dates.Date Index
 
  Index       x1
  Date        Float64
@@ -356,7 +356,7 @@ julia&gt; show(ts2)
 # join on all index values
 # equivalent to `join(ts1, ts2, JoinAll)` call
 julia&gt; join(ts1, ts2)
-(30 x 2) TS with Date Index
+(30 x 2) TimeFrame with Date Index
 
  Index       x1               x1_1
  Date        Float64?         Float64?
@@ -388,7 +388,7 @@ julia&gt; cbind(ts1, ts2);
 
 # join only the common index values
 julia&gt; join(ts1, ts2, JoinBoth)
-(10 x 2) TS with Date Index
+(10 x 2) TimeFrame with Date Index
 
  Index       x1         x1_1
  Date        Float64    Float64
@@ -407,7 +407,7 @@ julia&gt; join(ts1, ts2, JoinBoth)
 
 # keep index values of `ts1`
 julia&gt; join(ts1, ts2, JoinLeft)
-(10 x 2) TS with Date Index
+(10 x 2) TimeFrame with Date Index
 
  Index       x1         x1_1
  Date        Float64    Float64?
@@ -426,7 +426,7 @@ julia&gt; join(ts1, ts2, JoinLeft)
 
 # keep index values of `ts2`
 julia&gt; join(ts1, ts2, JoinRight)
-(30 x 2) TS with Date Index
+(30 x 2) TimeFrame with Date Index
 
  Index       x1               x1_1
  Date        Float64?         Float64
@@ -452,8 +452,8 @@ julia&gt; join(ts1, ts2, JoinRight)
  2017-01-29  missing          0.555668
  2017-01-30  missing          0.940782
                          11 rows omitted
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/7794c54a421d2fadbd74a3ced0cd0fe789119177/src/join.jl#L14-L224">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Base.size-Tuple{TS}" href="#Base.size-Tuple{TS}"><code>Base.size</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Size methods</strong></p><pre><code class="language-julia hljs">size(ts::TS)</code></pre><p>Return the number of rows and columns of <code>ts</code> as a tuple.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; TSx.size(TS([collect(1:100) collect(1:100) collect(1:100)]))
-(100, 3)</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/7794c54a421d2fadbd74a3ced0cd0fe789119177/src/utils.jl#L148-L161">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Base.vcat-Tuple{TS, TS}" href="#Base.vcat-Tuple{TS, TS}"><code>Base.vcat</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Row-merging (vcat/rbind)</strong></p><pre><code class="language-julia hljs">vcat(ts1::TS, ts2::TS; colmerge::Symbol=:union)</code></pre><p>Concatenate rows of two TS objects, append <code>ts2</code> to <code>ts1</code>.</p><p>The <code>colmerge</code> keyword argument specifies the column merge strategy. The value of <code>colmerge</code> is directly passed to <code>cols</code> argument of <code>DataFrames.vcat</code>.</p><p>Currently, <code>DataFrames.vcat</code> supports four types of column-merge strategies:</p><ol><li><code>:setequal</code>: only merge if both objects have same column names, use the order of columns in <code>ts1</code>.</li><li><code>:orderequal</code>: only merge if both objects have same column names and columns are in the same order.</li><li><code>:intersect</code>: only merge the columns which are common to both objects, ignore the rest.</li><li><code>:union</code>: merge even if columns differ, the resulting object has all the columns filled with <code>missing</code>, if necessary.</li></ol><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TimeFrames.jl/blob/a7e6aa9a1ce719601744c11acd5ba31a10ea977c/src/join.jl#L14-L224">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Base.size-Tuple{TimeFrame}" href="#Base.size-Tuple{TimeFrame}"><code>Base.size</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Size methods</strong></p><pre><code class="language-julia hljs">size(ts::TimeFrame)</code></pre><p>Return the number of rows and columns of <code>ts</code> as a tuple.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; TimeFrames.size(TimeFrame([collect(1:100) collect(1:100) collect(1:100)]))
+(100, 3)</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TimeFrames.jl/blob/a7e6aa9a1ce719601744c11acd5ba31a10ea977c/src/utils.jl#L148-L161">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="Base.vcat-Tuple{TimeFrame, TimeFrame}" href="#Base.vcat-Tuple{TimeFrame, TimeFrame}"><code>Base.vcat</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Row-merging (vcat/rbind)</strong></p><pre><code class="language-julia hljs">vcat(ts1::TimeFrame, ts2::TimeFrame; colmerge::Symbol=:union)</code></pre><p>Concatenate rows of two TimeFrame objects, append <code>ts2</code> to <code>ts1</code>.</p><p>The <code>colmerge</code> keyword argument specifies the column merge strategy. The value of <code>colmerge</code> is directly passed to <code>cols</code> argument of <code>DataFrames.vcat</code>.</p><p>Currently, <code>DataFrames.vcat</code> supports four types of column-merge strategies:</p><ol><li><code>:setequal</code>: only merge if both objects have same column names, use the order of columns in <code>ts1</code>.</li><li><code>:orderequal</code>: only merge if both objects have same column names and columns are in the same order.</li><li><code>:intersect</code>: only merge the columns which are common to both objects, ignore the rest.</li><li><code>:union</code>: merge even if columns differ, the resulting object has all the columns filled with <code>missing</code>, if necessary.</li></ol><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
 
 julia&gt; random(x) = rand(MersenneTwister(123), x);
 
@@ -461,9 +461,9 @@ julia&gt; dates1 = collect(Date(2017,1,1):Day(1):Date(2017,1,10));
 
 julia&gt; dates2 = collect(Date(2017,1,11):Day(1):Date(2017,1,30));
 
-julia&gt; ts1 = TS([randn(length(dates1)) randn(length(dates1))], dates1)
+julia&gt; ts1 = TimeFrame([randn(length(dates1)) randn(length(dates1))], dates1)
 julia&gt; show(ts1)
-(10 x 1) TS with Dates.Date Index
+(10 x 1) TimeFrame with Dates.Date Index
 
  Index       x1
  Date        Float64
@@ -480,9 +480,9 @@ julia&gt; show(ts1)
  2017-01-10  -1.08461
 
 julia&gt; df = DataFrame(x1 = randn(length(dates2)), y1 = randn(length(dates2)))
-julia&gt; ts2 = TS(df, dates2)
+julia&gt; ts2 = TimeFrame(df, dates2)
 julia&gt; show(ts2)
-(20 x 1) TS with Dates.Date Index
+(20 x 1) TimeFrame with Dates.Date Index
 
  Index       x1
  Date        Float64
@@ -508,7 +508,7 @@ julia&gt; show(ts2)
 
 
 julia&gt; vcat(ts1, ts2)
-(30 x 3) TS with Date Index
+(30 x 3) TimeFrame with Date Index
 
  Index       x1          x2              y1
  Date        Float64     Float64?        Float64?
@@ -545,7 +545,7 @@ julia&gt; vcat(ts1, ts2)
  2017-01-30   0.516704   missing               0.216855
 
 julia&gt; vcat(ts1, ts2; colmerge=:intersect)
-(30 x 1) TS with Date Index
+(30 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -580,9 +580,9 @@ julia&gt; vcat(ts1, ts2; colmerge=:intersect)
  2017-01-28   0.278259
  2017-01-29   0.0231765
  2017-01-30   0.516704
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/7794c54a421d2fadbd74a3ced0cd0fe789119177/src/vcat.jl#L1-L152">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="RecipesBase.apply_recipe" href="#RecipesBase.apply_recipe"><code>RecipesBase.apply_recipe</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Plotting</strong></p><pre><code class="language-julia hljs">plot(ts::TS, cols::Vector{Int} = collect(1:TSx.ncol(ts)))
-plot(ts::TS, cols::Vector{T}) where {T&lt;:Union{String, Symbol}}
-plot(ts::TS, cols::T) where {T&lt;:Union{Int, String, Symbol}}</code></pre><p>Plots a TS object with the index on the x-axis and selected <code>cols</code> on the y-axis. By default, plot all the columns. Columns can be selected using Int indexes, String(s), or Symbol(s).</p><p><strong>Example</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TimeFrames.jl/blob/a7e6aa9a1ce719601744c11acd5ba31a10ea977c/src/vcat.jl#L1-L152">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="RecipesBase.apply_recipe" href="#RecipesBase.apply_recipe"><code>RecipesBase.apply_recipe</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Plotting</strong></p><pre><code class="language-julia hljs">plot(ts::TimeFrame, cols::Vector{Int} = collect(1:TimeFrames.ncol(ts)))
+plot(ts::TimeFrame, cols::Vector{T}) where {T&lt;:Union{String, Symbol}}
+plot(ts::TimeFrame, cols::T) where {T&lt;:Union{Int, String, Symbol}}</code></pre><p>Plots a TimeFrame object with the index on the x-axis and selected <code>cols</code> on the y-axis. By default, plot all the columns. Columns can be selected using Int indexes, String(s), or Symbol(s).</p><p><strong>Example</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
 julia&gt; random(x) = rand(MersenneTwister(123), x);
 julia&gt; dates = Date(&quot;2022-01-01&quot;):Month(1):Date(&quot;2022-01-01&quot;)+Month(11);
 
@@ -591,9 +591,9 @@ julia&gt; df = DataFrame(Index = dates,
         val2 = random(12),
         val3 = random(12));
 
-julia&gt; ts = TS(df)
+julia&gt; ts = TimeFrame(df)
 julia&gt; show(ts)
-(12 x 3) TS with Dates.Date Index
+(12 x 3) TimeFrame with Dates.Date Index
 
  Index       val1        val2        val3
  Date        Float64     Float64     Float64
@@ -620,7 +620,7 @@ julia&gt; # plot(ts)
 julia&gt; # plot(ts[1:6], [:val1, :val3]);
 
 # plot columns 1 and 2 on a specified window size
-julia&gt; # plot(ts, [1, 2], size=(600, 400));</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/7794c54a421d2fadbd74a3ced0cd0fe789119177/src/plot.jl#L1-L56">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx._check_consistency-Tuple{TS}" href="#TSx._check_consistency-Tuple{TS}"><code>TSx._check_consistency</code></a> — <span class="docstring-category">Method</span></header><section><div><p>Internal function to check consistency of the Index of a TS object.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/7794c54a421d2fadbd74a3ced0cd0fe789119177/src/utils.jl#L401-L404">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.apply-Union{Tuple{V}, Tuple{T}, Tuple{TS, T, V}, Tuple{TS, T, V, Function}} where {T&lt;:Dates.Period, V&lt;:Function}" href="#TSx.apply-Union{Tuple{V}, Tuple{T}, Tuple{TS, T, V}, Tuple{TS, T, V, Function}} where {T&lt;:Dates.Period, V&lt;:Function}"><code>TSx.apply</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Apply/Period conversion</strong></p><pre><code class="language-julia hljs">apply(ts::TS,
+julia&gt; # plot(ts, [1, 2], size=(600, 400));</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TimeFrames.jl/blob/a7e6aa9a1ce719601744c11acd5ba31a10ea977c/src/plot.jl#L1-L56">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TimeFrames._check_consistency-Tuple{TimeFrame}" href="#TimeFrames._check_consistency-Tuple{TimeFrame}"><code>TimeFrames._check_consistency</code></a> — <span class="docstring-category">Method</span></header><section><div><p>Internal function to check consistency of the Index of a TimeFrame object.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TimeFrames.jl/blob/a7e6aa9a1ce719601744c11acd5ba31a10ea977c/src/utils.jl#L401-L404">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TimeFrames.apply-Union{Tuple{V}, Tuple{T}, Tuple{TimeFrame, T, V}, Tuple{TimeFrame, T, V, Function}} where {T&lt;:Dates.Period, V&lt;:Function}" href="#TimeFrames.apply-Union{Tuple{V}, Tuple{T}, Tuple{TimeFrame, T, V}, Tuple{TimeFrame, T, V, Function}} where {T&lt;:Dates.Period, V&lt;:Function}"><code>TimeFrames.apply</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Apply/Period conversion</strong></p><pre><code class="language-julia hljs">apply(ts::TimeFrame,
       period::T,
       fun::V,
       index_at::Function=first;
@@ -629,9 +629,9 @@ julia&gt; # plot(ts, [1, 2], size=(600, 400));</code></pre></div><a class="docs-
 julia&gt; random(x) = rand(MersenneTwister(123), x);
 julia&gt; dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10));
 
-julia&gt; ts = TS(random(length(dates)), dates)
+julia&gt; ts = TimeFrame(random(length(dates)), dates)
 julia&gt; show(ts[1:10])
-(10 x 1) TS with Date Index
+(10 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -648,7 +648,7 @@ julia&gt; show(ts[1:10])
  2017-01-10  0.108871
 
 julia&gt; apply(ts, Month(1), first)
-(15 x 1) TS with Date Index
+(15 x 1) TimeFrame with Date Index
 
  Index       x1_first
  Date        Float64
@@ -671,7 +671,7 @@ julia&gt; apply(ts, Month(1), first)
 
 # alternate months
 julia&gt; apply(ts, Month(2), first)
-(8 x 1) TS with Date Index
+(8 x 1) TimeFrame with Date Index
 
  Index       x1_first
  Date        Float64
@@ -688,7 +688,7 @@ julia&gt; apply(ts, Month(2), first)
 
 julia&gt; ts_weekly = apply(ts, Week(1), Statistics.std) # weekly standard deviation
 julia&gt; show(ts_weekly[1:10])
-(10 x 1) TS with Date Index
+(10 x 1) TimeFrame with Date Index
 
  Index       x1_std
  Date        Float64
@@ -707,7 +707,7 @@ julia&gt; show(ts_weekly[1:10])
 
 julia&gt; ts_weekly = apply(ts, Week(1), Statistics.std, last) # indexed by last date of the week
 julia&gt; show(ts_weekly[1:10])
-(10 x 1) TS with Date Index
+(10 x 1) TimeFrame with Date Index
 
  Index       x1_std
  Date        Float64
@@ -722,10 +722,10 @@ julia&gt; show(ts_weekly[1:10])
  2017-02-19    0.319216
  2017-02-26    0.272058
  2017-03-05    0.23651
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/7794c54a421d2fadbd74a3ced0cd0fe789119177/src/apply.jl#L1-L133">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.describe-Tuple{IO, TS}" href="#TSx.describe-Tuple{IO, TS}"><code>TSx.describe</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Summary statistics</strong></p><pre><code class="language-julia hljs">describe(ts::TS; cols=:)
-describe(ts::TS, stats::Union{Symbol, Pair}...; cols=:)</code></pre><p>Compute summary statistics of <code>ts</code>. The output is a <code>DataFrame</code> containing standard statistics along with number of missing values and data types of columns. The <code>cols</code> keyword controls which subset of columns from <code>ts</code> to be selected. The <code>stats</code> keyword is used to control which summary statistics are to be printed. For more information about these keywords, check out the corresponding <a href="https://dataframes.juliadata.org/stable/lib/functions/#DataAPI.describe">documentation from DataFrames.jl</a>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TimeFrames.jl/blob/a7e6aa9a1ce719601744c11acd5ba31a10ea977c/src/apply.jl#L1-L133">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TimeFrames.describe-Tuple{IO, TimeFrame}" href="#TimeFrames.describe-Tuple{IO, TimeFrame}"><code>TimeFrames.describe</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Summary statistics</strong></p><pre><code class="language-julia hljs">describe(ts::TimeFrame; cols=:)
+describe(ts::TimeFrame, stats::Union{Symbol, Pair}...; cols=:)</code></pre><p>Compute summary statistics of <code>ts</code>. The output is a <code>DataFrame</code> containing standard statistics along with number of missing values and data types of columns. The <code>cols</code> keyword controls which subset of columns from <code>ts</code> to be selected. The <code>stats</code> keyword is used to control which summary statistics are to be printed. For more information about these keywords, check out the corresponding <a href="https://dataframes.juliadata.org/stable/lib/functions/#DataAPI.describe">documentation from DataFrames.jl</a>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
 julia&gt; random(x) = rand(MersenneTwister(123), x...);
-julia&gt; ts = TS(random(([1, 2, 3, 4, missing], 10)))
+julia&gt; ts = TimeFrame(random(([1, 2, 3, 4, missing], 10)))
 julia&gt; describe(ts)
 2×7 DataFrame
  Row │ variable  mean     min    median   max    nmissing  eltype
@@ -758,7 +758,7 @@ julia&gt; describe(ts, :min, sum =&gt; :sum, cols=:x1)
      │ Symbol    Int64  Int64
 ─────┼────────────────────────
    1 │ x1            2     22
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/7794c54a421d2fadbd74a3ced0cd0fe789119177/src/utils.jl#L1-L55">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.endpoints" href="#TSx.endpoints"><code>TSx.endpoints</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Computing end points</strong></p><pre><code class="language-julia hljs">endpoints(timestamps::AbstractVector{T}, on::V) where {T&lt;:Union{Date, DateTime, Time},
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TimeFrames.jl/blob/a7e6aa9a1ce719601744c11acd5ba31a10ea977c/src/utils.jl#L1-L55">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TimeFrames.endpoints" href="#TimeFrames.endpoints"><code>TimeFrames.endpoints</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Computing end points</strong></p><pre><code class="language-julia hljs">endpoints(timestamps::AbstractVector{T}, on::V) where {T&lt;:Union{Date, DateTime, Time},
                                                        V&lt;:Union{
                                                            Year,
                                                            Quarter,
@@ -772,15 +772,15 @@ julia&gt; describe(ts, :min, sum =&gt; :sum, cols=:x1)
                                                            Microsecond,
                                                            Nanosecond
                                                        }}
-endpoints(ts::TS, on::T) where {T&lt;:Dates.Period}
-endpoints(ts::TS, on::Symbol, k::Int=1)
-endpoints(ts::TS, on::String, k::Int=1)
-endpoints(ts::TS, on::Function, k::Int=1)
-endpoints(values::AbstractVector, on::Function, k::Int=1)</code></pre><p>Return an integer vector of values for last observation in <code>timestamps</code> for each period given by <code>on</code>. The values are picked up every <code>on.value</code> instance of the period.</p><p>Can be used to subset a <code>TS</code> object directly using this function&#39;s return value. The methods work for regular time series of any periodicity and irregular time series belonging to any of the time-based types provided by the <code>Dates</code> module.</p><p>The primary method works for series of all time types including <code>Date</code>, <code>DateTime</code>, and <code>Time</code>, and for <code>on</code> belonging to any of the sub-types of <code>Dates.Period</code>. The <code>::TS</code> methods are provided for convenience and call the primary method directly using the <code>Index</code> column.</p><p>For the methods accepting <code>on</code> of <code>Function</code> type the <code>values</code> vector will get converted into unique period-groups which act as unique keys. The method uses these keys to create groups of values and uses the period provided by <code>on</code> to pick up the last observation in each group. <code>k</code> decides the number of groups to skip. For example, <code>k=2</code> picks every alternate group starting from the 2ⁿᵈ element out of the ones created by <code>on</code>. See the examples below to see how the function works in the real world. The <code>on</code> function should return a <code>Vector</code> to be used as grouping keys.</p><p><code>endpoints(ts::TS, on::Symbol)</code> and <code>endpoints(ts::TS, on::String)</code> are convenience methods where valid values for <code>on</code> are: <code>:years</code>, <code>:quarters</code>, <code>:months</code>, <code>:weeks</code>, <code>:days</code>, <code>:hours</code>, <code>:minutes</code>, <code>:seconds</code>, <code>:milliseconds</code>, <code>:microseconds</code>, and <code>:nanoseconds</code>.</p><p>Note, that except for <code>on::Function</code> all other methods expect <code>Index</code> type of <code>TS</code> to be a subtype of <code>TimeType</code>.</p><p>The method returns <code>Vector{Int}</code> corresponding to the matched values in the first argument.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random
+endpoints(ts::TimeFrame, on::T) where {T&lt;:Dates.Period}
+endpoints(ts::TimeFrame, on::Symbol, k::Int=1)
+endpoints(ts::TimeFrame, on::String, k::Int=1)
+endpoints(ts::TimeFrame, on::Function, k::Int=1)
+endpoints(values::AbstractVector, on::Function, k::Int=1)</code></pre><p>Return an integer vector of values for last observation in <code>timestamps</code> for each period given by <code>on</code>. The values are picked up every <code>on.value</code> instance of the period.</p><p>Can be used to subset a <code>TimeFrame</code> object directly using this function&#39;s return value. The methods work for regular time series of any periodicity and irregular time series belonging to any of the time-based types provided by the <code>Dates</code> module.</p><p>The primary method works for series of all time types including <code>Date</code>, <code>DateTime</code>, and <code>Time</code>, and for <code>on</code> belonging to any of the sub-types of <code>Dates.Period</code>. The <code>::TimeFrame</code> methods are provided for convenience and call the primary method directly using the <code>Index</code> column.</p><p>For the methods accepting <code>on</code> of <code>Function</code> type the <code>values</code> vector will get converted into unique period-groups which act as unique keys. The method uses these keys to create groups of values and uses the period provided by <code>on</code> to pick up the last observation in each group. <code>k</code> decides the number of groups to skip. For example, <code>k=2</code> picks every alternate group starting from the 2ⁿᵈ element out of the ones created by <code>on</code>. See the examples below to see how the function works in the real world. The <code>on</code> function should return a <code>Vector</code> to be used as grouping keys.</p><p><code>endpoints(ts::TimeFrame, on::Symbol)</code> and <code>endpoints(ts::TimeFrame, on::String)</code> are convenience methods where valid values for <code>on</code> are: <code>:years</code>, <code>:quarters</code>, <code>:months</code>, <code>:weeks</code>, <code>:days</code>, <code>:hours</code>, <code>:minutes</code>, <code>:seconds</code>, <code>:milliseconds</code>, <code>:microseconds</code>, and <code>:nanoseconds</code>.</p><p>Note, that except for <code>on::Function</code> all other methods expect <code>Index</code> type of <code>TimeFrame</code> to be a subtype of <code>TimeType</code>.</p><p>The method returns <code>Vector{Int}</code> corresponding to the matched values in the first argument.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random
 julia&gt; random(x) = rand(MersenneTwister(123), x);
 julia&gt; dates = Date(2017):Day(1):Date(2019);
-julia&gt; ts = TS(random(length(dates)), dates)
-(731 x 1) TS with Date Index
+julia&gt; ts = TimeFrame(random(length(dates)), dates)
+(731 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -836,7 +836,7 @@ julia&gt; ep = endpoints(ts, Month(1))
  731
 
 julia&gt; ts[ep]
-(25 x 1) TS with Date Index
+(25 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -896,7 +896,7 @@ julia&gt; diff(index(ts[ep]))
 
 # every 2ⁿᵈ month
 julia&gt; ts[endpoints(ts, Month(2))]
-(12 x 1) TS with Date Index
+(12 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -1004,8 +1004,8 @@ julia&gt; datetimesecondsrandom[endpoints(datetimesecondsrandom, Hour(1))]
  2022-10-08T11:56:46
  2022-10-08T12:32:08
  2022-10-08T13:59:08
- 2022-10-08T14:37:17</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/7794c54a421d2fadbd74a3ced0cd0fe789119177/src/endpoints.jl#L1-L293">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.head" href="#TSx.head"><code>TSx.head</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Head</strong></p><pre><code class="language-julia hljs">head(ts::TS, n::Int = 10)</code></pre><p>Returns the first <code>n</code> rows of <code>ts</code>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; head(TS(1:100))
-(10 x 1) TS with Int64 Index
+ 2022-10-08T14:37:17</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TimeFrames.jl/blob/a7e6aa9a1ce719601744c11acd5ba31a10ea977c/src/endpoints.jl#L1-L293">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TimeFrames.head" href="#TimeFrames.head"><code>TimeFrames.head</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Head</strong></p><pre><code class="language-julia hljs">head(ts::TimeFrame, n::Int = 10)</code></pre><p>Returns the first <code>n</code> rows of <code>ts</code>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; head(TimeFrame(1:100))
+(10 x 1) TimeFrame with Int64 Index
 
  Index  x1
  Int64  Int64
@@ -1019,15 +1019,15 @@ julia&gt; datetimesecondsrandom[endpoints(datetimesecondsrandom, Hour(1))]
      7      7
      8      8
      9      9
-    10     10</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/7794c54a421d2fadbd74a3ced0cd0fe789119177/src/utils.jl#L274-L300">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.index-Tuple{TS}" href="#TSx.index-Tuple{TS}"><code>TSx.index</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Index column</strong></p><pre><code class="language-julia hljs">index(ts::TS)</code></pre><p>Return the index vector from the <code>coredata</code> DataFrame.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
+    10     10</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TimeFrames.jl/blob/a7e6aa9a1ce719601744c11acd5ba31a10ea977c/src/utils.jl#L274-L300">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TimeFrames.index-Tuple{TimeFrame}" href="#TimeFrames.index-Tuple{TimeFrame}"><code>TimeFrames.index</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Index column</strong></p><pre><code class="language-julia hljs">index(ts::TimeFrame)</code></pre><p>Return the index vector from the <code>coredata</code> DataFrame.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
 
 julia&gt; random(x) = rand(MersenneTwister(123), x);
 
-julia&gt; ts = TS(random(10), Date(&quot;2022-02-01&quot;):Month(1):Date(&quot;2022-02-01&quot;)+Month(9));
+julia&gt; ts = TimeFrame(random(10), Date(&quot;2022-02-01&quot;):Month(1):Date(&quot;2022-02-01&quot;)+Month(9));
 
 
 julia&gt; show(ts)
-(10 x 1) TS with Dates.Date Index
+(10 x 1) TimeFrame with Dates.Date Index
 
  Index       x1
  Date        Float64
@@ -1057,15 +1057,15 @@ julia&gt; index(ts)
  2022-11-01
 
 julia&gt;  eltype(index(ts))
-Date</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/7794c54a421d2fadbd74a3ced0cd0fe789119177/src/utils.jl#L169-L221">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.lag" href="#TSx.lag"><code>TSx.lag</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Lagging</strong></p><pre><code class="language-julia hljs">lag(ts::TS, lag_value::Int = 1)</code></pre><p>Lag the <code>ts</code> object by the specified <code>lag_value</code>. The rows corresponding to lagged values will be rendered as <code>missing</code>. Negative values of lag are also accepted (see <code>TSx.lead</code>).</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random, Statistics;
+Date</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TimeFrames.jl/blob/a7e6aa9a1ce719601744c11acd5ba31a10ea977c/src/utils.jl#L169-L221">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TimeFrames.lag" href="#TimeFrames.lag"><code>TimeFrames.lag</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Lagging</strong></p><pre><code class="language-julia hljs">lag(ts::TimeFrame, lag_value::Int = 1)</code></pre><p>Lag the <code>ts</code> object by the specified <code>lag_value</code>. The rows corresponding to lagged values will be rendered as <code>missing</code>. Negative values of lag are also accepted (see <code>TimeFrames.lead</code>).</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random, Statistics;
 
 julia&gt; random(x) = rand(MersenneTwister(123), x);
 
 julia&gt; dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10));
 
-julia&gt; ts = TS(random(length(dates)), dates);
+julia&gt; ts = TimeFrame(random(length(dates)), dates);
 julia&gt; show(ts)
-(10 x 1) TS with Dates.Date Index
+(10 x 1) TimeFrame with Dates.Date Index
 
  Index       x1
  Date        Float64
@@ -1083,7 +1083,7 @@ julia&gt; show(ts)
 
 
 julia&gt; lag(ts)
-(10 x 1) TS with Date Index
+(10 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64?
@@ -1100,7 +1100,7 @@ julia&gt; lag(ts)
  2017-01-10        0.26864
 
 julia&gt; lag(ts, 2) # lags by 2 values
-(10 x 1) TS with Date Index
+(10 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64?
@@ -1115,15 +1115,15 @@ julia&gt; lag(ts, 2) # lags by 2 values
  2017-01-08        0.662555
  2017-01-09        0.586022
  2017-01-10        0.0521332
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/7794c54a421d2fadbd74a3ced0cd0fe789119177/src/lag.jl#L1-L73">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.lead" href="#TSx.lead"><code>TSx.lead</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Leading</strong></p><pre><code class="language-julia hljs">lead(ts::TS, lead_value::Int = 1)</code></pre><p>Similar to lag, this method leads the <code>ts</code> object by <code>lead_value</code>. The lead rows are inserted with <code>missing</code>. Negative values of lead are also accepted (see <code>TSx.lag</code>).</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random, Statistics;
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TimeFrames.jl/blob/a7e6aa9a1ce719601744c11acd5ba31a10ea977c/src/lag.jl#L1-L73">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TimeFrames.lead" href="#TimeFrames.lead"><code>TimeFrames.lead</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Leading</strong></p><pre><code class="language-julia hljs">lead(ts::TimeFrame, lead_value::Int = 1)</code></pre><p>Similar to lag, this method leads the <code>ts</code> object by <code>lead_value</code>. The lead rows are inserted with <code>missing</code>. Negative values of lead are also accepted (see <code>TimeFrames.lag</code>).</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random, Statistics;
 
 julia&gt; random(x) = rand(MersenneTwister(123), x);
 
 julia&gt; dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10));
 
-julia&gt; ts = TS(DataFrame(Index = dates, x1 = random(length(dates))))
+julia&gt; ts = TimeFrame(DataFrame(Index = dates, x1 = random(length(dates))))
 julia&gt; show(ts)
-(434 x 1) TS with Dates.Date Index
+(434 x 1) TimeFrame with Dates.Date Index
 
  Index       x1
  Date        Float64
@@ -1149,7 +1149,7 @@ julia&gt; show(ts)
 
 
 julia&gt; lead(ts)[1:10]        # leads once
-(10 x 1) TS with Date Index
+(10 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64?
@@ -1166,7 +1166,7 @@ julia&gt; lead(ts)[1:10]        # leads once
  2017-01-10  0.163666
 
 julia&gt; lead(ts, 2)[1:10]     # leads by 2 values
-(10 x 1) TS with Date Index
+(10 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64?
@@ -1181,21 +1181,21 @@ julia&gt; lead(ts, 2)[1:10]     # leads by 2 values
  2017-01-08  0.108871
  2017-01-09  0.163666
  2017-01-10  0.473017
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/7794c54a421d2fadbd74a3ced0cd0fe789119177/src/lead.jl#L1-L81">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.ncol-Tuple{TS}" href="#TSx.ncol-Tuple{TS}"><code>TSx.ncol</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Size methods</strong></p><pre><code class="language-julia hljs">ncol(ts::TS)</code></pre><p>Return the number of columns of <code>ts</code>. <code>nc</code> is an alias for <code>ncol</code>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TimeFrames.jl/blob/a7e6aa9a1ce719601744c11acd5ba31a10ea977c/src/lead.jl#L1-L81">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TimeFrames.ncol-Tuple{TimeFrame}" href="#TimeFrames.ncol-Tuple{TimeFrame}"><code>TimeFrames.ncol</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Size methods</strong></p><pre><code class="language-julia hljs">ncol(ts::TimeFrame)</code></pre><p>Return the number of columns of <code>ts</code>. <code>nc</code> is an alias for <code>ncol</code>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
 
 julia&gt; random(x) = rand(MersenneTwister(123), x);
 
-julia&gt; TSx.ncol(TS([random(100) random(100) random(100)]))
+julia&gt; TimeFrames.ncol(TimeFrame([random(100) random(100) random(100)]))
 3
 
-julia&gt; nc(TS([random(100) random(100) random(100)]))
-3</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/7794c54a421d2fadbd74a3ced0cd0fe789119177/src/utils.jl#L119-L140">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.nrow-Tuple{TS}" href="#TSx.nrow-Tuple{TS}"><code>TSx.nrow</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Size methods</strong></p><pre><code class="language-julia hljs">nrow(ts::TS)
-nr(ts::TS)</code></pre><p>Return the number of rows of <code>ts</code>. <code>nr</code> is an alias for <code>nrow</code>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; ts = TS(collect(1:10))
-julia&gt; TSx.nrow(ts)
-10</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/7794c54a421d2fadbd74a3ced0cd0fe789119177/src/utils.jl#L87-L103">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.rollapply-Tuple{Function, TS, Any, Int64}" href="#TSx.rollapply-Tuple{Function, TS, Any, Int64}"><code>TSx.rollapply</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Rolling Functions</strong></p><pre><code class="language-julia hljs">rollapply(fun::Function, ts::TS, column::Any, windowsize::Int)</code></pre><p>Apply a function to a column of <code>ts</code> for each continuous set of rows of size <code>windowsize</code>. <code>column</code> could be any of the <code>DataFrame</code> column selectors.</p><p>The output is a TS object with <code>(nrow(ts) - windowsize + 1)</code> rows indexed with the last index value of each window.</p><p>This method uses <code>RollingFunctions</code> package to implement this functionality.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; ts = TS(1:12, Date(&quot;2022-02-01&quot;):Month(1):Date(&quot;2022-02-01&quot;)+Month(11))
+julia&gt; nc(TimeFrame([random(100) random(100) random(100)]))
+3</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TimeFrames.jl/blob/a7e6aa9a1ce719601744c11acd5ba31a10ea977c/src/utils.jl#L119-L140">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TimeFrames.nrow-Tuple{TimeFrame}" href="#TimeFrames.nrow-Tuple{TimeFrame}"><code>TimeFrames.nrow</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Size methods</strong></p><pre><code class="language-julia hljs">nrow(ts::TimeFrame)
+nr(ts::TimeFrame)</code></pre><p>Return the number of rows of <code>ts</code>. <code>nr</code> is an alias for <code>nrow</code>.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; ts = TimeFrame(collect(1:10))
+julia&gt; TimeFrames.nrow(ts)
+10</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TimeFrames.jl/blob/a7e6aa9a1ce719601744c11acd5ba31a10ea977c/src/utils.jl#L87-L103">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TimeFrames.rollapply-Tuple{Function, TimeFrame, Any, Int64}" href="#TimeFrames.rollapply-Tuple{Function, TimeFrame, Any, Int64}"><code>TimeFrames.rollapply</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Rolling Functions</strong></p><pre><code class="language-julia hljs">rollapply(fun::Function, ts::TimeFrame, column::Any, windowsize::Int)</code></pre><p>Apply a function to a column of <code>ts</code> for each continuous set of rows of size <code>windowsize</code>. <code>column</code> could be any of the <code>DataFrame</code> column selectors.</p><p>The output is a TimeFrame object with <code>(nrow(ts) - windowsize + 1)</code> rows indexed with the last index value of each window.</p><p>This method uses <code>RollingFunctions</code> package to implement this functionality.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; ts = TimeFrame(1:12, Date(&quot;2022-02-01&quot;):Month(1):Date(&quot;2022-02-01&quot;)+Month(11))
 
 julia&gt; show(ts)
-(12 x 1) TS with Dates.Date Index
+(12 x 1) TimeFrame with Dates.Date Index
 
  Index       x1
  Date        Int64
@@ -1214,7 +1214,7 @@ julia&gt; show(ts)
  2023-01-01     12
 
 julia&gt; rollapply(sum, ts, :x1, 10)
-(3 x 1) TS with Dates.Date Index
+(3 x 1) TimeFrame with Dates.Date Index
 
  Index       x1_rolling_sum
  Date        Float64
@@ -1224,7 +1224,7 @@ julia&gt; rollapply(sum, ts, :x1, 10)
  2023-01-01            75.0
 
 julia&gt; rollapply(Statistics.mean, ts, 1, 5)
-(8 x 1) TS with Dates.Date Index
+(8 x 1) TimeFrame with Dates.Date Index
 
  Index       x1_rolling_mean
  Date        Float64
@@ -1237,12 +1237,12 @@ julia&gt; rollapply(Statistics.mean, ts, 1, 5)
  2022-11-01              8.0
  2022-12-01              9.0
  2023-01-01             10.0
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/7794c54a421d2fadbd74a3ced0cd0fe789119177/src/rollapply.jl#L1-L68">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.subset-Union{Tuple{T}, Tuple{TS, T, T}} where T&lt;:Union{Int64, Dates.TimeType}" href="#TSx.subset-Union{Tuple{T}, Tuple{TS, T, T}} where T&lt;:Union{Int64, Dates.TimeType}"><code>TSx.subset</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Subsetting based on Index</strong></p><pre><code class="language-julia hljs">subset(ts::TS, from::T, to::T) where {T&lt;:Union{Int, TimeType}}</code></pre><p>Create a subset of <code>ts</code> based on the <code>Index</code> starting <code>from</code> (inclusive) till <code>to</code> (inclusive).</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TimeFrames.jl/blob/a7e6aa9a1ce719601744c11acd5ba31a10ea977c/src/rollapply.jl#L1-L68">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TimeFrames.subset-Union{Tuple{T}, Tuple{TimeFrame, T, T}} where T&lt;:Union{Int64, Dates.TimeType}" href="#TimeFrames.subset-Union{Tuple{T}, Tuple{TimeFrame, T, T}} where T&lt;:Union{Int64, Dates.TimeType}"><code>TimeFrames.subset</code></a> — <span class="docstring-category">Method</span></header><section><div><p><strong>Subsetting based on Index</strong></p><pre><code class="language-julia hljs">subset(ts::TimeFrame, from::T, to::T) where {T&lt;:Union{Int, TimeType}}</code></pre><p>Create a subset of <code>ts</code> based on the <code>Index</code> starting <code>from</code> (inclusive) till <code>to</code> (inclusive).</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; using Random;
 julia&gt; random(x) = rand(MersenneTwister(123), x);
 julia&gt; dates = Date(&quot;2022-02-01&quot;):Week(1):Date(&quot;2022-02-01&quot;)+Month(9);
-julia&gt; ts = TS(random(length(dates)), dates)
+julia&gt; ts = TimeFrame(random(length(dates)), dates)
 julia&gt; show(ts)
-(40 x 1) TS with Date Index
+(40 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -1289,7 +1289,7 @@ julia&gt; show(ts)
  2022-11-01  0.348173
 
 julia&gt; subset(ts, Date(2022, 03), Date(2022, 07))
-(18 x 1) TS with Date Index
+(18 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -1313,8 +1313,8 @@ julia&gt; subset(ts, Date(2022, 03), Date(2022, 07))
  2022-06-21  0.70586
  2022-06-28  0.291978
 
-julia&gt; subset(TS(1:20, -9:10), -4, 5)
-(10 x 1) TS with Int64 Index
+julia&gt; subset(TimeFrame(1:20, -9:10), -4, 5)
+(10 x 1) TimeFrame with Int64 Index
 
  Index  x1
  Int64  Int64
@@ -1331,7 +1331,7 @@ julia&gt; subset(TS(1:20, -9:10), -4, 5)
      5     15
 
 julia&gt; subset(ts,:,Date(&quot;2022-04-12&quot;))
-(11 x 1) TS with Date Index
+(11 x 1) TimeFrame with Date Index
 
  Index       x1        
  Date        Float64   
@@ -1349,7 +1349,7 @@ julia&gt; subset(ts,:,Date(&quot;2022-04-12&quot;))
  2022-04-12  0.163666
 
 julia&gt; subset(ts,Date(&quot;2022-9-27&quot;),:)
-(6 x 1) TS with Date Index
+(6 x 1) TimeFrame with Date Index
 
  Index       x1       
  Date        Float64  
@@ -1361,8 +1361,8 @@ julia&gt; subset(ts,Date(&quot;2022-9-27&quot;),:)
  2022-10-25  0.621379
  2022-11-01  0.348173
 
-</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/7794c54a421d2fadbd74a3ced0cd0fe789119177/src/subset.jl#L1-L140">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TSx.tail" href="#TSx.tail"><code>TSx.tail</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Tail</strong></p><pre><code class="language-julia hljs">tail(ts::TS, n::Int = 10)</code></pre><p>Returns the last <code>n</code> rows of <code>ts</code>.</p><pre><code class="language-julia-repl hljs">julia&gt; tail(TS(1:100))
-(10 x 1) TS with Int64 Index
+</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TimeFrames.jl/blob/a7e6aa9a1ce719601744c11acd5ba31a10ea977c/src/subset.jl#L1-L140">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="TimeFrames.tail" href="#TimeFrames.tail"><code>TimeFrames.tail</code></a> — <span class="docstring-category">Function</span></header><section><div><p><strong>Tail</strong></p><pre><code class="language-julia hljs">tail(ts::TimeFrame, n::Int = 10)</code></pre><p>Returns the last <code>n</code> rows of <code>ts</code>.</p><pre><code class="language-julia-repl hljs">julia&gt; tail(TimeFrame(1:100))
+(10 x 1) TimeFrame with Int64 Index
 
  Index  x1
  Int64  Int64
@@ -1376,4 +1376,4 @@ julia&gt; subset(ts,Date(&quot;2022-9-27&quot;),:)
     97     97
     98     98
     99     99
-   100    100</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TSx.jl/blob/7794c54a421d2fadbd74a3ced0cd0fe789119177/src/utils.jl#L306-L332">source</a></section></article></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../user_guide/">« User guide</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Friday 4 November 2022 06:12">Friday 4 November 2022</span>. Using Julia version 1.8.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+   100    100</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/xKDR/TimeFrames.jl/blob/a7e6aa9a1ce719601744c11acd5ba31a10ea977c/src/utils.jl#L306-L332">source</a></section></article></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../user_guide/">« User guide</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Saturday 5 November 2022 09:13">Saturday 5 November 2022</span>. Using Julia version 1.8.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
