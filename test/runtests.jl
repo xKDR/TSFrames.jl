@@ -5,12 +5,12 @@ using StatsBase
 using Statistics
 using Test
 using Tables
-using TSx
+using TimeFrames
 
 include("dataobjects.jl")
 
-@testset "TS()" begin
-    include("TS.jl")
+@testset "TimeFrame()" begin
+    include("TimeFrame.jl")
 end
 
 @testset "getindex()" begin

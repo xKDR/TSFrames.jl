@@ -1,7 +1,7 @@
 """
 # Apply/Period conversion
 ```julia
-apply(ts::TS,
+apply(ts::TimeFrame,
       period::T,
       fun::V,
       index_at::Function=first;
@@ -30,14 +30,14 @@ an input.
    names are used.
 
 # Examples
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random, Statistics;
 julia> random(x) = rand(MersenneTwister(123), x);
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10));
 
-julia> ts = TS(random(length(dates)), dates)
+julia> ts = TimeFrame(random(length(dates)), dates)
 julia> show(ts[1:10])
-(10 x 1) TS with Date Index
+(10 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -54,7 +54,7 @@ julia> show(ts[1:10])
  2017-01-10  0.108871
 
 julia> apply(ts, Month(1), first)
-(15 x 1) TS with Date Index
+(15 x 1) TimeFrame with Date Index
 
  Index       x1_first
  Date        Float64
@@ -77,7 +77,7 @@ julia> apply(ts, Month(1), first)
 
 # alternate months
 julia> apply(ts, Month(2), first)
-(8 x 1) TS with Date Index
+(8 x 1) TimeFrame with Date Index
 
  Index       x1_first
  Date        Float64
@@ -94,7 +94,7 @@ julia> apply(ts, Month(2), first)
 
 julia> ts_weekly = apply(ts, Week(1), Statistics.std) # weekly standard deviation
 julia> show(ts_weekly[1:10])
-(10 x 1) TS with Date Index
+(10 x 1) TimeFrame with Date Index
 
  Index       x1_std
  Date        Float64
@@ -113,7 +113,7 @@ julia> show(ts_weekly[1:10])
 
 julia> ts_weekly = apply(ts, Week(1), Statistics.std, last) # indexed by last date of the week
 julia> show(ts_weekly[1:10])
-(10 x 1) TS with Date Index
+(10 x 1) TimeFrame with Date Index
 
  Index       x1_std
  Date        Float64
@@ -131,7 +131,7 @@ julia> show(ts_weekly[1:10])
 
 ```
 """
-function apply(ts::TS, period::T, fun::V, index_at::Function=first; renamecols::Bool=true) where {T<:Dates.Period, V<:Function}
+function apply(ts::TimeFrame, period::T, fun::V, index_at::Function=first; renamecols::Bool=true) where {T<:Dates.Period, V<:Function}
     ep = endpoints(ts, period)
 
     j = 1
@@ -150,7 +150,7 @@ function apply(ts::TS, period::T, fun::V, index_at::Function=first; renamecols::
                  Not(["Index", tmp_col]) .=> fun,
                  keepkeys=false,
                  renamecols=renamecols)
-    TS(df, :Index)
+    TimeFrame(df, :Index)
 end
 
 function get_tmp_colname(cols::AbstractVector{String})

@@ -1,7 +1,7 @@
 """
 # Differencing
 ```julia
-diff(ts::TS, periods::Int = 1)
+diff(ts::TimeFrame, periods::Int = 1)
 ```
 
 Return the discrete difference of successive row elements.
@@ -11,16 +11,16 @@ of rows to be shifted over. The skipped rows are rendered as `missing`.
 `diff` returns an error if column type does not have the method `-`.
 
 # Examples
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random, Statistics;
 
 julia> random(x) = rand(MersenneTwister(123), x);
 
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10));
 
-julia> ts = TS(random(length(dates)), dates);
+julia> ts = TimeFrame(random(length(dates)), dates);
 julia> ts[1:10]
-(10 x 1) TS with Date Index
+(10 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -37,7 +37,7 @@ julia> ts[1:10]
  2017-01-10  0.108871
 
 julia> diff(ts)[1:10]        # difference over successive rows
-(10 x 1) TS with Date Index
+(10 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64?
@@ -54,7 +54,7 @@ julia> diff(ts)[1:10]        # difference over successive rows
  2017-01-10       -0.159769
 
 julia> diff(ts, 3)[1:10]     # difference over the third row
-(10 x 1) TS with Date Index
+(10 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64?
@@ -74,11 +74,11 @@ julia> diff(ts, 3)[1:10]     # difference over the third row
 """
 
 # Diff
-function diff(ts::TS, periods::Int = 1)
+function diff(ts::TimeFrame, periods::Int = 1)
     if periods <= 0
         error("periods must be a postive int")
     end
-    ddf = ts.coredata[:, Not(:Index)] .- TSx.lag(ts, periods).coredata[:, Not(:Index)]
+    ddf = ts.coredata[:, Not(:Index)] .- TimeFrames.lag(ts, periods).coredata[:, Not(:Index)]
     insertcols!(ddf, 1, "Index" => ts.coredata[:, :Index])
-    TS(ddf, :Index)
+    TimeFrame(ddf, :Index)
 end

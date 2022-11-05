@@ -2,20 +2,20 @@
 # Subsetting based on Index
 
 ```julia
-subset(ts::TS, from::T, to::T) where {T<:Union{Int, TimeType}}
+subset(ts::TimeFrame, from::T, to::T) where {T<:Union{Int, TimeType}}
 ```
 
 Create a subset of `ts` based on the `Index` starting `from`
 (inclusive) till `to` (inclusive).
 
 # Examples
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random;
 julia> random(x) = rand(MersenneTwister(123), x);
 julia> dates = Date("2022-02-01"):Week(1):Date("2022-02-01")+Month(9);
-julia> ts = TS(random(length(dates)), dates)
+julia> ts = TimeFrame(random(length(dates)), dates)
 julia> show(ts)
-(40 x 1) TS with Date Index
+(40 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -62,7 +62,7 @@ julia> show(ts)
  2022-11-01  0.348173
 
 julia> subset(ts, Date(2022, 03), Date(2022, 07))
-(18 x 1) TS with Date Index
+(18 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -86,8 +86,8 @@ julia> subset(ts, Date(2022, 03), Date(2022, 07))
  2022-06-21  0.70586
  2022-06-28  0.291978
 
-julia> subset(TS(1:20, -9:10), -4, 5)
-(10 x 1) TS with Int64 Index
+julia> subset(TimeFrame(1:20, -9:10), -4, 5)
+(10 x 1) TimeFrame with Int64 Index
 
  Index  x1
  Int64  Int64
@@ -104,7 +104,7 @@ julia> subset(TS(1:20, -9:10), -4, 5)
      5     15
 
 julia> subset(ts,:,Date("2022-04-12"))
-(11 x 1) TS with Date Index
+(11 x 1) TimeFrame with Date Index
 
  Index       x1        
  Date        Float64   
@@ -122,7 +122,7 @@ julia> subset(ts,:,Date("2022-04-12"))
  2022-04-12  0.163666
 
 julia> subset(ts,Date("2022-9-27"),:)
-(6 x 1) TS with Date Index
+(6 x 1) TimeFrame with Date Index
 
  Index       x1       
  Date        Float64  
@@ -138,14 +138,14 @@ julia> subset(ts,Date("2022-9-27"),:)
 ```
 
 """
-function subset(ts::TS, from::T, to::T) where {T<:Union{Int, TimeType}}
-    TS(DataFrames.subset(ts.coredata, :Index => x -> x .>= from .&& x .<= to))
+function subset(ts::TimeFrame, from::T, to::T) where {T<:Union{Int, TimeType}}
+    TimeFrame(DataFrames.subset(ts.coredata, :Index => x -> x .>= from .&& x .<= to))
 end
 
-function subset(ts::TS, ::Colon, to::T) where {T<:Union{Int, TimeType}}
-    TS(DataFrames.subset(ts.coredata, :Index => x -> x .<= to))
+function subset(ts::TimeFrame, ::Colon, to::T) where {T<:Union{Int, TimeType}}
+    TimeFrame(DataFrames.subset(ts.coredata, :Index => x -> x .<= to))
 end
 
-function subset(ts::TS, from::T, ::Colon) where {T<:Union{Int, TimeType}}
-    TS(DataFrames.subset(ts.coredata, :Index => x -> x .>= from))
+function subset(ts::TimeFrame, from::T, ::Colon) where {T<:Union{Int, TimeType}}
+    TimeFrame(DataFrames.subset(ts.coredata, :Index => x -> x .>= from))
 end

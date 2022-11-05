@@ -1,4 +1,4 @@
-ts = TS(integer_data_vector, index_timetype)
+ts = TimeFrame(integer_data_vector, index_timetype)
 
 @test_throws ArgumentError pctchange(ts, 0)
 @test_throws ArgumentError pctchange(ts, -1)
@@ -14,7 +14,7 @@ for periods in [1, Int(floor(DATA_SIZE/2))]
     @test isequal(Vector{Missing}(pctchange_ts[1:periods, :x1]), fill(missing, periods))
 
     # other elements are pct changes
-    @test isapprox(pctchange_ts[(periods + 1):TSx.nrow(ts), :x1], (ts[periods + 1:TSx.nrow(ts), :x1] - ts[1:TSx.nrow(ts) - periods, :x1]) ./ abs.(ts[1:TSx.nrow(ts) - periods, :x1]), atol=1e-5)
+    @test isapprox(pctchange_ts[(periods + 1):TimeFrames.nrow(ts), :x1], (ts[periods + 1:TimeFrames.nrow(ts), :x1] - ts[1:TimeFrames.nrow(ts) - periods, :x1]) ./ abs.(ts[1:TimeFrames.nrow(ts) - periods, :x1]), atol=1e-5)
 end
 
 # when period is atleast DATA_SIZE

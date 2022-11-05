@@ -1,18 +1,18 @@
 """
 # Conversion of non-Index data to Matrix
 
-Data in non-index columns of a TS object can be converted into a
+Data in non-index columns of a TimeFrame object can be converted into a
 `Matrix` type for further numerical analysis using the `Matrix()`
 constructor.
 
 # Examples
 
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random;
 julia> random(x) = rand(MersenneTwister(123), x);
-julia> ts = TS([random(10) random(10)])
+julia> ts = TimeFrame([random(10) random(10)])
 julia> show(ts)
-(10 x 2) TS with Int64 Index
+(10 x 2) TimeFrame with Int64 Index
 
  Index  x1         x2
  Int64  Float64    Float64
@@ -42,6 +42,6 @@ julia> Matrix(ts)
  0.108871   0.108871
 ```
 """
-function Base.Matrix(ts::TS)
+function Base.Matrix(ts::TimeFrame)
     DataFrames.Matrix(ts.coredata[!, Not(:Index)])
 end

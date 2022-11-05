@@ -1,24 +1,24 @@
 """
 # Lagging
 ```julia
-lag(ts::TS, lag_value::Int = 1)
+lag(ts::TimeFrame, lag_value::Int = 1)
 ```
 
 Lag the `ts` object by the specified `lag_value`. The rows corresponding
 to lagged values will be rendered as `missing`. Negative values of lag are
-also accepted (see `TSx.lead`).
+also accepted (see `TimeFrames.lead`).
 
 # Examples
-```jldoctest; setup = :(using TSx, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random, Statistics;
 
 julia> random(x) = rand(MersenneTwister(123), x);
 
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10));
 
-julia> ts = TS(random(length(dates)), dates);
+julia> ts = TimeFrame(random(length(dates)), dates);
 julia> show(ts)
-(10 x 1) TS with Dates.Date Index
+(10 x 1) TimeFrame with Dates.Date Index
 
  Index       x1
  Date        Float64
@@ -36,7 +36,7 @@ julia> show(ts)
 
 
 julia> lag(ts)
-(10 x 1) TS with Date Index
+(10 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64?
@@ -53,7 +53,7 @@ julia> lag(ts)
  2017-01-10        0.26864
 
 julia> lag(ts, 2) # lags by 2 values
-(10 x 1) TS with Date Index
+(10 x 1) TimeFrame with Date Index
 
  Index       x1
  Date        Float64?
@@ -71,8 +71,8 @@ julia> lag(ts, 2) # lags by 2 values
 
 ```
 """
-function lag(ts::TS, lag_value::Int = 1)
-    sdf = DataFrame(ShiftedArrays.lag.(eachcol(ts.coredata[!, Not(:Index)]), lag_value), TSx.names(ts))
+function lag(ts::TimeFrame, lag_value::Int = 1)
+    sdf = DataFrame(ShiftedArrays.lag.(eachcol(ts.coredata[!, Not(:Index)]), lag_value), TimeFrames.names(ts))
     insertcols!(sdf, 1, :Index => ts.coredata[!, :Index])
-    TS(sdf, :Index)
+    TimeFrame(sdf, :Index)
 end

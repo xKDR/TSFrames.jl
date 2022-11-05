@@ -1,2 +1,2 @@
-ts = TS(df_integer_index)
+ts = TimeFrame(df_integer_index)
 @test ts.data == ts[:, :data]
