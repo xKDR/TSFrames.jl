@@ -14,7 +14,10 @@ for periods in [1, Int(floor(DATA_SIZE/2))]
     @test isequal(Vector{Missing}(pctchange_ts[1:periods, :x1]), fill(missing, periods))
 
     # other elements are pct changes
-    @test isapprox(pctchange_ts[(periods + 1):TimeFrames.nrow(ts), :x1], (ts[periods + 1:TimeFrames.nrow(ts), :x1] - ts[1:TimeFrames.nrow(ts) - periods, :x1]) ./ abs.(ts[1:TimeFrames.nrow(ts) - periods, :x1]), atol=1e-5)
+    pctchange_output = pctchange_ts[(periods + 1):TimeFrames.nrow(ts), :x1]
+    correct_output = (ts[periods + 1:TimeFrames.nrow(ts), :x1] - ts[1:TimeFrames.nrow(ts) - periods, :x1]) ./ abs.(ts[1:TimeFrames.nrow(ts) - periods, :x1])
+
+    @test floor.(pctchange_output .* 100) == floor.(correct_output .* 100)
 end
 
 # when period is atleast DATA_SIZE
