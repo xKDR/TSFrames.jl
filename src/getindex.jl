@@ -1,12 +1,3 @@
-## Date-time type conversions for indexing
-function _convert(::Type{Date}, str::String)
-    Date(Dates.parse_components(str, Dates.dateformat"yyyy-mm-dd")...)
-end
-
-function _convert(::Type{String}, date::Date)
-    Dates.format(date, "yyyy-mm-dd")
-end
-
 """
 # Indexing
 
@@ -467,8 +458,9 @@ end
 
 # By string timestamp
 function Base.getindex(ts::TimeFrame, i::String)
-    ind = findall(x -> x == TimeFrames._convert(eltype(ts.coredata[!, :Index]), i), ts.coredata[!, :Index]) # XXX: may return duplicate indices
-    TimeFrame(ts.coredata[ind, :])     # XXX: check if data is being copied
+    d::Date = Date(Dates.parse_components(i, Dates.dateformat"yyyy-mm-dd")...)
+    ind = findall(x -> x == d, index(ts)) # returns duplicate indices
+    ts[ind]
 end
 
 # By {TimeType, Period} range
