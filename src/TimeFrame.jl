@@ -382,6 +382,9 @@ function TimeFrame(coredata::AbstractArray{T,2}, index::AbstractVector{V}; colna
     TimeFrame(df, index)
 end
 
-function TimeFrame()
-    TimeFrame([])
+function TimeFrame(T::DataType; n::Int=1)
+    (n>=1) || throw(DomainError(n, "n should be >= 1"))
+    df = DataFrame(fill([],n), :auto)
+    df.Index = T[]
+    TimeFrame(df)
 end
