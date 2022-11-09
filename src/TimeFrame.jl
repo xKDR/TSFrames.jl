@@ -381,3 +381,7 @@ function TimeFrame(coredata::AbstractArray{T,2}, index::AbstractVector{V}; colna
     df = DataFrame(coredata, colnames, copycols=true)
     TimeFrame(df, index)
 end
+
+function TimeFrame()
+    TimeFrame([])
+end
