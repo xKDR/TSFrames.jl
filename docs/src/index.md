@@ -1,6 +1,6 @@
-# TimeFrames.jl
+# TSFrames.jl
 
-TimeFrames provides a convenient interface for performing standard
+TSFrames provides a convenient interface for performing standard
 manipulations of timeseries data. The package uses `DataFrame` at it's
 core to allow powerful data manipulation functions while being
 lightweight. It is inspired by
@@ -8,14 +8,14 @@ lightweight. It is inspired by
 [xts](https://cran.r-project.org/web/packages/xts/index.html) packages
 from the [R](https://www.r-project.org/) world.
 
-TimeFrames wraps a familiar syntax for timeseries operations over `DataFrame`
+TSFrames wraps a familiar syntax for timeseries operations over `DataFrame`
 type, thereby, providing the user with full set of `DataFrame`
 functionalities as well. Integrations with other packages in the Julia
 ecosystem which are supported by
 [DataFrames.jl](https://github.com/JuliaData/DataFrames.jl) come to
-`TimeFrames` at little cost.
+`TSFrames` at little cost.
 
-To start using `TimeFrames.jl` take a look at the [basic demo](demo_finance.md)
+To start using `TSFrames.jl` take a look at the [basic demo](demo_finance.md)
 and then head to the [User guide](user_guide.md).
 
 ## User guide

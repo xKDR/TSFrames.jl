@@ -1,11 +1,11 @@
-# Basic demo of TimeFrames using financial data
+# Basic demo of TSFrames using financial data
 
 ## Create a TSFrame object for IBM historical data
 
 To load the IBM historical data, we will use the `MarketData.yahoo` function from [MarketData.jl](https://github.com/JuliaQuant/MarketData.jl), which returns the data in the form of a `TimeArray`. We just simply pass this on to the `TSFrame` constructor.
 
 ```@repl e1
-using TimeFrames, MarketData, DataFrames, Dates, Plots, Statistics
+using TSFrames, MarketData, DataFrames, Dates, Plots, Statistics
 ibm_ts = TSFrame(MarketData.yahoo(:IBM))
 ```
 
@@ -21,24 +21,24 @@ aapl_ts = TSFrame(MarketData.yahoo(:AAPL))
 
 We would like to compare the stock returns for both the stocks for 6
 months starting from June 1, 2021 till December 31, 2021. We use
-`TimeFrames.subset` method to create new objects which contain the specified
+`TSFrames.subset` method to create new objects which contain the specified
 duration of data.
 
 ```@repl e1
 date_from = Date(2021, 06, 01);
 date_to = Date(2021, 12, 31);
 
-ibm = TimeFrames.subset(ibm_ts, date_from, date_to)
+ibm = TSFrames.subset(ibm_ts, date_from, date_to)
 ```
 
 ```@repl e1
-aapl = TimeFrames.subset(aapl_ts, date_from, date_to)
+aapl = TSFrames.subset(aapl_ts, date_from, date_to)
 ```
 
 ## Combine adjusted closing prices of both stocks into one object
 
 We now join (cbind) both the stocks' data into a single object for
-further analysis. We use `TimeFrames.join` to create two columns containing
+further analysis. We use `TSFrames.join` to create two columns containing
 adjusted closing prices of both the stocks. The join happens by
 comparing the `Index` values (dates) of the two objects. The resulting
 object contains two columns with exactly the same dates for which both
@@ -46,13 +46,13 @@ the objects have data, all the other rows are omitted from the
 result.
 
 ```@repl e1
-ibm_aapl = TimeFrames.join(ibm[:, ["AdjClose"]], aapl[:, ["AdjClose"]], JoinBoth)
-TimeFrames.rename!(ibm_aapl, [:IBM, :AAPL])
+ibm_aapl = TSFrames.join(ibm[:, ["AdjClose"]], aapl[:, ["AdjClose"]], JoinBoth)
+TSFrames.rename!(ibm_aapl, [:IBM, :AAPL])
 ```
 
 After the `join` operation the column names are modified because we
 merged two same-named columns (`AdjClose`) so we use
-`TimeFrames.rename!()` method to rename the columns to easily
+`TSFrames.rename!()` method to rename the columns to easily
 remembered stock names.
 
 ## Convert data into weekly frequency using last values
@@ -70,7 +70,7 @@ ibm_aapl_weekly = ibm_aapl[ep]
 
 ```@repl e1
 ibm_aapl_weekly_returns = diff(log.(ibm_aapl_weekly))
-TimeFrames.rename!(ibm_aapl_weekly_returns, [:IBM, :AAPL])
+TSFrames.rename!(ibm_aapl_weekly_returns, [:IBM, :AAPL])
 ```
 
 ## Compute standard deviation of weekly returns
