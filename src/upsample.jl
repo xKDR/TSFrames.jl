@@ -12,7 +12,7 @@ from monthly series to daily.) `period` is any of `Period` types in the
 By default, the added rows contain `missing` data.
 
 # Examples
-```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TSFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random, Statistics;
 julia> random(x) = rand(MersenneTwister(123), x);
 julia> dates = collect(DateTime(2017,1,1):Day(1):DateTime(2018,3,10));

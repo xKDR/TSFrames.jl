@@ -9,7 +9,7 @@ Create a subset of `ts` based on the `Index` starting `from`
 (inclusive) till `to` (inclusive).
 
 # Examples
-```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TSFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random;
 julia> random(x) = rand(MersenneTwister(123), x);
 julia> dates = Date("2022-02-01"):Week(1):Date("2022-02-01")+Month(9);

@@ -17,7 +17,7 @@ For fetching the index column vector use the `index()` method.
 
 # Examples
 
-```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TSFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random;
 
 julia> random(x) = rand(MersenneTwister(123), x);
@@ -388,23 +388,23 @@ end
 ###
 
 function Base.getindex(ts::TSFrame, i::Int)
-    ts[i, 1:TimeFrames.ncol(ts)]
+    ts[i, 1:TSFrames.ncol(ts)]
 end
 
 function Base.getindex(ts::TSFrame, i::UnitRange)
-    ts[i, 1:TimeFrames.ncol(ts)]
+    ts[i, 1:TSFrames.ncol(ts)]
 end
 
 function Base.getindex(ts::TSFrame, i::AbstractVector{Int64})
-    ts[i, 1:TimeFrames.ncol(ts)]
+    ts[i, 1:TSFrames.ncol(ts)]
 end
 
 function Base.getindex(ts::TSFrame, dt::AbstractVector{T}) where {T<:TimeType}
-    ts[dt, 1:TimeFrames.ncol(ts)]
+    ts[dt, 1:TSFrames.ncol(ts)]
 end
 
 function Base.getindex(ts::TSFrame, d::T) where {T<:TimeType}
-    ts[[d], 1:TimeFrames.ncol(ts)]
+    ts[[d], 1:TSFrames.ncol(ts)]
 end
 
 # By period
@@ -473,26 +473,26 @@ end
 
 ### Inputs: row colon, column scalar: return vector
 function Base.getindex(ts::TSFrame, ::Colon, j::Int)
-    ts[1:TimeFrames.nrow(ts), j]
+    ts[1:TSFrames.nrow(ts), j]
 end
 
 function Base.getindex(ts::TSFrame, ::Colon, j::Union{String, Symbol})
-    ts[1:TimeFrames.nrow(ts), j]
+    ts[1:TSFrames.nrow(ts), j]
 end
 ###
 
 ### Inputs: row colon, column vector: return TSFrame
 function Base.getindex(ts::TSFrame, ::Colon, j::AbstractVector{Int})
-    ts[1:TimeFrames.nrow(ts), j]
+    ts[1:TSFrames.nrow(ts), j]
 end
 
 function Base.getindex(ts::TSFrame, ::Colon, j::AbstractVector{T}) where {T<:Union{String, Symbol}}
-    ts[1:TimeFrames.nrow(ts), j]
+    ts[1:TSFrames.nrow(ts), j]
 end
 ###
 
 ### Inputs: row colon, column range: return TSFrame
 function Base.getindex(ts::TSFrame, i::Colon, j::UnitRange)
-    ts[1:TimeFrames.nrow(ts), collect(j)]
+    ts[1:TSFrames.nrow(ts), collect(j)]
 end
 ###

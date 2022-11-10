@@ -19,7 +19,7 @@ Currently, `DataFrames.vcat` supports four types of column-merge strategies:
 4. `:union`: merge even if columns differ, the resulting object has all the columns filled with `missing`, if necessary.
 
 # Examples
-```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TSFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random;
 
 julia> random(x) = rand(MersenneTwister(123), x);

@@ -59,7 +59,7 @@ The method returns `Vector{Int}` corresponding to the matched values
 in the first argument.
 
 # Examples
-```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TSFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random
 julia> random(x) = rand(MersenneTwister(123), x);
 julia> dates = Date(2017):Day(1):Date(2019);

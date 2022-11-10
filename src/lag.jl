@@ -6,10 +6,10 @@ lag(ts::TSFrame, lag_value::Int = 1)
 
 Lag the `ts` object by the specified `lag_value`. The rows corresponding
 to lagged values will be rendered as `missing`. Negative values of lag are
-also accepted (see `TimeFrames.lead`).
+also accepted (see `TSFrames.lead`).
 
 # Examples
-```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TSFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random, Statistics;
 
 julia> random(x) = rand(MersenneTwister(123), x);
@@ -72,7 +72,7 @@ julia> lag(ts, 2) # lags by 2 values
 ```
 """
 function lag(ts::TSFrame, lag_value::Int = 1)
-    sdf = DataFrame(ShiftedArrays.lag.(eachcol(ts.coredata[!, Not(:Index)]), lag_value), TimeFrames.names(ts))
+    sdf = DataFrame(ShiftedArrays.lag.(eachcol(ts.coredata[!, Not(:Index)]), lag_value), TSFrames.names(ts))
     insertcols!(sdf, 1, :Index => ts.coredata[!, :Index])
     TSFrame(sdf, :Index)
 end
