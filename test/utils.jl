@@ -1,6 +1,6 @@
 using TimeFrames
 
-ts = TimeFrame(DataFrame(a=["a", "b", "c"], b=[1,2, missing]), [1, 2, 3]) ;
+ts = TSFrame(DataFrame(a=["a", "b", "c"], b=[1,2, missing]), [1, 2, 3]) ;
 
 ###
 # describe()
@@ -72,9 +72,9 @@ dd = TimeFrames.describe(ts, :mean, cols=:b) ;
 ###
 # _check_consistency()
 @test TimeFrames._check_consistency(ts) == true
-@test TimeFrames._check_consistency(TimeFrame([:a, :b], [2,1])) == true;
+@test TimeFrames._check_consistency(TSFrame([:a, :b], [2,1])) == true;
 
-ts = TimeFrame(data_vector, 1:length(data_vector));
+ts = TSFrame(data_vector, 1:length(data_vector));
 ts.coredata.Index = sample(index_integer, length(data_vector), replace=true);
 @test TimeFrames._check_consistency(ts) == false;
 ###

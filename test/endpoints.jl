@@ -4,35 +4,35 @@
 
 ## ::Date
 dates = collect(Date(2007, 1, 2):Day(1):Date(2007, 7, 1));
-tsdaily = TimeFrame(random(length(dates)), dates);
+tsdaily = TSFrame(random(length(dates)), dates);
 
 dates5 = collect(Date(2007, 1, 2):Day(5):Date(2007, 7, 1));
 
 ## ::DateTime
 datetimes = collect(DateTime(2007, 1, 2):Day(1):DateTime(2007, 7, 1));
-tsdatetimes = TimeFrame(random(length(datetimes)), datetimes);
+tsdatetimes = TSFrame(random(length(datetimes)), datetimes);
 
 ## ::Integer
 indexinteger = [-3, -2, -1, 0, 1, 2, 3];
-tsinteger = TimeFrame(collect(1:7), indexinteger);
+tsinteger = TSFrame(collect(1:7), indexinteger);
 
 ## ::DateTime (Hour)
 datetimehours = collect(range(DateTime(today()),
                               DateTime(today()) + Day(2),
                               step = Hour(1)));
-tshours = TimeFrame(random(length(datetimehours)), datetimehours);
+tshours = TSFrame(random(length(datetimehours)), datetimehours);
 
 ## ::DateTime (Minute)
 datetimeminutes = collect(range(DateTime(today()) + Hour(9),
                                 DateTime(today()) + Hour(15) + Minute(29),
                                 step=Minute(1)));
-tsminutes = TimeFrame(random(length(datetimeminutes)), datetimeminutes);
+tsminutes = TSFrame(random(length(datetimeminutes)), datetimeminutes);
 
 ## ::DateTime (Second)
 datetimeseconds = collect(range(DateTime(today()) + Hour(9),
                                 DateTime(today()) + Hour(15) + Minute(29),
                                 step=Second(1)));
-tsseconds = TimeFrame(random(length(datetimeseconds)), datetimeseconds);
+tsseconds = TSFrame(random(length(datetimeseconds)), datetimeseconds);
 
 ## ::DateTime (Second(10))
 datetime10seconds = collect(range(DateTime(today()) + Hour(9),
@@ -43,7 +43,7 @@ datetime10seconds = collect(range(DateTime(today()) + Hour(9),
 datetimemilliseconds = collect(range(DateTime(today()) + Hour(9),
                                      DateTime(today()) + Hour(9) + Minute(59),
                                      step=Millisecond(500)));
-tsmilliseconds = TimeFrame(random(length(datetimemilliseconds)), datetimemilliseconds);
+tsmilliseconds = TSFrame(random(length(datetimemilliseconds)), datetimemilliseconds);
 
 ## ::Time (Hour)
 timestampshours = collect(Time(9, 0, 0):Hour(1):Time(15, 0, 0))
@@ -59,11 +59,11 @@ timestampsmilliseconds = collect(Time(9, 0, 0):Millisecond(1):Time(9, 0, 2))
 
 ## ::Time (Microsecond)
 timestampsmicroseconds = collect(Time(9, 0, 0):Microsecond(1):Time(9, 0, 0, 2))
-tsmicroseconds = TimeFrame(1:length(timestampsmicroseconds), timestampsmicroseconds)
+tsmicroseconds = TSFrame(1:length(timestampsmicroseconds), timestampsmicroseconds)
 
 ## ::Time (Nanosecond)
 timestampsnanoseconds = collect(Time(9, 0, 0):Nanosecond(1):Time(9, 0, 0, 0, 2))
-tsnanoseconds = TimeFrame(1:length(timestampsnanoseconds), timestampsnanoseconds)
+tsnanoseconds = TSFrame(1:length(timestampsnanoseconds), timestampsnanoseconds)
 
 ##
 # endpoints(values::AbstractVector, on::Function, k::Int=1)
@@ -77,7 +77,7 @@ tsnanoseconds = TimeFrame(1:length(timestampsnanoseconds), timestampsnanoseconds
 @test endpoints(indexinteger, i -> i, length(indexinteger)+1) == [lastindex(indexinteger)]
 
 ##
-# endpoints(ts::TimeFrame, on::Function, k::Int=1)
+# endpoints(ts::TSFrame, on::Function, k::Int=1)
 ##
 @test_throws DomainError endpoints(tsdaily, i -> dayofweek.(i), -1)
 @test_throws DomainError endpoints(tsdaily, i -> dayofweek.(i), 0)
@@ -318,13 +318,13 @@ datetimesecondsrandom = sample(MersenneTwister(123), datetimeseconds, 20, replac
 
 
 ##
-# endpoints(ts::TimeFrame, on::T) where {T<:Period}
+# endpoints(ts::TSFrame, on::T) where {T<:Period}
 ##
 @test endpoints(tsdaily, Day(1)) == endpoints(dates, Day(1))
 @test endpoints(tsdaily, Month(1)) == endpoints(dates, Month(1))
 
 ##
-# endpoints(ts::TimeFrame, on::Symbol, k::Int=1)
+# endpoints(ts::TSFrame, on::Symbol, k::Int=1)
 ##
 @test_throws MethodError endpoints(tsinteger, :years, 1) # non TimeType index should throw an error
 @test_throws ArgumentError endpoints(tsdaily, :abc, 1)
@@ -345,6 +345,6 @@ datetimesecondsrandom = sample(MersenneTwister(123), datetimeseconds, 20, replac
 @test endpoints(tsmicroseconds, :microseconds, 2) == endpoints(index(tsmicroseconds), Microsecond(2))
 @test endpoints(tsnanoseconds, :nanoseconds, 2) == endpoints(index(tsnanoseconds), Nanosecond(2))
 ##
-# endpoints(ts::TimeFrame, on::String, k::Int=1)
+# endpoints(ts::TSFrame, on::String, k::Int=1)
 ##
 @test endpoints(tsdaily, "days", 1) == endpoints(tsdaily, Day(1))

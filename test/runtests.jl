@@ -9,8 +9,8 @@ using TimeFrames
 
 include("dataobjects.jl")
 
-@testset "TimeFrame()" begin
-    include("TimeFrame.jl")
+@testset "TSFrame()" begin
+    include("TSFrame.jl")
 end
 
 @testset "getindex()" begin
