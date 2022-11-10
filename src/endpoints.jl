@@ -15,10 +15,10 @@ endpoints(timestamps::AbstractVector{T}, on::V) where {T<:Union{Date, DateTime, 
                                                            Microsecond,
                                                            Nanosecond
                                                        }}
-endpoints(ts::TimeFrame, on::T) where {T<:Dates.Period}
-endpoints(ts::TimeFrame, on::Symbol, k::Int=1)
-endpoints(ts::TimeFrame, on::String, k::Int=1)
-endpoints(ts::TimeFrame, on::Function, k::Int=1)
+endpoints(ts::TSFrame, on::T) where {T<:Dates.Period}
+endpoints(ts::TSFrame, on::Symbol, k::Int=1)
+endpoints(ts::TSFrame, on::String, k::Int=1)
+endpoints(ts::TSFrame, on::Function, k::Int=1)
 endpoints(values::AbstractVector, on::Function, k::Int=1)
 ```
 
@@ -26,14 +26,14 @@ Return an integer vector of values for last observation in
 `timestamps` for each period given by `on`. The values are picked up
 every `on.value` instance of the period.
 
-Can be used to subset a `TimeFrame` object directly using this function's
+Can be used to subset a `TSFrame` object directly using this function's
 return value. The methods work for regular time series of any
 periodicity and irregular time series belonging to any of the
 time-based types provided by the `Dates` module.
 
 The primary method works for series of all time types including
 `Date`, `DateTime`, and `Time`, and for `on` belonging to any of the
-sub-types of `Dates.Period`. The `::TimeFrame` methods are provided for
+sub-types of `Dates.Period`. The `::TSFrame` methods are provided for
 convenience and call the primary method directly using the `Index`
 column.
 
@@ -47,13 +47,13 @@ ones created by `on`. See the examples below to see how the function
 works in the real world. The `on` function should return a `Vector` to
 be used as grouping keys.
 
-`endpoints(ts::TimeFrame, on::Symbol)` and `endpoints(ts::TimeFrame, on::String)`
+`endpoints(ts::TSFrame, on::Symbol)` and `endpoints(ts::TSFrame, on::String)`
 are convenience methods where valid values for `on` are: `:years`,
 `:quarters`, `:months`, `:weeks`, `:days`, `:hours`, `:minutes`,
 `:seconds`, `:milliseconds`, `:microseconds`, and `:nanoseconds`.
 
 Note, that except for `on::Function` all other methods expect `Index`
-type of `TimeFrame` to be a subtype of `TimeType`.
+type of `TSFrame` to be a subtype of `TimeType`.
 
 The method returns `Vector{Int}` corresponding to the matched values
 in the first argument.
@@ -63,8 +63,8 @@ in the first argument.
 julia> using Random
 julia> random(x) = rand(MersenneTwister(123), x);
 julia> dates = Date(2017):Day(1):Date(2019);
-julia> ts = TimeFrame(random(length(dates)), dates)
-(731 x 1) TimeFrame with Date Index
+julia> ts = TSFrame(random(length(dates)), dates)
+(731 x 1) TSFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -120,7 +120,7 @@ julia> ep = endpoints(ts, Month(1))
  731
 
 julia> ts[ep]
-(25 x 1) TimeFrame with Date Index
+(25 x 1) TSFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -180,7 +180,7 @@ julia> diff(index(ts[ep]))
 
 # every 2ⁿᵈ month
 julia> ts[endpoints(ts, Month(2))]
-(12 x 1) TimeFrame with Date Index
+(12 x 1) TSFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -313,7 +313,7 @@ function endpoints(values::AbstractVector, on::Function, k::Int=1)
     [findlast([p] .== keys) for p in points]
 end
 
-function endpoints(ts::TimeFrame, on::Function, k::Int=1)
+function endpoints(ts::TSFrame, on::Function, k::Int=1)
     endpoints(index(ts), on, k)
 end
 
@@ -377,11 +377,11 @@ function endpoints(timestamps::AbstractVector{T}, on::V)::Vector{Int} where {T<:
     return ep
 end
 
-function endpoints(ts::TimeFrame, on::T) where {T<:Dates.Period}
+function endpoints(ts::TSFrame, on::T) where {T<:Dates.Period}
     endpoints(index(ts), on)
 end
 
-function endpoints(ts::TimeFrame, on::Symbol, k::Int=1)
+function endpoints(ts::TSFrame, on::Symbol, k::Int=1)
     if (on == :days)
         endpoints(ts, Day(k))
     elseif (on == :weeks)
@@ -409,6 +409,6 @@ function endpoints(ts::TimeFrame, on::Symbol, k::Int=1)
     end
 end
 
-function endpoints(ts::TimeFrame, on::String, k::Int=1)
+function endpoints(ts::TSFrame, on::String, k::Int=1)
     endpoints(ts, Symbol(on), k)
 end

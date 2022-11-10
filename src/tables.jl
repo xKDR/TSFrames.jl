@@ -1,16 +1,16 @@
-Tables.istable(::Type{TimeFrame}) = true
+Tables.istable(::Type{TSFrame}) = true
 
-Tables.rowaccess(::Type{TimeFrame}) = true
-Tables.rows(ts::TimeFrame) = DataFrames.eachrow(ts.coredata)
+Tables.rowaccess(::Type{TSFrame}) = true
+Tables.rows(ts::TSFrame) = DataFrames.eachrow(ts.coredata)
 
-Tables.columnaccess(::Type{TimeFrame}) = true
-Tables.columns(ts::TimeFrame) = DataFrames.eachcol(ts.coredata)
+Tables.columnaccess(::Type{TSFrame}) = true
+Tables.columns(ts::TSFrame) = DataFrames.eachcol(ts.coredata)
 
-Tables.rowtable(ts::TimeFrame) = Tables.rowtable(ts.coredata)
-Tables.columntable(ts::TimeFrame) = Tables.columntable(ts.coredata)
+Tables.rowtable(ts::TSFrame) = Tables.rowtable(ts.coredata)
+Tables.columntable(ts::TSFrame) = Tables.columntable(ts.coredata)
 
-Tables.namedtupleiterator(ts::TimeFrame) = Tables.namedtupleiterator(ts.coredata)
+Tables.namedtupleiterator(ts::TSFrame) = Tables.namedtupleiterator(ts.coredata)
 
-Tables.schema(ts::TimeFrame) = Tables.schema(ts.coredata)
+Tables.schema(ts::TSFrame) = Tables.schema(ts.coredata)
 
-Tables.materializer(::Type{<:TimeFrame}) = TimeFrame
+Tables.materializer(::Type{<:TSFrame}) = TSFrame
