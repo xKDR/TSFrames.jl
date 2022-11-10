@@ -10,40 +10,40 @@ julia> using Pkg
 julia> Pkg.add(url="https://github.com/xKDR/TimeFrames.jl")
 ```
 
-## Constructing TimeFrame objects
+## Constructing TSFrame objects
 
 After installing TimeFrames you need to load the package in Julia
-environment. Then, create a basic `TimeFrame` object.
+environment. Then, create a basic `TSFrame` object.
 
 ```@repl
 using TimeFrames;
-ts = TimeFrame(1:10)
+ts = TSFrame(1:10)
 ts.coredata
 ```
 
-The basic TimeFrame constructor takes in a `Vector` of any type and
+The basic TSFrame constructor takes in a `Vector` of any type and
 automatically generates an index out of it (the `Index` column).
 
-There are many ways to construct a `TimeFrame` object. For real world
+There are many ways to construct a `TSFrame` object. For real world
 applications you would want to read in a CSV file or download a dataset
 as a `DataFrame` and then operate on it. You can easily convert a
-`DataFrame` to a `TimeFrame` object.
+`DataFrame` to a `TSFrame` object.
 
 ```@repl e1
 using CSV, DataFrames, TimeFrames, Dates
 dates = Date(2007, 1, 1):Day(1):Date(2008, 03, 06)
-ts = TimeFrame(DataFrame(Index=dates, value=10*rand(431)))
+ts = TSFrame(DataFrame(Index=dates, value=10*rand(431)))
 ```
 
 In the above example you generate a random `DataFrame` and convert it
-into a `TimeFrame` object `ts`. The top line of the `ts` object tells you the number of
+into a `TSFrame` object `ts`. The top line of the `ts` object tells you the number of
 rows (`431` here) and the number of columns (`1`) along with the
 `Type` of `Index` (`Dates.Date` in the above example).
 
 You can also fetch the number of rows and columns by using `nr(ts)`,
 `nc(ts)`, and `size(ts)` methods. Respectively, they fetch the number
 of rows, columns, and a `Tuple` of row and column numbers. A
-`length(::TimeFrame)` method is also provided for convenience which returns
+`length(::TSFrame)` method is also provided for convenience which returns
 the number of rows of it's argument.
 
 ```@repl e1
@@ -57,24 +57,24 @@ Names of data columns can be fetched using the `names(ts)` method
 which returns a `Vector{String}` object. The `Index` column can be
 fetched as an object of `Vector` type by using the `index(ts)` method,
 it can also be fetched directly using the underlying `coredata`
-property of TimeFrame: `ts.coredata[!, :Index]`.
+property of TSFrame: `ts.coredata[!, :Index]`.
 
 ```@repl e1
 names(ts)
 index(ts)
 ```
 
-Another simpler way to read a CSV is to pass `TimeFrame` as a sink to the `CSV.read` function.
+Another simpler way to read a CSV is to pass `TSFrame` as a sink to the `CSV.read` function.
 
 ```julia-repl
-julia> ts = CSV.File(filename, TimeFrame)
+julia> ts = CSV.File(filename, TSFrame)
 ```
 
 ## Indexing and subsetting
 
 One of the primary features of a timeseries package is to provide ways
 to index or subset a dataset using convenient interfaces. TimeFrames makes it
-easier to index a `TimeFrame` object by providing multiple intuitive
+easier to index a `TSFrame` object by providing multiple intuitive
 `getindex` methods which work by just using the regular square
 parentheses(`[ ]`).
 
@@ -104,7 +104,7 @@ ts.value # get the value column as a vector
 
 ## Summary statistics
 
-The `describe()` method prints summary statistics of the TimeFrame
+The `describe()` method prints summary statistics of the TSFrame
 object. The output is a `DataFrame` which includes the number of
 missing values, data types of columns along with computed statistical
 values.
@@ -116,7 +116,7 @@ TimeFrames.describe(ts)
 
 ## Plotting
 
-A TimeFrame object can be plotted using the `plot()` function of the `Plots`
+A TSFrame object can be plotted using the `plot()` function of the `Plots`
 package. The plotting functionality is provided by `RecipesBase`
 package so all the flexibility and functionality of the `Plots`
 package is available for users.
@@ -128,7 +128,7 @@ plot(ts, size=(600,400); legend=false)
 
 ## Applying a function over a period
 
-The `apply` method allows you to aggregate the TimeFrame object over a period
+The `apply` method allows you to aggregate the TSFrame object over a period
 type (`Dates.Period`(@ref)) and return the output of applying the
 function on each period. For example, to convert frequency of daily
 timeseries to monthly you may use `first()`, `last()`, or
@@ -144,7 +144,7 @@ apply(ts, Week(1), Statistics.std, last, renamecols=false) # do not rename colum
 
 ## Joins: Row and column binding with other objects
 
-TimeFrames provides methods to join two TimeFrame objects by columns: `join` (alias:
+TimeFrames provides methods to join two TSFrame objects by columns: `join` (alias:
 `cbind`) or by rows: `vcat` (alias: `rbind`). Both the methods provide
 some basic intelligence while doing the merge.
 
@@ -158,7 +158,7 @@ missing from any of the other object.
 
 ```@repl e1
 dates = collect(Date(2007,1,1):Day(1):Date(2007,1,30));
-ts2 = TimeFrame(rand(length(dates)), dates)
+ts2 = TSFrame(rand(length(dates)), dates)
 join(ts, ts2, JoinAll) # cbind/join on Index column
 ```
 
@@ -182,7 +182,7 @@ even throw unknown errors.
 
 ```@repl e1
 dates = collect(Date(2008,4,1):Day(1):Date(2008,4,30));
-ts3 = TimeFrame(DataFrame(values=rand(length(dates)), Index=dates))
+ts3 = TSFrame(DataFrame(values=rand(length(dates)), Index=dates))
 vcat(ts, ts3) # do the merge
 ```
 
@@ -201,7 +201,7 @@ rollapply(Statistics.mean, ts, :value, 10)
 ## Computing rolling difference and percent change
 
 Similar to `apply` and `rollapply` there are specific methods to
-compute rolling differences and percent changes of a `TimeFrame` object. The
+compute rolling differences and percent changes of a `TSFrame` object. The
 `diff` method computes mathematical difference of values in adjacent
 rows, inserting `missing` in the first row. `pctchange` computes the
 percentage change between adjacent rows.
@@ -229,17 +229,17 @@ lead(ts, 2)
 
 ## Converting to Matrix and DataFrame
 
-You can easily convert a TimeFrame object into a `Matrix` or fetch the
+You can easily convert a TSFrame object into a `Matrix` or fetch the
 `DataFrame` for doing operations which are outside of the TimeFrames scope.
 
 ```@repl e1
 ts[:, 1] # convert column 1 to a vector of floats
-Matrix(ts) # convert entire TimeFrame into a Matrix
+Matrix(ts) # convert entire TSFrame into a Matrix
 select(ts.coredata, :Index, :value, DataFrames.nrow) # use the underlying DataFrame for other operations
 ```
-## Writing TimeFrame into a CSV file
+## Writing TSFrame into a CSV file
 
-Writing a TimeFrame object into a CSV file can be done easily by using the
+Writing a TSFrame object into a CSV file can be done easily by using the
 underlying `coredata` property. This `DataFrame` can be passed to
 the `CSV.write` method for writing into a file.
 
@@ -249,13 +249,13 @@ CSV.write("/tmp/demo_ts.csv", ts)
 
 ## Broadcasting
 
-Broadcasting can be used on a `TimeFrame` object to apply a function to a subset of it's columns.
+Broadcasting can be used on a `TSFrame` object to apply a function to a subset of it's columns.
 
 ```jldoctest
 julia> using TimeFrames, DataFrames;
 
-julia> ts = TimeFrame(DataFrame(Index = [1, 2, 3, 4, 5], A = [10.1, 12.4, 42.4, 24.1, 242.5], B = [2, 4, 6, 8, 10]))
-(5 x 2) TimeFrame with Int64 Index
+julia> ts = TSFrame(DataFrame(Index = [1, 2, 3, 4, 5], A = [10.1, 12.4, 42.4, 24.1, 242.5], B = [2, 4, 6, 8, 10]))
+(5 x 2) TSFrame with Int64 Index
 
  Index  A        B     
  Int64  Float64  Int64 
@@ -267,7 +267,7 @@ julia> ts = TimeFrame(DataFrame(Index = [1, 2, 3, 4, 5], A = [10.1, 12.4, 42.4, 
      5    242.5     10
 
 julia> sin_A = sin.(ts[:, [:A]])    # get sin of column A
-(5 x 1) TimeFrame with Int64 Index
+(5 x 1) TSFrame with Int64 Index
 
  Index  A_sin
  Int64  Float64
@@ -279,7 +279,7 @@ julia> sin_A = sin.(ts[:, [:A]])    # get sin of column A
      5  -0.562466
 
 julia> log_ts = log.(ts)    # take log of all columns
-(5 x 2) TimeFrame with Int64 Index
+(5 x 2) TSFrame with Int64 Index
 
  Index  A_log    B_log
  Int64  Float64  Float64
@@ -291,7 +291,7 @@ julia> log_ts = log.(ts)    # take log of all columns
      5  5.491    2.30259
 
 julia> log_ts = log.(ts[:, [:A, :B]])   # can specify multiple columns
-(5 x 2) TimeFrame with Int64 Index
+(5 x 2) TSFrame with Int64 Index
 
  Index  A_log    B_log
  Int64  Float64  Float64
@@ -306,9 +306,9 @@ julia> log_ts = log.(ts[:, [:A, :B]])   # can specify multiple columns
 
 ## [Tables.jl](https://github.com/JuliaData/Tables.jl) Integration
 
-`TimeFrame` objects are [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible. This integration enables easy conversion between the `TimeFrame` format and other formats which are [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible.
+`TSFrame` objects are [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible. This integration enables easy conversion between the `TSFrame` format and other formats which are [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible.
 
-As an example, first consider the following code which converts a `TimeFrame` object into a `DataFrame`, a `TimeArray` and a `CSV` file respectively.
+As an example, first consider the following code which converts a `TSFrame` object into a `DataFrame`, a `TimeArray` and a `CSV` file respectively.
 
 ```julia
 julia> using TimeFrames, TimeSeries, Dates, DataFrames, CSV;
@@ -316,7 +316,7 @@ julia> using TimeFrames, TimeSeries, Dates, DataFrames, CSV;
 julia> dates = Date(2018, 1, 1):Day(1):Date(2018, 12, 31)
 Date("2018-01-01"):Day(1):Date("2018-12-31")
 
-julia> ts = TimeFrame(DataFrame(Index = dates, x1 = 1:365));
+julia> ts = TSFrame(DataFrame(Index = dates, x1 = 1:365));
 
 # conversion to DataFrames
 julia> df = DataFrame(ts);
@@ -329,26 +329,26 @@ julia> CSV.write("ts.csv", ts);
 
 ```
 
-Next, here is some code which converts a `DataFrame`, a `TimeArray` and a `CSV` file to a `TimeFrame` object.
+Next, here is some code which converts a `DataFrame`, a `TimeArray` and a `CSV` file to a `TSFrame` object.
 
 ```julia-repl
 julia> using TimeFrames, DataFrames, CSV, TimeSeries, Dates;
 
-# converting DataFrame to TimeFrame
-julia> ts = TimeFrame(DataFrame(Index=1:10, x1=1:10));
+# converting DataFrame to TSFrame
+julia> ts = TSFrame(DataFrame(Index=1:10, x1=1:10));
 
-# converting from TimeArray to TimeFrame
+# converting from TimeArray to TSFrame
 julia> dates = Date(2018, 1, 1):Day(1):Date(2018, 12, 31)
 Date("2018-01-01"):Day(1):Date("2018-12-31")
 
 julia> ta = TimeArray(dates, rand(length(dates)));
 
-julia> ts = TimeFrame(ta);
+julia> ts = TSFrame(ta);
 
-# converting from CSV to TimeFrame
-julia> CSV.read("ts.csv", TimeFrame);
+# converting from CSV to TSFrame
+julia> CSV.read("ts.csv", TSFrame);
 ```
 
 !!! note
 
-    This discussion warrants a note about how we've implemented the [`Tables.jl`](https://github.com/JuliaData/Tables.jl) interfaces. Since `TimeFrame` objects are nothing but a wrapper around a `DataFrame`, our implementations of these interfaces just call [`DataFrames.jl`](https://github.com/JuliaData/DataFrames.jl)'s implementations. Moreover, while constructing `TimeFrame` objects out of other [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible types, our constructor first converts the input table to a `DataFrame`, and then converts the `DataFrame` to a `TimeFrame` object.
+    This discussion warrants a note about how we've implemented the [`Tables.jl`](https://github.com/JuliaData/Tables.jl) interfaces. Since `TSFrame` objects are nothing but a wrapper around a `DataFrame`, our implementations of these interfaces just call [`DataFrames.jl`](https://github.com/JuliaData/DataFrames.jl)'s implementations. Moreover, while constructing `TSFrame` objects out of other [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible types, our constructor first converts the input table to a `DataFrame`, and then converts the `DataFrame` to a `TSFrame` object.

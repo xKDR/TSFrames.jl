@@ -1,20 +1,20 @@
 # Basic demo of TimeFrames using financial data
 
-## Create a TimeFrame object for IBM historical data
+## Create a TSFrame object for IBM historical data
 
-To load the IBM historical data, we will use the `MarketData.yahoo` function from [MarketData.jl](https://github.com/JuliaQuant/MarketData.jl), which returns the data in the form of a `TimeArray`. We just simply pass this on to the `TimeFrame` constructor.
+To load the IBM historical data, we will use the `MarketData.yahoo` function from [MarketData.jl](https://github.com/JuliaQuant/MarketData.jl), which returns the data in the form of a `TimeArray`. We just simply pass this on to the `TSFrame` constructor.
 
 ```@repl e1
 using TimeFrames, MarketData, DataFrames, Dates, Plots, Statistics
-ibm_ts = TimeFrame(MarketData.yahoo(:IBM))
+ibm_ts = TSFrame(MarketData.yahoo(:IBM))
 ```
 
-## Create TimeFrame object for AAPL
+## Create TSFrame object for AAPL
 
-Similarly, we can create a `TimeFrame` object for the AAPL data.
+Similarly, we can create a `TSFrame` object for the AAPL data.
 
 ```@repl e1
-aapl_ts = TimeFrame(MarketData.yahoo(:AAPL))
+aapl_ts = TSFrame(MarketData.yahoo(:AAPL))
 ```
 
 ## Create a 6-month subset of stock data
