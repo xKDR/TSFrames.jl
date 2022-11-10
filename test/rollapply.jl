@@ -10,26 +10,26 @@ windowsize = 0
 
 windowsize = 1
 rp = rollapply(first, ts, :A, windowsize)
-@test typeof(rp) == TimeFrames.TSFrame      # test type
+@test typeof(rp) == TSFrames.TSFrame      # test type
 @test occursin("A", names(rp)[1]) # test colname
 
-@test TimeFrames.nrow(rp) == TimeFrames.nrow(ts) - windowsize + 1 # nrow
+@test TSFrames.nrow(rp) == TSFrames.nrow(ts) - windowsize + 1 # nrow
 @test rp[1, 1] == ts[1, :A]                         # shift
 @test rp[2, 1] == ts[2, :A]                         # value
 
 windowsize = 5
 rp = rollapply(sum, ts, :A, windowsize)
-@test typeof(rp) == TimeFrames.TSFrame
+@test typeof(rp) == TSFrames.TSFrame
 @test first(index(rp)) == index(ts)[windowsize]
-@test TimeFrames.nrow(rp) == TimeFrames.nrow(ts) - windowsize + 1
+@test TSFrames.nrow(rp) == TSFrames.nrow(ts) - windowsize + 1
 @test rp[1, 1] == sum(ts[1:windowsize, :A])
 @test occursin("A", names(rp)[1])
 
 windowsize = DATA_SIZE
-@test typeof(rp) == TimeFrames.TSFrame
+@test typeof(rp) == TSFrames.TSFrame
 rp = rollapply(sum, ts, :A, windowsize)
 @test first(index(rp)) == index(ts)[windowsize]
-@test TimeFrames.nrow(rp) == 1
+@test TSFrames.nrow(rp) == 1
 @test rp[1, 1] == sum(ts[1:windowsize, :A])
 @test occursin("A", names(rp)[1])
 

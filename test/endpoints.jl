@@ -165,10 +165,10 @@ ep1 = endpoints(datetimes, Week(2))[1];
 ##
 # endpoints(dates::AbstractVector{T}, on::Day) where {T<:Union{Date, DateTime}}
 ##
-@test endpoints(dates, Day(1)) == collect(1:TimeFrames.nrow(tsdaily))
-@test endpoints(dates, Day(2)) == [collect(2:2:TimeFrames.nrow(tsdaily))..., 181]
-@test endpoints(datetimes, Day(1)) == collect(1:TimeFrames.nrow(tsdaily))
-@test endpoints(datetimes, Day(2)) == [collect(2:2:TimeFrames.nrow(tsdaily))..., 181]
+@test endpoints(dates, Day(1)) == collect(1:TSFrames.nrow(tsdaily))
+@test endpoints(dates, Day(2)) == [collect(2:2:TSFrames.nrow(tsdaily))..., 181]
+@test endpoints(datetimes, Day(1)) == collect(1:TSFrames.nrow(tsdaily))
+@test endpoints(datetimes, Day(2)) == [collect(2:2:TSFrames.nrow(tsdaily))..., 181]
 @test endpoints(datetimehours, Day(1)) == [24, 48, 49]
 
 ##

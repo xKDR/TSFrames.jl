@@ -10,7 +10,7 @@ df1 = DataFrame(x1 = random(200), x2 = random(200))
 df2 = DataFrame(x2 = random(200), x1 = random(200))
 ts1 = TSFrame(df1, index_timetype1)
 ts2 = TSFrame(df2, index_timetype2)
-ts_setequal = TimeFrames.vcat(ts1, ts2, colmerge=:setequal)
+ts_setequal = TSFrames.vcat(ts1, ts2, colmerge=:setequal)
 
 @test propertynames(ts_setequal.coredata) == [:Index, :x1, :x2]
 @test ts_setequal[1:DATA_SIZE_1, :Index] == ts1[:, :Index]
@@ -22,7 +22,7 @@ ts_setequal = TimeFrames.vcat(ts1, ts2, colmerge=:setequal)
 
 df2 = DataFrame(x1 = random(200), x2 = random(200))
 ts2 = TSFrame(df2, index_timetype2)
-ts_orderequal = TimeFrames.vcat(ts1, ts2, colmerge=:orderequal)
+ts_orderequal = TSFrames.vcat(ts1, ts2, colmerge=:orderequal)
 
 @test propertynames(ts_orderequal.coredata) == [:Index, :x1, :x2]
 @test ts_orderequal[1:DATA_SIZE_1, :Index] == ts1[:, :Index]
@@ -38,7 +38,7 @@ df2 = DataFrame(x2 = random(200), x3 = random(200))
 ts1 = TSFrame(df1, index_timetype1)
 ts2 = TSFrame(df2, index_timetype2)
 
-ts_intersect = TimeFrames.vcat(ts1, ts2, colmerge=:intersect)
+ts_intersect = TSFrames.vcat(ts1, ts2, colmerge=:intersect)
 
 @test propertynames(ts_intersect.coredata) == [:Index, :x2]
 @test ts_intersect[1:DATA_SIZE_1, :Index] == ts1[:, :Index]
@@ -46,7 +46,7 @@ ts_intersect = TimeFrames.vcat(ts1, ts2, colmerge=:intersect)
 @test ts_intersect[1:DATA_SIZE_1, :x2] == ts1[:, :x2]
 @test ts_intersect[DATA_SIZE_1 + 1:DATA_SIZE_1 + DATA_SIZE_2, :x2] == ts2[:, :x2]
 
-ts_union = TimeFrames.vcat(ts1, ts2, colmerge=:union)
+ts_union = TSFrames.vcat(ts1, ts2, colmerge=:union)
 
 @test propertynames(ts_union.coredata) == [:Index, :x1, :x2, :x3]
 @test ts_union[1:DATA_SIZE_1, :Index] == ts1[:, :Index]
