@@ -26,9 +26,9 @@ Rows: 500
 
 Columns: timestamp, Open, High, Low, Close
 
-## Creating a TimeFrame object from DataFrame
+## Creating a TSFrame object from DataFrame
 ```
-@benchmark TimeFrames.TimeFrame(data) setup=(data = df)
+@benchmark TimeFrames.TSFrame(data) setup=(data = df)
 ```
 ```
  Range (min … max):  20.400 μs … 59.300 μs  ┊ GC (min … max): 0.00% … 0.00%
@@ -138,7 +138,7 @@ Time  (mean ± σ):   104.520 μs ±  34.220 μs  ┊ GC (mean ± σ):  0.00% ±
 v = [i for i in 1:2:500]
 df2 = df[v,[:timestamp,:Open,:High,:Low,:Close]]
 rename!(df2, :Open => :open1, :High => :high1, :Low => :low1, :Close => :close1)
-ts2 = TimeFrames.TimeFrame(df2)
+ts2 = TimeFrames.TSFrame(df2)
 ```
 ### Left Join
 
@@ -189,8 +189,8 @@ ts2 = TimeFrames.TimeFrame(df2)
 ```
 df3 = df[1:300,[:timestamp,:Open,:High,:Low,:Close]]
 df4 = df[300:end,[:timestamp,:Open,:High,:Low,:Close]]
-ts3 = TimeFrames.TimeFrame(df3)
-ts4 = TimeFrames.TimeFrame(df4)
+ts3 = TimeFrames.TSFrame(df3)
+ts4 = TimeFrames.TSFrame(df4)
 ```
 
 ```
