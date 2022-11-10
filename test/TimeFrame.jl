@@ -83,16 +83,32 @@ function test_empty_timeframe_cons()
     #test for int type
     tfi1 = TimeFrame(Int, n=1)
     tfi2 = TimeFrame(Int, n=2)
+
     @test size(tfi1)==(0, 1)
     @test size(tfi2)==(0, 2)
+
+    @test TimeFrames.nrow(tfi1)==0
+    @test TimeFrames.nrow(tfi2)==0
+
+    @test TimeFrames.ncol(tfi1)==1
+    @test TimeFrames.ncol(tfi2)==2
+
     @test eltype(index(tfi1))==Int
     @test eltype(index(tfi2))==Int
 
     #test for date type
     tfd1 = TimeFrame(Date, n=1)
     tfd2 = TimeFrame(Date, n=2)
+
     @test size(tfd1)==(0, 1)
     @test size(tfd2)==(0, 2)
+
+    @test TimeFrames.nrow(tfd1)==0
+    @test TimeFrames.nrow(tfd2)==0
+
+    @test TimeFrames.ncol(tfd1)==1
+    @test TimeFrames.ncol(tfd2)==2
+
     @test eltype(index(tfd1))==Date
     @test eltype(index(tfd2))==Date
 
