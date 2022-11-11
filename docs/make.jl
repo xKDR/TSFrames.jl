@@ -1,21 +1,21 @@
-using TimeFrames
+using TSFrames
 using Documenter
 
-DocMeta.setdocmeta!(TimeFrames, :DocTestSetup, :(using TimeFrames, DataFrames, Dates, Statistics); recursive=true)
+DocMeta.setdocmeta!(TSFrames, :DocTestSetup, :(using TSFrames, DataFrames, Dates, Statistics); recursive=true)
 
 makedocs(;
-    modules=[TimeFrames],
+    modules=[TSFrames],
     authors="xKDR Forum",
-    repo="https://github.com/xKDR/TimeFrames.jl/blob/{commit}{path}#{line}",
-    sitename="TimeFrames.jl",
+    repo="https://github.com/xKDR/TSFrames.jl/blob/{commit}{path}#{line}",
+    sitename="TSFrames.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://xKDR.github.io/TimeFrames.jl",
+        canonical="https://xKDR.github.io/TSFrames.jl",
         assets=String[],
     ),
     pages=[
         "Introduction" => "index.md",
-        "Basic demo of TimeFrames" => "demo_finance.md",
+        "Basic demo of TSFrames" => "demo_finance.md",
         "User guide" => "user_guide.md",
         "API reference" => "api.md",
     ],
@@ -24,7 +24,7 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/xKDR/TimeFrames.jl",
+    repo="github.com/xKDR/TSFrames.jl",
     devbranch="main",
     target = "build",
 )

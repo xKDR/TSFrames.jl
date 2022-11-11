@@ -6,7 +6,7 @@ MarketData = "945b72a4-3b13-509d-9b46-1525bb5c06de"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 RecipesBase = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
-TimeFrames = "9f90e835-9451-4aaa-bcb1-743a1b8d2f84"
+TSFrames = "9f90e835-9451-4aaa-bcb1-743a1b8d2f84"
 
 [compat]
 Documenter = "0.27.15"

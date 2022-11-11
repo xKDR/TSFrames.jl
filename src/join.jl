@@ -14,27 +14,27 @@ end
 """
 # Joins/Column-binding
 
-`TimeFrame` objects can be combined together column-wise using `Index` as the
+`TSFrame` objects can be combined together column-wise using `Index` as the
 column key. There are four kinds of column-binding operations possible
 as of now. Each join operation works by performing a Set operation on
 the `Index` column and then merging the datasets based on the output
 from the Set operation. Each operation changes column names in the
 final object automatically if the operation encounters duplicate
-column names amongst the TimeFrame objects.
+column names amongst the TSFrame objects.
 
 The following join types are supported:
 
-`join(ts1::TimeFrame, ts2::TimeFrame, ::Type{JoinInner})` and
-`join(ts1::TimeFrame, ts2::TimeFrame, ::Type{JoinBoth})`
+`join(ts1::TSFrame, ts2::TSFrame, ::Type{JoinInner})` and
+`join(ts1::TSFrame, ts2::TSFrame, ::Type{JoinBoth})`
 
 a.k.a. inner join, takes the intersection of the indexes of `ts1` and
 `ts2`, and then merges the columns of both the objects. The resulting
 object will only contain rows which are present in both the objects'
 indexes. The function will rename columns in the final object if
-they had same names in the TimeFrame objects.
+they had same names in the TSFrame objects.
 
-`join(ts1::TimeFrame, ts2::TimeFrame, ::Type{JoinOuter})` and
-`join(ts1::TimeFrame, ts2::TimeFrame, ::Type{JoinAll})`:
+`join(ts1::TSFrame, ts2::TSFrame, ::Type{JoinOuter})` and
+`join(ts1::TSFrame, ts2::TSFrame, ::Type{JoinAll})`:
 
 a.k.a. outer join, takes the union of the indexes of `ts1` and `ts2`
 before merging the other columns of input objects. The output will
@@ -43,7 +43,7 @@ inserting `missing` values where a row was not present in any of the
 objects. This is the default behaviour if no `JoinType` object is
 provided.
 
-`join(ts1::TimeFrame, ts2::TimeFrame, ::Type{JoinLeft})`:
+`join(ts1::TSFrame, ts2::TSFrame, ::Type{JoinLeft})`:
 
 Left join takes the index values which are present in the left
 object `ts1` and finds matching index values in the right object
@@ -53,7 +53,7 @@ associated with matching index rows on the right. The operation
 inserts `missing` values where in the unmatched rows of the right
 object.
 
-`join(ts1::TimeFrame, ts2::TimeFrame, ::Type{JoinRight})`
+`join(ts1::TSFrame, ts2::TSFrame, ::Type{JoinRight})`
 
 Right join, similar to left join but works in the opposite
 direction. The final object contains all the rows from the right
@@ -66,16 +66,16 @@ is provided to the `join` method.
 `cbind` is an alias for `join` method.
 
 # Examples
-```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TSFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random;
 
 julia> random(x) = rand(MersenneTwister(123), x);
 
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10));
 
-julia> ts1 = TimeFrame(random(length(dates)), dates)
+julia> ts1 = TSFrame(random(length(dates)), dates)
 julia> show(ts1)
-(10 x 1) TimeFrame with Dates.Date Index
+(10 x 1) TSFrame with Dates.Date Index
 
  Index       x1
  Date        Float64
@@ -93,9 +93,9 @@ julia> show(ts1)
 
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,30));
 
-julia> ts2 = TimeFrame(random(length(dates)), dates);
+julia> ts2 = TSFrame(random(length(dates)), dates);
 julia> show(ts2)
-(30 x 1) TimeFrame with Dates.Date Index
+(30 x 1) TSFrame with Dates.Date Index
 
  Index       x1
  Date        Float64
@@ -123,7 +123,7 @@ julia> show(ts2)
 # join on all index values
 # equivalent to `join(ts1, ts2, JoinAll)` call
 julia> join(ts1, ts2)
-(30 x 2) TimeFrame with Date Index
+(30 x 2) TSFrame with Date Index
 
  Index       x1               x1_1
  Date        Float64?         Float64?
@@ -155,7 +155,7 @@ julia> cbind(ts1, ts2);
 
 # join only the common index values
 julia> join(ts1, ts2, JoinBoth)
-(10 x 2) TimeFrame with Date Index
+(10 x 2) TSFrame with Date Index
 
  Index       x1         x1_1
  Date        Float64    Float64
@@ -174,7 +174,7 @@ julia> join(ts1, ts2, JoinBoth)
 
 # keep index values of `ts1`
 julia> join(ts1, ts2, JoinLeft)
-(10 x 2) TimeFrame with Date Index
+(10 x 2) TSFrame with Date Index
 
  Index       x1         x1_1
  Date        Float64    Float64?
@@ -193,7 +193,7 @@ julia> join(ts1, ts2, JoinLeft)
 
 # keep index values of `ts2`
 julia> join(ts1, ts2, JoinRight)
-(30 x 2) TimeFrame with Date Index
+(30 x 2) TSFrame with Date Index
 
  Index       x1               x1_1
  Date        Float64?         Float64
@@ -222,30 +222,30 @@ julia> join(ts1, ts2, JoinRight)
 
 ```
 """
-function Base.join(ts1::TimeFrame, ts2::TimeFrame)
+function Base.join(ts1::TSFrame, ts2::TSFrame)
     join(ts1, ts2, JoinAll)
 end
 
-function Base.join(ts1::TimeFrame, ts2::TimeFrame, ::Type{JoinBoth})
+function Base.join(ts1::TSFrame, ts2::TSFrame, ::Type{JoinBoth})
     result = DataFrames.innerjoin(ts1.coredata, ts2.coredata, on=:Index, makeunique=true)
-    return TimeFrame(result)
+    return TSFrame(result)
 end
-Base.join(ts1::TimeFrame, ts2::TimeFrame, ::Type{JoinInner}) = Base.join(ts1, ts2, JoinBoth)
+Base.join(ts1::TSFrame, ts2::TSFrame, ::Type{JoinInner}) = Base.join(ts1, ts2, JoinBoth)
 
-function Base.join(ts1::TimeFrame, ts2::TimeFrame, ::Type{JoinAll})
+function Base.join(ts1::TSFrame, ts2::TSFrame, ::Type{JoinAll})
     result = DataFrames.outerjoin(ts1.coredata, ts2.coredata, on=:Index, makeunique=true)
-    return TimeFrame(result)
+    return TSFrame(result)
 end
-Base.join(ts1::TimeFrame, ts2::TimeFrame, ::Type{JoinOuter}) = Base.join(ts1, ts2, JoinAll)
+Base.join(ts1::TSFrame, ts2::TSFrame, ::Type{JoinOuter}) = Base.join(ts1, ts2, JoinAll)
 
-function Base.join(ts1::TimeFrame, ts2::TimeFrame, ::Type{JoinLeft})
+function Base.join(ts1::TSFrame, ts2::TSFrame, ::Type{JoinLeft})
     result = DataFrames.leftjoin(ts1.coredata, ts2.coredata, on=:Index, makeunique=true)
-    return TimeFrame(result)
+    return TSFrame(result)
 end
 
-function Base.join(ts1::TimeFrame, ts2::TimeFrame, ::Type{JoinRight})
+function Base.join(ts1::TSFrame, ts2::TSFrame, ::Type{JoinRight})
     result = DataFrames.rightjoin(ts1.coredata, ts2.coredata, on=:Index, makeunique=true)
-    return TimeFrame(result)
+    return TSFrame(result)
 end
 # alias
 cbind = join

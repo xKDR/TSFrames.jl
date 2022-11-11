@@ -2,10 +2,10 @@
 # Row-merging (vcat/rbind)
 
 ```julia
-vcat(ts1::TimeFrame, ts2::TimeFrame; colmerge::Symbol=:union)
+vcat(ts1::TSFrame, ts2::TSFrame; colmerge::Symbol=:union)
 ```
 
-Concatenate rows of two TimeFrame objects, append `ts2` to `ts1`.
+Concatenate rows of two TSFrame objects, append `ts2` to `ts1`.
 
 The `colmerge` keyword argument specifies the column merge
 strategy. The value of `colmerge` is directly passed to `cols`
@@ -19,7 +19,7 @@ Currently, `DataFrames.vcat` supports four types of column-merge strategies:
 4. `:union`: merge even if columns differ, the resulting object has all the columns filled with `missing`, if necessary.
 
 # Examples
-```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TSFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random;
 
 julia> random(x) = rand(MersenneTwister(123), x);
@@ -28,9 +28,9 @@ julia> dates1 = collect(Date(2017,1,1):Day(1):Date(2017,1,10));
 
 julia> dates2 = collect(Date(2017,1,11):Day(1):Date(2017,1,30));
 
-julia> ts1 = TimeFrame([randn(length(dates1)) randn(length(dates1))], dates1)
+julia> ts1 = TSFrame([randn(length(dates1)) randn(length(dates1))], dates1)
 julia> show(ts1)
-(10 x 1) TimeFrame with Dates.Date Index
+(10 x 1) TSFrame with Dates.Date Index
 
  Index       x1
  Date        Float64
@@ -47,9 +47,9 @@ julia> show(ts1)
  2017-01-10  -1.08461
 
 julia> df = DataFrame(x1 = randn(length(dates2)), y1 = randn(length(dates2)))
-julia> ts2 = TimeFrame(df, dates2)
+julia> ts2 = TSFrame(df, dates2)
 julia> show(ts2)
-(20 x 1) TimeFrame with Dates.Date Index
+(20 x 1) TSFrame with Dates.Date Index
 
  Index       x1
  Date        Float64
@@ -75,7 +75,7 @@ julia> show(ts2)
 
 
 julia> vcat(ts1, ts2)
-(30 x 3) TimeFrame with Date Index
+(30 x 3) TSFrame with Date Index
 
  Index       x1          x2              y1
  Date        Float64     Float64?        Float64?
@@ -112,7 +112,7 @@ julia> vcat(ts1, ts2)
  2017-01-30   0.516704   missing               0.216855
 
 julia> vcat(ts1, ts2; colmerge=:intersect)
-(30 x 1) TimeFrame with Date Index
+(30 x 1) TSFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -150,9 +150,9 @@ julia> vcat(ts1, ts2; colmerge=:intersect)
 
 ```
 """
-function Base.vcat(ts1::TimeFrame, ts2::TimeFrame; colmerge=:union)
+function Base.vcat(ts1::TSFrame, ts2::TSFrame; colmerge=:union)
     result_df = DataFrames.vcat(ts1.coredata, ts2.coredata; cols=colmerge)
-    return TimeFrame(result_df)
+    return TSFrame(result_df)
 end
 # alias
 rbind = vcat

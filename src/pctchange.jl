@@ -2,7 +2,7 @@
 # Percent Change
 
 ```julia
-pctchange(ts::TimeFrame, periods::Int = 1)
+pctchange(ts::TSFrame, periods::Int = 1)
 ```
 
 Return the percentage change between successive row elements.
@@ -12,16 +12,16 @@ of rows to be shifted over. The skipped rows are rendered as `missing`.
 `pctchange` returns an error if column type does not have the method `/`.
 
 # Examples
-```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TSFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random, Statistics;
 
 julia> random(x) = rand(MersenneTwister(123), x);
 
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10));
 
-julia> ts = TimeFrame(random(length(dates)), dates)
+julia> ts = TSFrame(random(length(dates)), dates)
 julia> show(ts)
-(10 x 1) TimeFrame with Date Index
+(10 x 1) TSFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -39,7 +39,7 @@ julia> show(ts)
 
 # Pctchange over successive rows
 julia> pctchange(ts)
-(10 x 1) TimeFrame with Date Index
+(10 x 1) TSFrame with Date Index
 
  Index       x1
  Date        Float64?
@@ -58,7 +58,7 @@ julia> pctchange(ts)
 
 # Pctchange over the third row
 julia> pctchange(ts, 3)
-(10 x 1) TimeFrame with Date Index
+(10 x 1) TSFrame with Date Index
 
  Index       x1
  Date        Float64?
@@ -78,11 +78,11 @@ julia> pctchange(ts, 3)
 """
 
 # Pctchange
-function pctchange(ts::TimeFrame, periods::Int = 1)
+function pctchange(ts::TSFrame, periods::Int = 1)
     if periods <= 0
         throw(ArgumentError("periods must be a positive int"))
     end
-    ddf = (ts.coredata[:, Not(:Index)] .- TimeFrames.lag(ts, periods).coredata[:, Not(:Index)]) ./ abs.(TimeFrames.lag(ts, periods).coredata[:, Not(:Index)])
+    ddf = (ts.coredata[:, Not(:Index)] .- TSFrames.lag(ts, periods).coredata[:, Not(:Index)]) ./ abs.(TSFrames.lag(ts, periods).coredata[:, Not(:Index)])
     insertcols!(ddf, 1, "Index" => ts.coredata[:, :Index])
-    TimeFrame(ddf, :Index)
+    TSFrame(ddf, :Index)
 end

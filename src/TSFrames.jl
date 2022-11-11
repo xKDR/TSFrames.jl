@@ -1,4 +1,4 @@
-module TimeFrames
+module TSFrames
 
 using DataFrames, Dates, ShiftedArrays, RecipesBase, RollingFunctions, Tables
 
@@ -21,7 +21,7 @@ import Base.vcat
 
 import Dates.Period
 
-export TimeFrame,
+export TSFrame,
     JoinBoth,
     JoinAll,
     JoinInner,
@@ -65,7 +65,7 @@ export TimeFrame,
     DataFrame,
     Date
 
-include("TimeFrame.jl")
+include("TSFrame.jl")
 include("utils.jl")
 
 include("apply.jl")
@@ -85,4 +85,4 @@ include("vcat.jl")
 include("broadcasting.jl")
 include("tables.jl")
 
-end                             # END module TimeFrames
+end                             # END module TSFrames
