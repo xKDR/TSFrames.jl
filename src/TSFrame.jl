@@ -1,11 +1,11 @@
 """
-    struct TimeFrame
+    struct TSFrame
       coredata :: DataFrame
     end
 
-`::TimeFrame` - A type to hold ordered data with an index.
+`::TSFrame` - A type to hold ordered data with an index.
 
-A TimeFrame object is essentially a `DataFrame` with a specific column marked
+A TSFrame object is essentially a `DataFrame` with a specific column marked
 as an index. The input `DataFrame` is sorted during construction and
 is stored under the property `coredata`. The index is stored in the
 `Index` column of `coredata`.
@@ -15,30 +15,30 @@ and 2-dimensional `Array`. If an index is already not present in the
 constructor then a sequential integer index is created
 automatically.
 
-`TimeFrame(coredata::DataFrame)`: Here, the constructor looks for a column
+`TSFrame(coredata::DataFrame)`: Here, the constructor looks for a column
 named `Index` in `coredata` as the index column, if this is not found
 then the first column of `coredata` is made the index by default. If
 `coredata` only has a single column then a new sequential index is
 generated.
 
-Since `TimeFrame.coredata` is a DataFrame it can be operated upon
+Since `TSFrame.coredata` is a DataFrame it can be operated upon
 independently using methods provided by the DataFrames package
 (ex. `transform`, `combine`, etc.).
 
 # Constructors
 ```julia
-TimeFrame(coredata::DataFrame, index::Union{String, Symbol, Int})
-TimeFrame(coredata::DataFrame, index::AbstractVector{T}) where {T<:Union{Int, TimeType}}
-TimeFrame(coredata::DataFrame)
-TimeFrame(coredata::DataFrame, index::UnitRange{Int})
-TimeFrame(coredata::AbstractVector{T}, index::AbstractVector{V}; colnames=:auto) where {T, V}
-TimeFrame(coredata::AbstractVector{T}; colnames=:auto) where {T}
-TimeFrame(coredata::AbstractArray{T,2}; colnames=:auto) where {T}
-TimeFrame(coredata::AbstractArray{T,2}, index::AbstractVector{V}; colnames=:auto) where {T, V}
+TSFrame(coredata::DataFrame, index::Union{String, Symbol, Int})
+TSFrame(coredata::DataFrame, index::AbstractVector{T}) where {T<:Union{Int, TimeType}}
+TSFrame(coredata::DataFrame)
+TSFrame(coredata::DataFrame, index::UnitRange{Int})
+TSFrame(coredata::AbstractVector{T}, index::AbstractVector{V}; colnames=:auto) where {T, V}
+TSFrame(coredata::AbstractVector{T}; colnames=:auto) where {T}
+TSFrame(coredata::AbstractArray{T,2}; colnames=:auto) where {T}
+TSFrame(coredata::AbstractArray{T,2}, index::AbstractVector{V}; colnames=:auto) where {T, V}
 ```
 
 # Examples
-```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TSFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random;
 julia> random(x) = rand(MersenneTwister(123), x);
 
@@ -58,8 +58,8 @@ julia> df = DataFrame(x1 = random(10))
    9 │ 0.26864
   10 │ 0.108871
 
-julia> ts = TimeFrame(df)   # generates index
-(10 x 1) TimeFrame with Int64 Index
+julia> ts = TSFrame(df)   # generates index
+(10 x 1) TSFrame with Int64 Index
 
  Index  x1
  Int64  Float64
@@ -92,8 +92,8 @@ julia> df = DataFrame(ind = [1, 2, 3], x1 = random(3))
    2 │     2  0.940515
    3 │     3  0.673959
 
-julia> ts = TimeFrame(df, 1)        # the first column is index
-(3 x 1) TimeFrame with Int64 Index
+julia> ts = TSFrame(df, 1)        # the first column is index
+(3 x 1) TSFrame with Int64 Index
 
  Index  x1
  Int64  Float64
@@ -111,8 +111,8 @@ julia> df = DataFrame(x1 = random(3), x2 = random(3), Index = [1, 2, 3]);
    2 │ 0.940515  0.940515      2
    3 │ 0.673959  0.673959      3
 
-julia> ts = TimeFrame(df)   # uses existing `Index` column
-(3 x 2) TimeFrame with Int64 Index
+julia> ts = TSFrame(df)   # uses existing `Index` column
+(3 x 2) TSFrame with Int64 Index
 
  Index  x1        x2
  Int64  Float64   Float64
@@ -139,8 +139,8 @@ julia> df = DataFrame(dates = dates, x1 = random(10))
    9 │ 2017-01-09  0.26864
   10 │ 2017-01-10  0.108871
 
-julia> ts = TimeFrame(df, :dates)
-(10 x 1) TimeFrame with Date Index
+julia> ts = TSFrame(df, :dates)
+(10 x 1) TSFrame with Date Index
 
  Index       x1
  Date        Float64
@@ -156,10 +156,10 @@ julia> ts = TimeFrame(df, :dates)
  2017-01-09  0.26864
  2017-01-10  0.108871
 
-julia> ts = TimeFrame(DataFrame(x1=random(10)), dates);
+julia> ts = TSFrame(DataFrame(x1=random(10)), dates);
 
-julia> ts = TimeFrame(random(10))
-(10 x 1) TimeFrame with Int64 Index
+julia> ts = TSFrame(random(10))
+(10 x 1) TSFrame with Int64 Index
 
  Index  x1
  Int64  Float64
@@ -175,8 +175,8 @@ julia> ts = TimeFrame(random(10))
      9  0.26864
     10  0.108871
 
-julia> ts = TimeFrame(random(10), colnames=[:A]) # column is named A
-(10 x 1) TimeFrame with Int64 Index
+julia> ts = TSFrame(random(10), colnames=[:A]) # column is named A
+(10 x 1) TSFrame with Int64 Index
 
  Index  A
  Int64  Float64
@@ -192,8 +192,8 @@ julia> ts = TimeFrame(random(10), colnames=[:A]) # column is named A
      9  0.26864
     10  0.108871
 
-julia> ts = TimeFrame(random(10), dates)
-(10 x 1) TimeFrame with Date Index
+julia> ts = TSFrame(random(10), dates)
+(10 x 1) TSFrame with Date Index
 
  Index       x1        
  Date        Float64   
@@ -209,8 +209,8 @@ julia> ts = TimeFrame(random(10), dates)
  2017-01-09  0.26864
  2017-01-10  0.108871
 
-julia> ts = TimeFrame(random(10), dates, colnames=[:A]) # column is named A
-(10 x 1) TimeFrame with Date Index
+julia> ts = TSFrame(random(10), dates, colnames=[:A]) # column is named A
+(10 x 1) TSFrame with Date Index
 
  Index       A         
  Date        Float64   
@@ -226,8 +226,8 @@ julia> ts = TimeFrame(random(10), dates, colnames=[:A]) # column is named A
  2017-01-09  0.26864
  2017-01-10  0.108871
 
-julia> ts = TimeFrame([random(10) random(10)]) # matrix object
-(10 x 2) TimeFrame with Int64 Index
+julia> ts = TSFrame([random(10) random(10)]) # matrix object
+(10 x 2) TSFrame with Int64 Index
 
  Index  x1         x2        
  Int64  Float64    Float64   
@@ -243,8 +243,8 @@ julia> ts = TimeFrame([random(10) random(10)]) # matrix object
      9  0.26864    0.26864
     10  0.108871   0.108871
 
-julia> ts = TimeFrame([random(10) random(10)], colnames=[:A, :B]) # columns are named A and B
-(10 x 2) TimeFrame with Int64 Index
+julia> ts = TSFrame([random(10) random(10)], colnames=[:A, :B]) # columns are named A and B
+(10 x 2) TSFrame with Int64 Index
 
  Index  A          B       
  Int64  Float64    Float64   
@@ -260,8 +260,8 @@ julia> ts = TimeFrame([random(10) random(10)], colnames=[:A, :B]) # columns are 
      9  0.26864    0.26864
     10  0.108871   0.108871
 
-julia> ts = TimeFrame([random(10) random(10)], dates) 
-(10 x 2) TimeFrame with Date Index
+julia> ts = TSFrame([random(10) random(10)], dates) 
+(10 x 2) TSFrame with Date Index
 
  Index       x1         x2
  Date        Float64    Float64
@@ -277,8 +277,8 @@ julia> ts = TimeFrame([random(10) random(10)], dates)
  2017-01-09  0.26864    0.26864
  2017-01-10  0.108871   0.108871
 
-julia> ts = TimeFrame([random(10) random(10)], dates, colnames=[:A, :B]) # columns are named A and B
-(10 x 2) TimeFrame with Date Index
+julia> ts = TSFrame([random(10) random(10)], dates, colnames=[:A, :B]) # columns are named A and B
+(10 x 2) TSFrame with Date Index
 
  Index       A          B         
  Date        Float64    Float64   
@@ -296,18 +296,18 @@ julia> ts = TimeFrame([random(10) random(10)], dates, colnames=[:A, :B]) # colum
 
 ```
 """
-struct TimeFrame
+struct TSFrame
 
     coredata :: DataFrame
 
     # From DataFrame, index number/name/symbol
-    function TimeFrame(coredata::DataFrame, index::Union{String, Symbol, Int})
+    function TSFrame(coredata::DataFrame, index::Union{String, Symbol, Int})
         if ! (eltype(coredata[!, index]) <: Union{Int, TimeType})
             throw(ArgumentError("only Int and TimeType index is supported"))
         end
 
         if (DataFrames.ncol(coredata) == 1)
-            TimeFrame(coredata, collect(Base.OneTo(DataFrames.nrow(coredata))))
+            TSFrame(coredata, collect(Base.OneTo(DataFrames.nrow(coredata))))
         end
 
         sorted_cd = sort(coredata, index)
@@ -320,7 +320,7 @@ struct TimeFrame
     end
 
     # From DataFrame, external index
-    function TimeFrame(coredata::DataFrame, index::AbstractVector{T}) where {T<:Union{Int, TimeType}}
+    function TSFrame(coredata::DataFrame, index::AbstractVector{T}) where {T<:Union{Int, TimeType}}
         sorted_index = sort(index)
 
         cd = copy(coredata)
@@ -338,46 +338,46 @@ end
 ####################################
 
 # For general Tables.jl compatible types
-function TimeFrame(table)
+function TSFrame(table)
     coredata = DataFrame(table, copycols=true)
 
     if "Index" in names(coredata)
-        return TimeFrame(coredata, :Index)
+        return TSFrame(coredata, :Index)
     elseif DataFrames.ncol(coredata) == 1
-        return TimeFrame(coredata, collect(1:DataFrames.nrow(coredata)))
+        return TSFrame(coredata, collect(1:DataFrames.nrow(coredata)))
     else
-        return TimeFrame(coredata, 1)
+        return TSFrame(coredata, 1)
     end
 end
 
 # From DataFrame, index range
-function TimeFrame(coredata::DataFrame, index::UnitRange{Int})
+function TSFrame(coredata::DataFrame, index::UnitRange{Int})
     index_vals = collect(index)
     cd = copy(coredata)
     insertcols!(cd, 1, :Index => index_vals, after=false, copycols=true)
-    TimeFrame(cd, :Index)
+    TSFrame(cd, :Index)
 end
 
 # From AbstractVector
-function TimeFrame(coredata::AbstractVector{T}, index::AbstractVector{V}; colnames=:auto) where {T, V}
+function TSFrame(coredata::AbstractVector{T}, index::AbstractVector{V}; colnames=:auto) where {T, V}
     df = DataFrame([coredata], colnames)
-    TimeFrame(df, index)
+    TSFrame(df, index)
 end
 
-function TimeFrame(coredata::AbstractVector{T}; colnames=:auto) where {T}
+function TSFrame(coredata::AbstractVector{T}; colnames=:auto) where {T}
     index_vals = collect(Base.OneTo(length(coredata)))
-    TimeFrame(coredata, index_vals, colnames=colnames)
+    TSFrame(coredata, index_vals, colnames=colnames)
 end
 
 # From Matrix and meta
 # FIXME: use Metadata.jl
-function TimeFrame(coredata::AbstractArray{T,2}; colnames=:auto) where {T}
+function TSFrame(coredata::AbstractArray{T,2}; colnames=:auto) where {T}
     index_vals = collect(Base.OneTo(size(coredata)[1]))
     df = DataFrame(coredata, colnames, copycols=true)
-    TimeFrame(df, index_vals)
+    TSFrame(df, index_vals)
 end
 
-function TimeFrame(coredata::AbstractArray{T,2}, index::AbstractVector{V}; colnames=:auto) where {T, V}
+function TSFrame(coredata::AbstractArray{T,2}, index::AbstractVector{V}; colnames=:auto) where {T, V}
     df = DataFrame(coredata, colnames, copycols=true)
-    TimeFrame(df, index)
+    TSFrame(df, index)
 end

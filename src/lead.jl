@@ -1,24 +1,24 @@
 """
 # Leading
 ```julia
-lead(ts::TimeFrame, lead_value::Int = 1)
+lead(ts::TSFrame, lead_value::Int = 1)
 ```
 
 Similar to lag, this method leads the `ts` object by `lead_value`. The
 lead rows are inserted with `missing`. Negative values of lead are
-also accepted (see `TimeFrames.lag`).
+also accepted (see `TSFrames.lag`).
 
 # Examples
-```jldoctest; setup = :(using TimeFrames, DataFrames, Dates, Random, Statistics)
+```jldoctest; setup = :(using TSFrames, DataFrames, Dates, Random, Statistics)
 julia> using Random, Statistics;
 
 julia> random(x) = rand(MersenneTwister(123), x);
 
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2018,3,10));
 
-julia> ts = TimeFrame(DataFrame(Index = dates, x1 = random(length(dates))))
+julia> ts = TSFrame(DataFrame(Index = dates, x1 = random(length(dates))))
 julia> show(ts)
-(434 x 1) TimeFrame with Dates.Date Index
+(434 x 1) TSFrame with Dates.Date Index
 
  Index       x1
  Date        Float64
@@ -44,7 +44,7 @@ julia> show(ts)
 
 
 julia> lead(ts)[1:10]        # leads once
-(10 x 1) TimeFrame with Date Index
+(10 x 1) TSFrame with Date Index
 
  Index       x1
  Date        Float64?
@@ -61,7 +61,7 @@ julia> lead(ts)[1:10]        # leads once
  2017-01-10  0.163666
 
 julia> lead(ts, 2)[1:10]     # leads by 2 values
-(10 x 1) TimeFrame with Date Index
+(10 x 1) TSFrame with Date Index
 
  Index       x1
  Date        Float64?
@@ -79,8 +79,8 @@ julia> lead(ts, 2)[1:10]     # leads by 2 values
 
 ```
 """
-function lead(ts::TimeFrame, lead_value::Int = 1)
-    sdf = DataFrame(ShiftedArrays.lead.(eachcol(ts.coredata[!, Not(:Index)]), lead_value), TimeFrames.names(ts))
+function lead(ts::TSFrame, lead_value::Int = 1)
+    sdf = DataFrame(ShiftedArrays.lead.(eachcol(ts.coredata[!, Not(:Index)]), lead_value), TSFrames.names(ts))
     insertcols!(sdf, 1, :Index => ts.coredata[!, :Index])
-    TimeFrame(sdf, :Index)
+    TSFrame(sdf, :Index)
 end

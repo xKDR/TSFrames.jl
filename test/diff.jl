@@ -1,4 +1,4 @@
-ts = TimeFrame(integer_data_vector, index_timetype)
+ts = TSFrame(integer_data_vector, index_timetype)
 
 # when period is atmost DATA_SIZE
 for period in [1, Int(floor(DATA_SIZE/2)), DATA_SIZE]
@@ -11,7 +11,7 @@ for period in [1, Int(floor(DATA_SIZE/2)), DATA_SIZE]
     @test isequal(Vector{Missing}(ts_diff[1:period, :x1]), fill(missing, period))
 
     # the rest of the values must be the differences
-    @test isequal(ts_diff[(period + 1):TimeFrames.nrow(ts), :x1], ts[(period + 1):TimeFrames.nrow(ts), :x1] - ts[1:TimeFrames.nrow(ts) - period, :x1])
+    @test isequal(ts_diff[(period + 1):TSFrames.nrow(ts), :x1], ts[(period + 1):TSFrames.nrow(ts), :x1] - ts[1:TSFrames.nrow(ts) - period, :x1])
 end
 
 # when period is greater than DATA_SIZE
