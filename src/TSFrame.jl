@@ -381,3 +381,10 @@ function TSFrame(coredata::AbstractArray{T,2}, index::AbstractVector{V}; colname
     df = DataFrame(coredata, colnames, copycols=true)
     TSFrame(df, index)
 end
+
+function TSFrame(T::DataType; n::Int=1)
+    (n>=1) || throw(DomainError(n, "n should be >= 1"))
+    df = DataFrame(fill([],n), :auto)
+    df.Index = T[]
+    TSFrame(df)
+end

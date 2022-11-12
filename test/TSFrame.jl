@@ -79,6 +79,46 @@ function test_colnames()
     @test names(ts.coredata) == ["Index", "A", "B"]
 end
 
+function test_empty_timeframe_cons() 
+    #test for int type
+    tfi1 = TSFrame(Int, n=1)
+    tfi2 = TSFrame(Int, n=2)
+
+    @test size(tfi1)==(0, 1)
+    @test size(tfi2)==(0, 2)
+
+    @test TSFrames.nrow(tfi1)==0
+    @test TSFrames.nrow(tfi2)==0
+
+    @test TSFrames.ncol(tfi1)==1
+    @test TSFrames.ncol(tfi2)==2
+
+    @test eltype(index(tfi1))==Int
+    @test eltype(index(tfi2))==Int
+
+    #test for date type
+    tfd1 = TSFrame(Date, n=1)
+    tfd2 = TSFrame(Date, n=2)
+
+    @test size(tfd1)==(0, 1)
+    @test size(tfd2)==(0, 2)
+
+    @test TSFrames.nrow(tfd1)==0
+    @test TSFrames.nrow(tfd2)==0
+
+    @test TSFrames.ncol(tfd1)==1
+    @test TSFrames.ncol(tfd2)==2
+
+    @test eltype(index(tfd1))==Date
+    @test eltype(index(tfd2))==Date
+
+    #test for errors
+    @test_throws DomainError TSFrame(Int, n=-1)
+    @test_throws DomainError TSFrame(Int, n=0)
+    @test_throws DomainError TSFrame(Date, n=-1)
+    @test_throws DomainError TSFrame(Date, n=0)
+end
+
 # Run each test
 # NOTE: Do not forget to add any new test-function created above
 # otherwise that test won't run.
@@ -92,3 +132,4 @@ test_vector_index_vector_timetype()
 test_vector()
 test_array()
 test_colnames()
+test_empty_timeframe_cons()
