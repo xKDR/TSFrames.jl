@@ -63,6 +63,13 @@ object.
 The default behaviour is to assume `JoinAll` if no `JoinType` object
 is provided to the `join` method.
 
+Joining multiple `TSFrame`s is also supported. The syntax is
+
+`join(ts1::TSFrame, ts2::TSFrame, ts...; jointype::T)`
+
+where `T <: Union{Type{JoinAll}, Type{JoinBoth}, Type{JoinInner}, Type{JoinOuter}, Type{JoinLeft}, Type{JoinRight}}`.
+Note that `join` on multiple `TSFrame`s is left associative.
+
 `cbind` is an alias for `join` method.
 
 # Examples
@@ -73,7 +80,7 @@ julia> random(x) = rand(MersenneTwister(123), x);
 
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10));
 
-julia> ts1 = TSFrame(random(length(dates)), dates)
+julia> ts1 = TSFrame(random(length(dates)), dates);
 julia> show(ts1)
 (10 x 1) TSFrame with Dates.Date Index
 
@@ -219,6 +226,55 @@ julia> join(ts1, ts2, JoinRight)
  2017-01-29  missing          0.555668
  2017-01-30  missing          0.940782
                          11 rows omitted
+
+julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,30));
+
+julia> ts3 = TSFrame(random(length(dates)), dates)
+30×1 TSFrame with Date Index
+ Index       x1
+ Date        Float64
+───────────────────────
+ 2017-01-01  0.768448
+ 2017-01-02  0.940515
+ 2017-01-03  0.673959
+ 2017-01-04  0.395453
+ 2017-01-05  0.313244
+ 2017-01-06  0.662555
+ 2017-01-07  0.586022
+ 2017-01-08  0.0521332
+ 2017-01-09  0.26864
+ 2017-01-10  0.108871
+ 2017-01-11  0.163666
+     ⋮           ⋮
+ 2017-01-20  0.255981
+ 2017-01-21  0.70586
+ 2017-01-22  0.291978
+ 2017-01-23  0.281066
+ 2017-01-24  0.792931
+ 2017-01-25  0.20923
+ 2017-01-26  0.918165
+ 2017-01-27  0.614255
+ 2017-01-28  0.802665
+ 2017-01-29  0.555668
+ 2017-01-30  0.940782
+         8 rows omitted
+
+# joining multiple TSFrame objects
+julia> join(ts1, ts2, ts3; jointype=JoinLeft)
+10×3 TSFrame with Date Index
+ Index       x1         x1_1       x1_2
+ Date        Float64    Float64?   Float64?
+─────────────────────────────────────────────
+ 2017-01-01  0.768448   0.768448   0.768448
+ 2017-01-02  0.940515   0.940515   0.940515
+ 2017-01-03  0.673959   0.673959   0.673959
+ 2017-01-04  0.395453   0.395453   0.395453
+ 2017-01-05  0.313244   0.313244   0.313244
+ 2017-01-06  0.662555   0.662555   0.662555
+ 2017-01-07  0.586022   0.586022   0.586022
+ 2017-01-08  0.0521332  0.0521332  0.0521332
+ 2017-01-09  0.26864    0.26864    0.26864
+ 2017-01-10  0.108871   0.108871   0.108871
 
 ```
 """
