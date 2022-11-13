@@ -247,5 +247,29 @@ function Base.join(ts1::TSFrame, ts2::TSFrame, ::Type{JoinRight})
     result = DataFrames.rightjoin(ts1.coredata, ts2.coredata, on=:Index, makeunique=true)
     return TSFrame(result)
 end
+
+function Base.join(
+    ts1::TSFrame,
+    ts2::TSFrame,
+    ts...;
+    jointype::T
+) where {
+    T <:
+    Union{
+        Type{JoinAll},
+        Type{JoinBoth},
+        Type{JoinInner},
+        Type{JoinOuter},
+        Type{JoinLeft},
+        Type{JoinRight}
+    }
+}
+    if isempty(ts)
+        return Base.join(ts1, ts2, jointype)
+    else
+        return Base.join(Base.join(ts1, ts2, jointype), ts...; jointype=jointype)
+    end
+end
+
 # alias
 cbind = join
