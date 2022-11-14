@@ -15,14 +15,14 @@ ts_joinboth = join(ts1, ts2, JoinBoth)
 @test ts_joinboth[:, :x1] == ts1[1:Int(floor(DATA_SIZE/2)), :x1]
 @test ts_joinboth[:, :x1_1] == ts2[1:Int(floor(DATA_SIZE/2)), :x1]
 
-ts_multipleinnerjoin = join(ts1, ts2, ts3; jointype=JoinInner)
+ts_multipleinnerjoin = join(ts1, ts2, ts3; on=JoinInner)
 @test propertynames(ts_multipleinnerjoin.coredata) == [:Index, :x1, :x1_1, :x1_2]
 @test ts_multipleinnerjoin[:, :Index] == ts1[1:Int(floor(DATA_SIZE/2)), :Index]
 @test ts_multipleinnerjoin[:, :x1] == ts1[1:Int(floor(DATA_SIZE/2)), :x1]
 @test ts_multipleinnerjoin[:, :x1_1] == ts2[1:Int(floor(DATA_SIZE/2)), :x1]
 @test ts_multipleinnerjoin[:, :x1_2] == ts3[1:Int(floor(DATA_SIZE/2)), :x1]
 
-ts_multiplejoinboth = join(ts1, ts2, ts3; jointype=JoinBoth)
+ts_multiplejoinboth = join(ts1, ts2, ts3; on=JoinBoth)
 @test propertynames(ts_multiplejoinboth.coredata) == [:Index, :x1, :x1_1, :x1_2]
 @test ts_multiplejoinboth[:, :Index] == ts1[1:Int(floor(DATA_SIZE/2)), :Index]
 @test ts_multiplejoinboth[:, :x1] == ts1[1:Int(floor(DATA_SIZE/2)), :x1]
@@ -44,7 +44,7 @@ ts_joinall = join(ts1, ts2, JoinAll)
 @test ts_joinall[1:Int(floor(DATA_SIZE/2)), :x1_1] == ts2[1:Int(floor(DATA_SIZE/2)), :x1]
 @test isequal(Vector{Missing}(ts_joinall[Int(floor(DATA_SIZE/2)) + 1:DATA_SIZE, :x1_1]), fill(missing, DATA_SIZE - Int(floor(DATA_SIZE/2))))
 
-ts_multipleouterjoin = join(ts1, ts2, ts3; jointype=JoinOuter)
+ts_multipleouterjoin = join(ts1, ts2, ts3; on=JoinOuter)
 @test propertynames(ts_multipleouterjoin.coredata) == [:Index, :x1, :x1_1, :x1_2]
 @test ts_multipleouterjoin[:, :Index] == ts1[1:DATA_SIZE, :Index]
 @test ts_multipleouterjoin[:, :x1] == ts1[1:DATA_SIZE, :x1]
@@ -52,7 +52,7 @@ ts_multipleouterjoin = join(ts1, ts2, ts3; jointype=JoinOuter)
 @test ts_multipleouterjoin[:, :x1_2] == ts3[1:DATA_SIZE, :x1]
 @test isequal(Vector{Missing}(ts_multipleouterjoin[Int(floor(DATA_SIZE/2)) + 1:DATA_SIZE, :x1_1]), fill(missing, DATA_SIZE - Int(floor(DATA_SIZE/2))))
 
-ts_multiplejoinall = join(ts1, ts2, ts3; jointype=JoinAll)
+ts_multiplejoinall = join(ts1, ts2, ts3; on=JoinAll)
 @test propertynames(ts_multiplejoinall.coredata) == [:Index, :x1, :x1_1, :x1_2]
 @test ts_multiplejoinall[:, :Index] == ts1[1:DATA_SIZE, :Index]
 @test ts_multiplejoinall[:, :x1] == ts1[1:DATA_SIZE, :x1]
@@ -68,7 +68,7 @@ ts_joinleft = join(ts1, ts2, JoinLeft)
 @test ts_joinleft[1:Int(floor(DATA_SIZE/2)), :x1_1] == ts2[1:Int(floor(DATA_SIZE/2)), :x1]
 @test isequal(Vector{Missing}(ts_joinleft[Int(floor(DATA_SIZE/2)) + 1:DATA_SIZE, :x1_1]), fill(missing, DATA_SIZE - Int(floor(DATA_SIZE/2))))
 
-ts_multiplejoinleft = join(ts1, ts2, ts3; jointype=JoinLeft)
+ts_multiplejoinleft = join(ts1, ts2, ts3; on=JoinLeft)
 @test propertynames(ts_multiplejoinleft.coredata) == [:Index, :x1, :x1_1, :x1_2]
 @test ts_multiplejoinleft[:, :Index] == ts1[1:DATA_SIZE, :Index]
 @test ts_multiplejoinleft[:, :x1] == ts1[1:DATA_SIZE, :x1]
@@ -83,7 +83,7 @@ ts_joinright = join(ts1, ts2, JoinRight)
 @test ts_joinright[:, :x1] == ts1[1:Int(floor(DATA_SIZE/2)), :x1]
 @test ts_joinright[:, :x1_1] == ts2[1:Int(floor(DATA_SIZE/2)), :x1]
 
-ts_multiplejoinright = join(ts1, ts2, ts3; jointype=JoinRight)
+ts_multiplejoinright = join(ts1, ts2, ts3; on=JoinRight)
 @test propertynames(ts_multiplejoinright.coredata) == [:Index, :x1, :x1_1, :x1_2]
 @test ts_multiplejoinright[:, :Index] == ts1[1:DATA_SIZE, :Index]
 @test ts_multiplejoinright[1:Int(floor(DATA_SIZE/2)), :x1] == ts1[1:Int(floor(DATA_SIZE/2)), :x1]

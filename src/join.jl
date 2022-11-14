@@ -65,7 +65,7 @@ is provided to the `join` method.
 
 Joining multiple `TSFrame`s is also supported. The syntax is
 
-`join(ts1::TSFrame, ts2::TSFrame, ts...; jointype::T)`
+`join(ts1::TSFrame, ts2::TSFrame, ts...; on::T)`
 
 where `T <: Union{Type{JoinAll}, Type{JoinBoth}, Type{JoinInner}, Type{JoinOuter}, Type{JoinLeft}, Type{JoinRight}}`.
 Note that `join` on multiple `TSFrame`s is left associative.
@@ -260,7 +260,7 @@ julia> ts3 = TSFrame(random(length(dates)), dates)
          8 rows omitted
 
 # joining multiple TSFrame objects
-julia> join(ts1, ts2, ts3; jointype=JoinLeft)
+julia> join(ts1, ts2, ts3; on=JoinLeft)
 10×3 TSFrame with Date Index
  Index       x1         x1_1       x1_2
  Date        Float64    Float64?   Float64?
@@ -308,7 +308,7 @@ function Base.join(
     ts1::TSFrame,
     ts2::TSFrame,
     ts...;
-    jointype::T
+    on::T
 ) where {
     T <:
     Union{
@@ -321,9 +321,9 @@ function Base.join(
     }
 }
     if isempty(ts)
-        return Base.join(ts1, ts2, jointype)
+        return Base.join(ts1, ts2, on)
     else
-        return Base.join(Base.join(ts1, ts2, jointype), ts...; jointype=jointype)
+        return Base.join(Base.join(ts1, ts2, on), ts...; on=on)
     end
 end
 
