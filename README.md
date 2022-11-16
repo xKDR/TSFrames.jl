@@ -16,7 +16,7 @@ extensible at the same time.
 
 ```julia
 julia> using Pkg
-julia> Pkg.add(url="https://github.com/xKDR/TSFrames.jl")
+julia> Pkg.add("TSFrames")
 ```
 
 ## Basic usage
