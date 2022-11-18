@@ -2,6 +2,7 @@ Tables.istable(::Type{TSFrame}) = true
 
 Tables.rowaccess(::Type{TSFrame}) = true
 Tables.rows(ts::TSFrame) = DataFrames.eachrow(ts.coredata)
+Tables.rowcount(ts::TSFrame) = TSFrames.nrow(ts)
 
 Tables.columnaccess(::Type{TSFrame}) = true
 Tables.columns(ts::TSFrame) = DataFrames.eachcol(ts.coredata)
