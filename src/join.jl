@@ -81,7 +81,6 @@ julia> random(x) = rand(MersenneTwister(123), x);
 julia> dates = collect(Date(2017,1,1):Day(1):Date(2017,1,10));
 
 julia> ts1 = TSFrame(random(length(dates)), dates);
-
 julia> show(ts1)
 (10 x 1) TSFrame with Dates.Date Index
 
@@ -290,10 +289,6 @@ julia> join(ts1, ts2, ts3; jointype=JoinLeft)
 
 ```
 """
-function Base.join(ts1::TSFrame, ts2::TSFrame)
-    join(ts1, ts2, JoinAll)
-end
-
 function Base.join(ts1::TSFrame, ts2::TSFrame, ::Type{JoinBoth})
     result = DataFrames.innerjoin(ts1.coredata, ts2.coredata, on=:Index, makeunique=true)
     return TSFrame(result)
@@ -320,7 +315,7 @@ function Base.join(
     ts1::TSFrame,
     ts2::TSFrame,
     ts...;
-    jointype::T
+    jointype::T=JoinAll
 ) where {
     T <:
     Union{
