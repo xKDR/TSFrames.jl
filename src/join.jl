@@ -1,15 +1,11 @@
-struct JoinInner    # inner
-end
-struct JoinBoth     # inner
-end
-struct JoinAll      # outer
-end
-struct JoinOuter    # outer
-end
-struct JoinLeft     # left
-end
-struct JoinRight    # right
-end
+joinmap = Dict(
+    :JoinInner=>DataFrames.innerjoin,
+    :JoinBoth=>DataFrames.innerjoin,
+    :JoinOuter=>DataFrames.outerjoin,
+    :JoinAll=>DataFrames.outerjoin,
+    :JoinLeft=>DataFrames.leftjoin,
+    :JoinRight=>DataFrames.rightjoin
+)
 
 """
 # Joins/Column-binding
@@ -24,8 +20,8 @@ column names amongst the TSFrame objects.
 
 The following join types are supported:
 
-`join(ts1::TSFrame, ts2::TSFrame; jointype::Type{JoinInner})` and
-`join(ts1::TSFrame, ts2::TSFrame; jointype::Type{JoinBoth})`
+`join(ts1::TSFrame, ts2::TSFrame; jointype=:JoinInner)` and
+`join(ts1::TSFrame, ts2::TSFrame; jointype=:JoinBoth)`
 
 a.k.a. inner join, takes the intersection of the indexes of `ts1` and
 `ts2`, and then merges the columns of both the objects. The resulting
@@ -33,17 +29,17 @@ object will only contain rows which are present in both the objects'
 indexes. The function will rename columns in the final object if
 they had same names in the TSFrame objects.
 
-`join(ts1::TSFrame, ts2::TSFrame; jointype::Type{JoinOuter})` and
-`join(ts1::TSFrame, ts2::TSFrame; jointype::Type{JoinAll})`:
+`join(ts1::TSFrame, ts2::TSFrame; jointype=:JoinOuter)` and
+`join(ts1::TSFrame, ts2::TSFrame; jointype=:JoinAll)`:
 
 a.k.a. outer join, takes the union of the indexes of `ts1` and `ts2`
 before merging the other columns of input objects. The output will
 contain rows which are present in all the input objects while
 inserting `missing` values where a row was not present in any of the
-objects. This is the default behaviour if no `JoinType` object is
+objects. This is the default behaviour if no `jointype` is
 provided.
 
-`join(ts1::TSFrame, ts2::TSFrame; jointype::Type{JoinLeft})`:
+`join(ts1::TSFrame, ts2::TSFrame; jointype=:JoinLeft)`:
 
 Left join takes the index values which are present in the left
 object `ts1` and finds matching index values in the right object
@@ -53,22 +49,21 @@ associated with matching index rows on the right. The operation
 inserts `missing` values where in the unmatched rows of the right
 object.
 
-`join(ts1::TSFrame, ts2::TSFrame; jointype::Type{JoinRight})`
+`join(ts1::TSFrame, ts2::TSFrame; jointype=:JoinRight)`
 
 Right join, similar to left join but works in the opposite
 direction. The final object contains all the rows from the right
 object while inserting `missing` values in rows missing from the left
 object.
 
-The default behaviour is to assume `JoinAll` if no `JoinType` object
-is provided to the `join` method.
+The default behaviour is to assume `jointype=:JoinAll` if no `jointype` is provided to the `join` method.
 
 Joining multiple `TSFrame`s is also supported. The syntax is
 
-`join(ts1::TSFrame, ts2::TSFrame, ts...; jointype::T)`
+`join(ts1::TSFrame, ts2::TSFrame, ts...; jointype::Symbol)`
 
-where `T <: Union{Type{JoinAll}, Type{JoinBoth}, Type{JoinInner}, Type{JoinOuter}, Type{JoinLeft}, Type{JoinRight}}`.
-Note that `join` on multiple `TSFrame`s is left associative.
+where `jointype` must be one of `:JoinInner`, `:JoinBoth`, `:JoinOuter`, `:JoinAll`,
+`:JoinLeft` or `:JoinRight`. Note that `join` on multiple `TSFrame`s is left associative.
 
 `cbind` is an alias for `join` method.
 
@@ -138,7 +133,7 @@ julia> show(ts2)
  2017-01-30  0.940782
 
 # join on all index values
-# equivalent to `join(ts1, ts2; jointype=JoinAll)` call
+# equivalent to `join(ts1, ts2; jointype=:JoinAll)` call
 julia> join(ts1, ts2)
 (30 x 2) TSFrame with Date Index
  Index       x1               x1_1
@@ -170,7 +165,7 @@ julia> join(ts1, ts2)
 julia> cbind(ts1, ts2);
 
 # join only the common index values
-julia> join(ts1, ts2; jointype=JoinBoth)
+julia> join(ts1, ts2; jointype=:JoinBoth)
 (10 x 2) TSFrame with Date Index
  Index       x1         x1_1
  Date        Float64    Float64
@@ -187,7 +182,7 @@ julia> join(ts1, ts2; jointype=JoinBoth)
  2017-01-10  0.108871   0.108871
 
 # keep index values of `ts1`
-julia> join(ts1, ts2; jointype=JoinLeft)
+julia> join(ts1, ts2; jointype=:JoinLeft)
 (10 x 2) TSFrame with Date Index
  Index       x1         x1_1
  Date        Float64    Float64?
@@ -204,7 +199,7 @@ julia> join(ts1, ts2; jointype=JoinLeft)
  2017-01-10  0.108871   0.108871
 
 # keep index values of `ts2`
-julia> join(ts1, ts2; jointype=JoinRight)
+julia> join(ts1, ts2; jointype=:JoinRight)
 (30 x 2) TSFrame with Date Index
  Index       x1               x1_1
  Date        Float64?         Float64
@@ -271,7 +266,7 @@ julia> show(ts3)
  2017-01-30  0.940782
 
 # joining multiple TSFrame objects
-julia> join(ts1, ts2, ts3; jointype=JoinLeft)
+julia> join(ts1, ts2, ts3; jointype=:JoinLeft)
 10×3 TSFrame with Date Index
  Index       x1         x1_1       x1_2
  Date        Float64    Float64?   Float64?
@@ -289,16 +284,6 @@ julia> join(ts1, ts2, ts3; jointype=JoinLeft)
 
 ```
 """
-
-joinmap = Dict(
-    :JoinInner=>DataFrames.innerjoin,
-    :JoinBoth=>DataFrames.innerjoin,
-    :JoinOuter=>DataFrames.outerjoin,
-    :JoinAll=>DataFrames.outerjoin,
-    :JoinLeft=>DataFrames.leftjoin,
-    :JoinRight=>DataFrames.rightjoin
-)
-
 function Base.join(
     ts1::TSFrame,
     ts2::TSFrame,
