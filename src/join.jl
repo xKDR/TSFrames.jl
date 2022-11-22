@@ -289,49 +289,27 @@ julia> join(ts1, ts2, ts3; jointype=JoinLeft)
 
 ```
 """
-function Base.join(ts1::TSFrame, ts2::TSFrame, ::Type{JoinBoth})
-    result = DataFrames.innerjoin(ts1.coredata, ts2.coredata, on=:Index, makeunique=true)
-    return TSFrame(result)
-end
-Base.join(ts1::TSFrame, ts2::TSFrame, ::Type{JoinInner}) = Base.join(ts1, ts2, JoinBoth)
 
-function Base.join(ts1::TSFrame, ts2::TSFrame, ::Type{JoinAll})
-    result = DataFrames.outerjoin(ts1.coredata, ts2.coredata, on=:Index, makeunique=true)
-    return TSFrame(result)
-end
-Base.join(ts1::TSFrame, ts2::TSFrame, ::Type{JoinOuter}) = Base.join(ts1, ts2, JoinAll)
-
-function Base.join(ts1::TSFrame, ts2::TSFrame, ::Type{JoinLeft})
-    result = DataFrames.leftjoin(ts1.coredata, ts2.coredata, on=:Index, makeunique=true)
-    return TSFrame(result)
-end
-
-function Base.join(ts1::TSFrame, ts2::TSFrame, ::Type{JoinRight})
-    result = DataFrames.rightjoin(ts1.coredata, ts2.coredata, on=:Index, makeunique=true)
-    return TSFrame(result)
-end
+joinmap = Dict(
+    :JoinInner=>DataFrames.innerjoin,
+    :JoinBoth=>DataFrames.innerjoin,
+    :JoinOuter=>DataFrames.outerjoin,
+    :JoinAll=>DataFrames.outerjoin,
+    :JoinLeft=>DataFrames.leftjoin,
+    :JoinRight=>DataFrames.rightjoin
+)
 
 function Base.join(
     ts1::TSFrame,
     ts2::TSFrame,
     ts...;
-    jointype::T=JoinAll
-) where {
-    T <:
-    Union{
-        Type{JoinAll},
-        Type{JoinBoth},
-        Type{JoinInner},
-        Type{JoinOuter},
-        Type{JoinLeft},
-        Type{JoinRight}
-    }
-}
-    if isempty(ts)
-        return Base.join(ts1, ts2, jointype)
-    else
-        return Base.join(Base.join(ts1, ts2, jointype), ts...; jointype=jointype)
+    jointype::Symbol=:JoinAll
+)
+    result = joinmap[jointype](ts1.coredata, ts2.coredata, on=:Index, makeunique=true)
+    for tsf in ts
+        result = joinmap[jointype](result, tsf.coredata, on=:Index, makeunique=true)
     end
+    return TSFrame(result)
 end
 
 # alias
