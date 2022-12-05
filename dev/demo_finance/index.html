@@ -79,109 +79,11 @@
  2021-12-29   179.33   180.63   178.14   179.38   178.345  6.23489e7
  2021-12-30   179.47   180.57   178.09   178.2    177.172  5.9773e7
  2021-12-31   178.09   179.23   177.26   177.57   176.545  6.40623e7
-                                                     135 rows omitted</code></pre><h2 id="Combine-adjusted-closing-prices-of-both-stocks-into-one-object"><a class="docs-heading-anchor" href="#Combine-adjusted-closing-prices-of-both-stocks-into-one-object">Combine adjusted closing prices of both stocks into one object</a><a id="Combine-adjusted-closing-prices-of-both-stocks-into-one-object-1"></a><a class="docs-heading-anchor-permalink" href="#Combine-adjusted-closing-prices-of-both-stocks-into-one-object" title="Permalink"></a></h2><p>We now join (cbind) both the stocks&#39; data into a single object for further analysis. We use <code>TSFrames.join</code> to create two columns containing adjusted closing prices of both the stocks. The join happens by comparing the <code>Index</code> values (dates) of the two objects. The resulting object contains two columns with exactly the same dates for which both the objects have data, all the other rows are omitted from the result.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ibm_aapl = TSFrames.join(ibm[:, [&quot;AdjClose&quot;]], aapl[:, [&quot;AdjClose&quot;]], JoinBoth)</code><code class="nohighlight hljs ansi" style="display:block;">150×2 TSFrame with Date Index
- Index       AdjClose  AdjClose_1
- Date        Float64   Float64
-──────────────────────────────────
- 2021-06-01   128.131     123.198
- 2021-06-02   129.49      123.971
- 2021-06-03   129.339     122.465
- 2021-06-04   131.001     124.794
- 2021-06-07   131.534     124.804
- 2021-06-08   132.467     125.637
- 2021-06-09   133.889     126.023
- 2021-06-10   133.774     125.012
-     ⋮          ⋮          ⋮
- 2021-12-22   123.619     174.626
- 2021-12-23   124.458     175.263
- 2021-12-27   125.401     179.289
- 2021-12-28   126.363     178.255
- 2021-12-29   127.049     178.345
- 2021-12-30   127.583     177.172
- 2021-12-31   127.344     176.545
-                  135 rows omitted</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; TSFrames.rename!(ibm_aapl, [:IBM, :AAPL])</code><code class="nohighlight hljs ansi" style="display:block;">150×2 TSFrame with Date Index
- Index       IBM      AAPL
- Date        Float64  Float64
-──────────────────────────────
- 2021-06-01  128.131  123.198
- 2021-06-02  129.49   123.971
- 2021-06-03  129.339  122.465
- 2021-06-04  131.001  124.794
- 2021-06-07  131.534  124.804
- 2021-06-08  132.467  125.637
- 2021-06-09  133.889  126.023
- 2021-06-10  133.774  125.012
-     ⋮          ⋮        ⋮
- 2021-12-22  123.619  174.626
- 2021-12-23  124.458  175.263
- 2021-12-27  125.401  179.289
- 2021-12-28  126.363  178.255
- 2021-12-29  127.049  178.345
- 2021-12-30  127.583  177.172
- 2021-12-31  127.344  176.545
-              135 rows omitted</code></pre><p>After the <code>join</code> operation the column names are modified because we merged two same-named columns (<code>AdjClose</code>) so we use <code>TSFrames.rename!()</code> method to rename the columns to easily remembered stock names.</p><h2 id="Convert-data-into-weekly-frequency-using-last-values"><a class="docs-heading-anchor" href="#Convert-data-into-weekly-frequency-using-last-values">Convert data into weekly frequency using last values</a><a id="Convert-data-into-weekly-frequency-using-last-values-1"></a><a class="docs-heading-anchor-permalink" href="#Convert-data-into-weekly-frequency-using-last-values" title="Permalink"></a></h2><p>Here, we convert daily stock data into weekly frequency by taking the value with which the trading closed on the last day of the week as the week&#39;s price.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ep = endpoints(ibm_aapl, Week(1));</code><code class="nohighlight hljs ansi" style="display:block;"></code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; ibm_aapl_weekly = ibm_aapl[ep]</code><code class="nohighlight hljs ansi" style="display:block;">31×2 TSFrame with Date Index
- Index       IBM      AAPL
- Date        Float64  Float64
-──────────────────────────────
- 2021-06-04  131.001  124.794
- 2021-06-11  134.431  126.241
- 2021-06-18  127.18   129.324
- 2021-06-25  130.486  131.951
- 2021-07-02  124.425  138.742
- 2021-07-09  125.758  143.847
- 2021-07-16  123.43   145.116
- 2021-07-23  125.598  147.267
-     ⋮          ⋮        ⋮
- 2021-11-19  110.566  159.624
- 2021-11-26  110.338  155.905
- 2021-12-03  113.225  160.906
- 2021-12-10  118.227  178.415
- 2021-12-17  121.38   170.152
- 2021-12-23  124.458  175.263
- 2021-12-31  127.344  176.545
-               16 rows omitted</code></pre><h2 id="Compute-weekly-returns-using-the-familiar-log-and-diff-functions"><a class="docs-heading-anchor" href="#Compute-weekly-returns-using-the-familiar-log-and-diff-functions">Compute weekly returns using the familiar <code>log</code> and <code>diff</code> functions</a><a id="Compute-weekly-returns-using-the-familiar-log-and-diff-functions-1"></a><a class="docs-heading-anchor-permalink" href="#Compute-weekly-returns-using-the-familiar-log-and-diff-functions" title="Permalink"></a></h2><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ibm_aapl_weekly_returns = diff(log.(ibm_aapl_weekly))</code><code class="nohighlight hljs ansi" style="display:block;">31×2 TSFrame with Date Index
- Index       IBM_log           AAPL_log
- Date        Float64?          Float64?
-────────────────────────────────────────────────
- 2021-06-04  missing           missing
- 2021-06-11        0.0258466         0.0115307
- 2021-06-18       -0.055449          0.0241275
- 2021-06-25        0.0256603         0.0201091
- 2021-07-02       -0.0475583         0.0501809
- 2021-07-09        0.0106559         0.0361352
- 2021-07-16       -0.0186871         0.00878213
- 2021-07-23        0.0174141         0.0147147
-     ⋮              ⋮                 ⋮
- 2021-11-19       -0.0247662         0.0680368
- 2021-11-26       -0.00207029       -0.0235706
- 2021-12-03        0.0258272         0.0315732
- 2021-12-10        0.043229          0.103289
- 2021-12-17        0.0263247        -0.0474147
- 2021-12-23        0.0250373         0.0295917
- 2021-12-31        0.0229302         0.0072912
-                                 16 rows omitted</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; TSFrames.rename!(ibm_aapl_weekly_returns, [:IBM, :AAPL])</code><code class="nohighlight hljs ansi" style="display:block;">31×2 TSFrame with Date Index
- Index       IBM               AAPL
- Date        Float64?          Float64?
-────────────────────────────────────────────────
- 2021-06-04  missing           missing
- 2021-06-11        0.0258466         0.0115307
- 2021-06-18       -0.055449          0.0241275
- 2021-06-25        0.0256603         0.0201091
- 2021-07-02       -0.0475583         0.0501809
- 2021-07-09        0.0106559         0.0361352
- 2021-07-16       -0.0186871         0.00878213
- 2021-07-23        0.0174141         0.0147147
-     ⋮              ⋮                 ⋮
- 2021-11-19       -0.0247662         0.0680368
- 2021-11-26       -0.00207029       -0.0235706
- 2021-12-03        0.0258272         0.0315732
- 2021-12-10        0.043229          0.103289
- 2021-12-17        0.0263247        -0.0474147
- 2021-12-23        0.0250373         0.0295917
- 2021-12-31        0.0229302         0.0072912
-                                 16 rows omitted</code></pre><h2 id="Compute-standard-deviation-of-weekly-returns"><a class="docs-heading-anchor" href="#Compute-standard-deviation-of-weekly-returns">Compute standard deviation of weekly returns</a><a id="Compute-standard-deviation-of-weekly-returns-1"></a><a class="docs-heading-anchor-permalink" href="#Compute-standard-deviation-of-weekly-returns" title="Permalink"></a></h2><p>Computing standard deviation is done using the <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.std"><code>std</code></a> function from <code>Statistics</code> package. The <code>skipmissing</code> is used to skip missing values which may have been generated while computing log returns or were already present in the data.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ibm_std = std(skipmissing(ibm_aapl_weekly_returns[:, :IBM]))</code><code class="nohighlight hljs ansi" style="display:block;">0.03407930239911507</code></pre><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; aapl_std = std(skipmissing(ibm_aapl_weekly_returns[:, :AAPL]))</code><code class="nohighlight hljs ansi" style="display:block;">0.030582295437789966</code></pre><h3 id="Scatter-plot-of-AAPL-and-IBM"><a class="docs-heading-anchor" href="#Scatter-plot-of-AAPL-and-IBM">Scatter plot of AAPL and IBM</a><a id="Scatter-plot-of-AAPL-and-IBM-1"></a><a class="docs-heading-anchor-permalink" href="#Scatter-plot-of-AAPL-and-IBM" title="Permalink"></a></h3><p>Here, we use the <a href="https://docs.juliaplots.org/latest/tutorial/">Plots</a> package to create a scatter plot with IBM weekly returns on the x-axis and Apple weekly returns on the y-axis.</p><pre><code class="language-julia hljs">plot(ibm_aapl_weekly_returns[:, :AAPL],
+                                                     135 rows omitted</code></pre><h2 id="Combine-adjusted-closing-prices-of-both-stocks-into-one-object"><a class="docs-heading-anchor" href="#Combine-adjusted-closing-prices-of-both-stocks-into-one-object">Combine adjusted closing prices of both stocks into one object</a><a id="Combine-adjusted-closing-prices-of-both-stocks-into-one-object-1"></a><a class="docs-heading-anchor-permalink" href="#Combine-adjusted-closing-prices-of-both-stocks-into-one-object" title="Permalink"></a></h2><p>We now join (cbind) both the stocks&#39; data into a single object for further analysis. We use <code>TSFrames.join</code> to create two columns containing adjusted closing prices of both the stocks. The join happens by comparing the <code>Index</code> values (dates) of the two objects. The resulting object contains two columns with exactly the same dates for which both the objects have data, all the other rows are omitted from the result.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ibm_aapl = TSFrames.join(ibm[:, [&quot;AdjClose&quot;]], aapl[:, [&quot;AdjClose&quot;]], JoinBoth)</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: JoinBoth not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; TSFrames.rename!(ibm_aapl, [:IBM, :AAPL])</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: ibm_aapl not defined</code></pre><p>After the <code>join</code> operation the column names are modified because we merged two same-named columns (<code>AdjClose</code>) so we use <code>TSFrames.rename!()</code> method to rename the columns to easily remembered stock names.</p><h2 id="Convert-data-into-weekly-frequency-using-last-values"><a class="docs-heading-anchor" href="#Convert-data-into-weekly-frequency-using-last-values">Convert data into weekly frequency using last values</a><a id="Convert-data-into-weekly-frequency-using-last-values-1"></a><a class="docs-heading-anchor-permalink" href="#Convert-data-into-weekly-frequency-using-last-values" title="Permalink"></a></h2><p>Here, we convert daily stock data into weekly frequency by taking the value with which the trading closed on the last day of the week as the week&#39;s price.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ep = endpoints(ibm_aapl, Week(1));</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: ibm_aapl not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; ibm_aapl_weekly = ibm_aapl[ep]</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: ibm_aapl not defined</code></pre><h2 id="Compute-weekly-returns-using-the-familiar-log-and-diff-functions"><a class="docs-heading-anchor" href="#Compute-weekly-returns-using-the-familiar-log-and-diff-functions">Compute weekly returns using the familiar <code>log</code> and <code>diff</code> functions</a><a id="Compute-weekly-returns-using-the-familiar-log-and-diff-functions-1"></a><a class="docs-heading-anchor-permalink" href="#Compute-weekly-returns-using-the-familiar-log-and-diff-functions" title="Permalink"></a></h2><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ibm_aapl_weekly_returns = diff(log.(ibm_aapl_weekly))</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: ibm_aapl_weekly not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; TSFrames.rename!(ibm_aapl_weekly_returns, [:IBM, :AAPL])</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: ibm_aapl_weekly_returns not defined</code></pre><h2 id="Compute-standard-deviation-of-weekly-returns"><a class="docs-heading-anchor" href="#Compute-standard-deviation-of-weekly-returns">Compute standard deviation of weekly returns</a><a id="Compute-standard-deviation-of-weekly-returns-1"></a><a class="docs-heading-anchor-permalink" href="#Compute-standard-deviation-of-weekly-returns" title="Permalink"></a></h2><p>Computing standard deviation is done using the <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.std"><code>std</code></a> function from <code>Statistics</code> package. The <code>skipmissing</code> is used to skip missing values which may have been generated while computing log returns or were already present in the data.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ibm_std = std(skipmissing(ibm_aapl_weekly_returns[:, :IBM]))</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: ibm_aapl_weekly_returns not defined</code></pre><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; aapl_std = std(skipmissing(ibm_aapl_weekly_returns[:, :AAPL]))</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: ibm_aapl_weekly_returns not defined</code></pre><h3 id="Scatter-plot-of-AAPL-and-IBM"><a class="docs-heading-anchor" href="#Scatter-plot-of-AAPL-and-IBM">Scatter plot of AAPL and IBM</a><a id="Scatter-plot-of-AAPL-and-IBM-1"></a><a class="docs-heading-anchor-permalink" href="#Scatter-plot-of-AAPL-and-IBM" title="Permalink"></a></h3><p>Here, we use the <a href="https://docs.juliaplots.org/latest/tutorial/">Plots</a> package to create a scatter plot with IBM weekly returns on the x-axis and Apple weekly returns on the y-axis.</p><pre><code class="language- hljs">ENV[&quot;GKSwstype&quot;] = &quot;100&quot; # hide
+plot(ibm_aapl_weekly_returns[:, :AAPL],
     ibm_aapl_weekly_returns[:, :IBM],
     seriestype = :scatter;
     xlabel = &quot;AAPL&quot;,
     ylabel = &quot;IBM&quot;,
-    legend = false)</code></pre><p><img src="../ts-plot.svg" alt/></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Introduction</a><a class="docs-footer-nextpage" href="../user_guide/">User guide »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Monday 5 December 2022 07:58">Monday 5 December 2022</span>. Using Julia version 1.8.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+    legend = false)
+savefig(&quot;ts-plot.svg&quot;); nothing # hide</code></pre><p><img src="ts-plot.svg" alt/></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Introduction</a><a class="docs-footer-nextpage" href="../user_guide/">User guide »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Monday 5 December 2022 09:21">Monday 5 December 2022</span>. Using Julia version 1.8.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
