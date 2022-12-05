@@ -13,6 +13,14 @@ ts = TSFrame(1:DAYS, dates)
 @test first(Tables.rows(ts))[:Index] == Date(YEAR, MONTH, 1)
 @test first(Tables.rows(ts))[:x1] == 1
 
+# testing Tables.rowcount
+@test Tables.rowcount(ts)==15
+@test Tables.rowcount(TSFrame(1:10))==10
+@test Tables.rowcount(TSFrame(1:1))==1
+@test Tables.rowcount(TSFrame(Int))==0
+@test Tables.rowcount(TSFrame(Int,n=1))==0
+@test Tables.rowcount(TSFrame(Int,n=2))==0
+
 # testing Tables.columns
 @test Tables.columns(ts).Index == dates
 @test Tables.columns(ts).x1 == 1:DAYS
