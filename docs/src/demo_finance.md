@@ -46,7 +46,7 @@ the objects have data, all the other rows are omitted from the
 result.
 
 ```@repl e1
-ibm_aapl = TSFrames.join(ibm[:, ["AdjClose"]], aapl[:, ["AdjClose"]], JoinBoth)
+ibm_aapl = TSFrames.join(ibm[:, ["AdjClose"]], aapl[:, ["AdjClose"]]; jointype=:JoinBoth)
 TSFrames.rename!(ibm_aapl, [:IBM, :AAPL])
 ```
 
