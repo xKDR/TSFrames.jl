@@ -133,7 +133,30 @@ function test_isregular()
     @test isregular(ts_rep, Day(0)) == true
 end
 
+function test_isregular_new()
+    
+    #regular tests
+    @test isregular(Date(2022,2,1):Week(1):Date(2022,4,1),Week(1)) == true
+    @test isregular(Date(2022,2,1):Week(1):Date(2022,4,3),Week(1)) == true
+
+    @test isregular(Date(2022,2,1):Month(1):Date(2022,4,1),Month(1)) == true
+    @test isregular(Date(2022,2,1):Month(1):Date(2022,4,3),Month(1)) == true
+
+    @test isregular(Date(2022,2,1):Year(1):Date(2023,4,1),Year(1)) == true
+    @test isregular(Date(2022,2,1):Year(1):Date(2023,4,3),Year(1)) == true
+
+    #add leap year tests
+    #add tests with diff time period like Months(2)
+
+    #irregular tests
+    @test isregular(Date(2022,2,1):Week(1):Date(2022,4,3),Month(1)) == false
+    @test isregular(Date(2022,2,1):Month(1):Date(2022,4,3),Year(1)) == false
+    @test isregular(Date(2022,2,1):Year(1):Date(2023,4,3),Week(1)) == false
+
+end
+
 # Run each test
 # NOTE: Do not forget to add any new test-function created above
 # otherwise that test won't run.
 test_isregular()
+test_isregular_new()
