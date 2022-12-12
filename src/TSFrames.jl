@@ -63,7 +63,8 @@ export TSFrame,
     rollapply,
     vcat,
     DataFrame,
-    Date
+    Date,
+    isregular
 
 include("TSFrame.jl")
 include("utils.jl")
