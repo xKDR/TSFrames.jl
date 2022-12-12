@@ -92,11 +92,11 @@ function test_isregular()
     dates_eq = copy(dates_day)
     dates_eq[10] = Date(2017,1,9)
 
-    ts_day = TS(random(10), dates_day)
-    ts_month = TS(random(10), dates_month)
-    ts_rep = TS(random(10), dates_rep)
-    ts_rand = TS(random(10), dates_rand)
-    ts_eq = TS(random(10), dates_eq)
+    ts_day = TSFrame(random(10), dates_day)
+    ts_month = TSFrame(random(10), dates_month)
+    ts_rep = TSFrame(random(10), dates_rep)
+    ts_rand = TSFrame(random(10), dates_rand)
+    ts_eq = TSFrame(random(10), dates_eq)
 
     @test isregular(dates_rand) == false
     @test isregular(dates_eq) == false

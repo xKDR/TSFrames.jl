@@ -496,10 +496,10 @@ function isregular(timestamps::AbstractVector{T}) where {T<:TimeType}
     return isregular(timestamps, timestamps[2]-timestamps[1])
 end
 
-function isregular(ts::TS)
+function isregular(ts::TSFrame)
     return isregular(ts.Index)
 end
 
-function isregular(ts::TS, unit::T) where {T<:Dates.Period}
+function isregular(ts::TSFrame, unit::T) where {T<:Dates.Period}
     return isregular(ts.Index, unit)
 end
