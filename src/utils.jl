@@ -477,13 +477,8 @@ function isregular(timestamps::AbstractVector{V}, unit::T) where {V<:TimeType, T
         return true
     end
 
-    for i in 1:(s-1)
-        if (timestamps[i+1]-timestamps[i]) != unit
-            return false
-        end
-    end
-
-    return true
+    #todo add check for boundary case
+    return length(timestamps[1]:unit:timestamps[s])==s
 end
 
 function isregular(timestamps::AbstractVector{T}) where {T<:TimeType}
