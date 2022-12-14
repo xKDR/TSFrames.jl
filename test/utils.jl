@@ -145,8 +145,11 @@ function test_isregular_new()
     @test isregular(Date(2022,2,1):Year(1):Date(2023,4,1),Year(1)) == true
     @test isregular(Date(2022,2,1):Year(1):Date(2023,4,3),Year(1)) == true
 
-    #add leap year tests
-    #add tests with diff time period like Months(2)
+    # leap year test 
+    # 2020 was a leap year
+    @test isregular(Date(2019,2,28):Year(1):Date(2022,2,28)) == true
+    
+    @test isregular(Date(2017,1,2):Month(2):Date(2017,9,10)) == true
 
     #irregular tests
     @test isregular(Date(2022,2,1):Week(1):Date(2022,4,3),Month(1)) == false
