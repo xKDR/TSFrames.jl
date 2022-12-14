@@ -476,9 +476,17 @@ function isregular(timestamps::AbstractVector{V}, unit::T) where {V<:TimeType, T
     if s == 1
         return true
     end
+    if unit.value == 0
+        return false
+    end
 
     #todo add check for boundary case
-    return length(timestamps[1]:unit:timestamps[s])==s
+    return (timestamps[1]:unit:timestamps[s])==timestamps
+end
+
+#find number of units between start and end date
+function timeperiod(startdate, enddate, unit)
+    length(startdate:unit:enddate)-1
 end
 
 function isregular(timestamps::AbstractVector{T}) where {T<:TimeType}
@@ -488,7 +496,17 @@ function isregular(timestamps::AbstractVector{T}) where {T<:TimeType}
         return true
     end
 
-    return isregular(timestamps, timestamps[2]-timestamps[1])
+    
+    days = Day(timeperiod(timestamps[1],timestamps[2],Day(1)))
+    weeks = Week(timeperiod(timestamps[1],timestamps[2],Week(1)))
+    months = Month(timeperiod(timestamps[1],timestamps[2],Month(1)))
+    years = Year(timeperiod(timestamps[1],timestamps[2],Year(1)))
+
+    return isregular(timestamps, timestamps[2]-timestamps[1]) || 
+    isregular(timestamps, days) || 
+    isregular(timestamps, weeks) ||
+    isregular(timestamps, months) ||
+    isregular(timestamps, years)
 end
 
 function isregular(ts::TSFrame)
