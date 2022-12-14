@@ -100,37 +100,37 @@ function test_isregular()
 
     @test isregular(dates_rand) == false
     @test isregular(dates_eq) == false
-    @test isregular(dates_month) == false
-    @test isregular(dates_rep) == true
+    @test isregular(dates_month) == true
+    @test isregular(dates_rep) == false
     @test isregular(dates_day) == true
 
     @test isregular(dates_day, Day(2)) == false
     @test isregular(dates_day, Month(1)) == false
     @test isregular(dates_month, Day(1)) == false
-    @test isregular(dates_month, Month(1)) == false
+    @test isregular(dates_month, Month(1)) == true
     @test isregular(dates_rand, Day(1)) == false
     @test isregular(dates_rand, Month(1)) == false
     @test isregular(dates_eq, Day(1)) == false
     @test isregular(dates_rep, Month(1)) == false
     @test isregular(dates_day, Day(1)) == true
-    @test isregular(dates_rep, Day(0)) == true
+    @test isregular(dates_rep, Day(0)) == false
 
-    @test isregular(ts_month) == false
+    @test isregular(ts_month) == true
     @test isregular(ts_rand) == false
     @test isregular(ts_eq) == false
     @test isregular(ts_day) == true
-    @test isregular(ts_rep) == true
+    @test isregular(ts_rep) == false
 
     @test isregular(ts_day, Day(2)) == false
     @test isregular(ts_day, Month(1)) == false
     @test isregular(ts_month, Day(1)) == false
-    @test isregular(ts_month, Month(1)) == false
+    @test isregular(ts_month, Month(1)) == true
     @test isregular(ts_rand, Day(1)) == false
     @test isregular(ts_rand, Month(1)) == false
     @test isregular(ts_eq, Day(1)) == false
     @test isregular(ts_rep, Month(1)) == false
     @test isregular(ts_day, Day(1)) == true
-    @test isregular(ts_rep, Day(0)) == true
+    @test isregular(ts_rep, Day(0)) == false
 end
 
 function test_isregular_new()
