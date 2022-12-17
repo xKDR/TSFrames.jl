@@ -83,3 +83,53 @@ function rollapply(fun::Function, ts::TSFrame, column::Any, windowsize::Int) # T
     res_df = DataFrame([idx, res], ["Index", "$(colname)_rolling_$(fun)"])
     return TSFrame(res_df)
 end
+
+"""
+```julia
+rollapply(fun::Function, ts::TSFrame, windowsize::Int; bycolumn=true)
+```
+"""
+function rollapply(fun::Function, ts::TSFrame, windowsize::Int; bycolumn=true)
+    # apply function to each column
+    if bycolumn
+        res = nothing
+        df = DataFrame(ts)[:, Not(:Index)]
+        for endindex in windowsize:TSFrames.nrow(ts)
+            # get the window
+            df_window = df[endindex - windowsize + 1:endindex, :]
+
+            # transform columns
+            mapcols!(col -> fun(col), df_window)
+
+            # concat vertically
+            if isequal(res, nothing)
+                res = df_window
+            else
+                res = vcat(res, df_window)
+            end
+        end
+
+        # rename cols and add index to resulting DataFrame
+        rename!(res, [col => string("rolling_", col, "_", Symbol(fun)) for col in propertynames(res)])
+        res[:, :Index] = TSFrames.index(ts)[windowsize:end]
+        return TSFrame(res)
+
+    # apply function to table as a whole
+    else
+        # outputs will be a vector of outputs
+        outputs = nothing
+        for endindex in windowsize:TSFrames.nrow(ts)
+            ts_window = ts[endindex - windowsize + 1:endindex]
+            output = fun(ts_window)
+
+            if (isequal(outputs, nothing))
+                outputs = [output]
+            else
+                push!(outputs, output)
+            end
+        end
+        res = DataFrame(Index=TSFrames.index(ts)[windowsize:end], outputs=outputs)
+        rename!(res, Dict(:outputs => string("rolling_", Symbol(fun))))
+        return TSFrame(res)
+    end
+end
