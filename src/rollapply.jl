@@ -110,7 +110,7 @@ function rollapply(fun::Function, ts::TSFrame, windowsize::Int; bycolumn=true)
         end
 
         # rename cols and add index to resulting DataFrame
-        rename!(res, [col => string("rolling_", col, "_", Symbol(fun)) for col in propertynames(res)])
+        DataFrames.rename!(res, [col => string("rolling_", col, "_", Symbol(fun)) for col in propertynames(res)])
         res[:, :Index] = TSFrames.index(ts)[windowsize:end]
         return TSFrame(res)
 
@@ -129,7 +129,7 @@ function rollapply(fun::Function, ts::TSFrame, windowsize::Int; bycolumn=true)
             end
         end
         res = DataFrame(Index=TSFrames.index(ts)[windowsize:end], outputs=outputs)
-        rename!(res, Dict(:outputs => string("rolling_", Symbol(fun))))
+        DataFrames.rename!(res, Dict(:outputs => string("rolling_", Symbol(fun))))
         return TSFrame(res)
     end
 end
