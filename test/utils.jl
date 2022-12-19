@@ -115,6 +115,12 @@ function test_isregular()
     @test isregular(dates_day, Day(1)) == true
     @test isregular(dates_rep, Day(0)) == false
 
+    @test isregular(dates_rand, Month(0)) == false
+    @test isregular(dates_eq, Month(0)) == false
+    @test isregular(dates_month, Month(0)) == false
+    @test isregular(dates_rep, Month(0)) == false
+    @test isregular(dates_day, Month(0)) == false
+
     @test isregular(ts_month) == true
     @test isregular(ts_rand) == false
     @test isregular(ts_eq) == false
