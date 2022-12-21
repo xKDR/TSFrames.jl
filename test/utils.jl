@@ -162,6 +162,16 @@ function test_isregular_new()
     @test isregular(Date(2022,2,1):Month(1):Date(2022,4,3),Year(1)) == false
     @test isregular(Date(2022,2,1):Year(1):Date(2023,4,3),Week(1)) == false
 
+    #tests for Time
+    @test isregular(Time(1):Hour(1):Time(3)) == true
+    @test isregular(Time(1):Second(1):Time(2)) == true
+    @test isregular([Time(1), Time(2), Time(7)]) == false
+
+    #tests for DateTime
+    @test isregular(DateTime(2022,2,1,4):Day(3):DateTime(2022,2,7,3)) == true
+    @test isregular(DateTime(2022,2,1,4):Second(3):DateTime(2022,2,7,3)) == true
+    @test isregular([DateTime(2022,2,1,4), DateTime(2022,2,2,4), DateTime(2022,2,3,2), DateTime(2022,2,4,4)]) == false
+    
 end
 
 # Run each test
