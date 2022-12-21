@@ -486,7 +486,17 @@ end
 
 #find number of units between start and end date
 function timeperiod(startdate, enddate, unit)
-    length(startdate:unit:enddate)-1
+    try
+        return length(startdate:unit:enddate)-1
+    catch e
+        #TODO find better way to write this
+        if isa(e, MethodError)
+            return 0
+        else
+            println(e)
+        end
+    end
+
 end
 
 function isregular(timestamps::AbstractVector{T}) where {T<:TimeType}
