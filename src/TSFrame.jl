@@ -388,3 +388,10 @@ function TSFrame(T::DataType; n::Int=1)
     df.Index = T[]
     TSFrame(df)
 end
+
+# For empty TSFrames
+function TSFrame(T::DataType, cols::Vector{Tuple{DataType, S}}) where S <: Union{Symbol, String}
+    df = DataFrame([colname => type[] for (type, colname) in cols])
+    insertcols!(df, :Index => T[])
+    TSFrame(df)
+end
