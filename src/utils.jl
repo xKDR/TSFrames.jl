@@ -474,7 +474,7 @@ function isregular(timestamps::AbstractVector{V}, unit::T) where {V<:TimeType, T
     s = size(timestamps, 1)
 
     if s == 1
-        return true
+        return false
     end
     if unit.value == 0
         return false
@@ -503,7 +503,7 @@ function isregular(timestamps::AbstractVector{T}) where {T<:TimeType}
     s = size(timestamps, 1)
     
     if s == 1
-        return true
+        return false
     end
 
     
