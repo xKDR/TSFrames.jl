@@ -39,6 +39,7 @@ export TSFrame,
     getindex,
     head,
     index,
+    isregular,
     join,
     lag,
     lastindex,
@@ -63,8 +64,8 @@ export TSFrame,
     rollapply,
     vcat,
     DataFrame,
-    Date,
-    isregular
+    Date
+    
 
 include("TSFrame.jl")
 include("utils.jl")
