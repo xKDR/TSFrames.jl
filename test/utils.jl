@@ -176,6 +176,10 @@ function test_isregular_new()
     @test isregular([DateTime(2022,2,2,1)]) == false
     @test isregular([DateTime(2022,2,2,1)],Month(1)) == false
     @test isregular(TSFrame([1],[DateTime(2022,2,2,1)])) == false
+
+    #some edge cases
+    @test isregular([Date(2022,1,31), Date(2022,2,28), Date(2022,3,31)],Month(1)) == false
+    @test isregular([Date(2022,1,31), Date(2022,2,28), Date(2022,3,28)],Month(1)) == true
 end
 
 # Run each test
