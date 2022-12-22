@@ -10,6 +10,10 @@ joinmap = Dict(
 """
 # Joins/Column-binding
 
+```julia
+join(ts1::TSFrame, ts2::TSFrame, ts...; jointype::Symbol=:JoinAll)
+```
+
 `TSFrame` objects can be combined together column-wise using `Index` as the
 column key. There are four kinds of column-binding operations possible
 as of now. Each join operation works by performing a Set operation on
