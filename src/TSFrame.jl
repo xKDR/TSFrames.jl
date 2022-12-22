@@ -35,8 +35,8 @@ TSFrame(coredata::AbstractVector{T}, index::AbstractVector{V}; colnames=:auto) w
 TSFrame(coredata::AbstractVector{T}; colnames=:auto) where {T}
 TSFrame(coredata::AbstractArray{T,2}; colnames=:auto) where {T}
 TSFrame(coredata::AbstractArray{T,2}, index::AbstractVector{V}; colnames=:auto) where {T, V}
-TSFrame(T::DataType; n::Int=1)
-TSFrame(T::DataType, cols::Vector{Tuple{DataType, S}}) where S <: Union{Symbol, String}
+TSFrame(IndexType::DataType; n::Int=1)
+TSFrame(IndexType::DataType, cols::Vector{Tuple{DataType, S}}) where S <: Union{Symbol, String}
 ```
 
 # Examples
@@ -393,16 +393,16 @@ function TSFrame(coredata::AbstractArray{T,2}, index::AbstractVector{V}; colname
     TSFrame(df, index)
 end
 
-function TSFrame(T::DataType; n::Int=1)
+function TSFrame(IndexType::DataType; n::Int=1)
     (n>=1) || throw(DomainError(n, "n should be >= 1"))
     df = DataFrame(fill([],n), :auto)
-    df.Index = T[]
+    df.Index = IndexType[]
     TSFrame(df)
 end
 
 # For empty TSFrames
-function TSFrame(T::DataType, cols::Vector{Tuple{DataType, S}}) where S <: Union{Symbol, String}
+function TSFrame(IndexType::DataType, cols::Vector{Tuple{DataType, S}}) where S <: Union{Symbol, String}
     df = DataFrame([colname => type[] for (type, colname) in cols])
-    insertcols!(df, :Index => T[])
+    insertcols!(df, :Index => IndexType[])
     TSFrame(df)
 end
