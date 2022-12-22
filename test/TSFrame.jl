@@ -117,6 +117,34 @@ function test_empty_timeframe_cons()
     @test_throws DomainError TSFrame(Int, n=0)
     @test_throws DomainError TSFrame(Date, n=-1)
     @test_throws DomainError TSFrame(Date, n=0)
+
+    # testing empty constructor for specific column names and types
+    ts_empty_int = TSFrame(Int, [(Int, :col1), (Float64, :col2), (String, :col3)])
+    ts_empty_date = TSFrame(Date, [(Int, :col1), (Float64, :col2), (String, :col3)])
+
+    @test size(ts_empty_int)==(0, 3)
+    @test size(ts_empty_date)==(0, 3)
+
+    @test TSFrames.nrow(ts_empty_int)==0
+    @test TSFrames.nrow(ts_empty_date)==0
+
+    @test TSFrames.ncol(ts_empty_int)==3
+    @test TSFrames.ncol(ts_empty_date)==3
+
+    @test propertynames(ts_empty_int.coredata) == [:Index, :col1, :col2, :col3]
+    @test propertynames(ts_empty_date.coredata) == [:Index, :col1, :col2, :col3]
+
+    @test eltype(index(ts_empty_int))==Int
+    @test eltype(index(ts_empty_date))==Date
+
+    @test eltype(ts_empty_int[:, :col1])==Int
+    @test eltype(ts_empty_date[:, :col1])==Int
+
+    @test eltype(ts_empty_int[:, :col2])==Float64
+    @test eltype(ts_empty_date[:, :col2])==Float64
+
+    @test eltype(ts_empty_int[:, :col3])==String
+    @test eltype(ts_empty_date[:, :col3])==String
 end
 
 # Run each test
