@@ -480,6 +480,19 @@ function daterange(startdate, enddate, step)
     out
 end
 
+function isregular(timestamps::AbstractVector{V}, unit::Symbol) where {V<:TimeType}
+    map = Dict{Symbol,DataType}(:day=>Day, :week=>Week, :month=>Month, :year=>Year)
+    
+    if unit==:time
+        time = timestamps[2]-timestamps[1]
+    else
+        func = map[unit]
+        time = func(timeperiod(timestamps[1],timestamps[2],func(1))) #get time period like Month(2)
+    end
+
+    isregular(timestamps, time)
+end
+
 function isregular(timestamps::AbstractVector{V}, unit::T) where {V<:TimeType, T<:Dates.Period}
     s = size(timestamps, 1)
 
@@ -516,17 +529,11 @@ function isregular(timestamps::AbstractVector{T}) where {T<:TimeType}
         return false
     end
 
-    
-    days = Day(timeperiod(timestamps[1],timestamps[2],Day(1)))
-    weeks = Week(timeperiod(timestamps[1],timestamps[2],Week(1)))
-    months = Month(timeperiod(timestamps[1],timestamps[2],Month(1)))
-    years = Year(timeperiod(timestamps[1],timestamps[2],Year(1)))
-
-    return isregular(timestamps, timestamps[2]-timestamps[1]) || 
-    isregular(timestamps, days) || 
-    isregular(timestamps, weeks) ||
-    isregular(timestamps, months) ||
-    isregular(timestamps, years)
+    return isregular(timestamps, :time) || 
+    isregular(timestamps, :day) || 
+    isregular(timestamps, :week) ||
+    isregular(timestamps, :month) ||
+    isregular(timestamps, :year)
 end
 
 function isregular(ts::TSFrame)
