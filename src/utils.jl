@@ -470,16 +470,6 @@ false
 ```
 """
 
-function daterange(startdate, enddate, step)
-    out = typeof(startdate)[]
-    cur = startdate
-    while cur <= enddate
-        push!(out, cur)
-        cur+=step
-    end
-    out
-end
-
 function isregular(timestamps::AbstractVector{V}, unit::Symbol) where {V<:TimeType}
     map = Dict{Symbol,DataType}(:day=>Day, :week=>Week, :month=>Month, :year=>Year)
     
@@ -504,13 +494,13 @@ function isregular(timestamps::AbstractVector{V}, unit::T) where {V<:TimeType, T
     end
 
     #todo add check for boundary case
-    return daterange(timestamps[1], timestamps[s], unit)==timestamps
+    return (timestamps[1]:unit:timestamps[s])==timestamps
 end
 
 #find number of units between start and end date
 function timeperiod(startdate, enddate, unit)
     try
-        return length(daterange(startdate, enddate, unit))-1
+        return length(startdate:unit:enddate)-1
     catch e
         #TODO find better way to write this
         if isa(e, MethodError)
