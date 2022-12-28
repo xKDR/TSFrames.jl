@@ -473,7 +473,7 @@ false
 function isregular(timestamps::AbstractVector{V}, unit::Symbol) where {V<:TimeType}
     map = Dict{Symbol,DataType}(:day=>Day, :week=>Week, :month=>Month, :year=>Year)
     
-    if unit==:time
+    if unit==:firstdiff
         time = timestamps[2]-timestamps[1]
     else
         func = map[unit]
@@ -519,7 +519,7 @@ function isregular(timestamps::AbstractVector{T}) where {T<:TimeType}
         return false
     end
 
-    return isregular(timestamps, :time) || 
+    return isregular(timestamps, :firstdiff) || 
     isregular(timestamps, :day) || 
     isregular(timestamps, :week) ||
     isregular(timestamps, :month) ||
