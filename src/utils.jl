@@ -481,8 +481,7 @@ function isregular(timestamps::AbstractVector{V}, unit::Symbol=:firstdiff) where
     if unit==:firstdiff
         time = timestamps[2]-timestamps[1]
     else
-        func = map[unit]
-        time = func(gettimeperiod(timestamps[1],timestamps[2],func(1))) #get time period like Month(2)
+        time = gettimeperiod(timestamps[1], timestamps[2], map[unit]) #get time period like Month(2)
     end
 
     isregular(timestamps, time)
@@ -505,7 +504,7 @@ end
 #find number of units between start and end date
 function gettimeperiod(startdate, enddate, unit)
     try
-        return length(startdate:unit:enddate)-1
+        return unit(length(startdate:unit(1):enddate)-1)
     catch e
         #TODO find better way to write this
         if isa(e, MethodError)
