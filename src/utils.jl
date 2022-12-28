@@ -470,9 +470,14 @@ false
 ```
 """
 
-function isregular(timestamps::AbstractVector{V}, unit::Symbol) where {V<:TimeType}
+function isregular(timestamps::AbstractVector{V}, unit::Symbol=:firstdiff) where {V<:TimeType}
+    s = size(timestamps, 1)
     map = Dict{Symbol,DataType}(:day=>Day, :week=>Week, :month=>Month, :year=>Year)
-    
+
+    if s == 1
+        return false
+    end
+
     if unit==:firstdiff
         time = timestamps[2]-timestamps[1]
     else
@@ -510,20 +515,6 @@ function gettimeperiod(startdate, enddate, unit)
         end
     end
 
-end
-
-function isregular(timestamps::AbstractVector{T}) where {T<:TimeType}
-    s = size(timestamps, 1)
-    
-    if s == 1
-        return false
-    end
-
-    return isregular(timestamps, :firstdiff) || 
-    isregular(timestamps, :day) || 
-    isregular(timestamps, :week) ||
-    isregular(timestamps, :month) ||
-    isregular(timestamps, :year)
 end
 
 function isregular(ts::TSFrame)
