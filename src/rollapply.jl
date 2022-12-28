@@ -86,17 +86,17 @@ end
 
 """
 ```julia
-rollapply(fun::Function, ts::TSFrame, windowsize::Int; bycolumn=true)
+rollapply(ts::TSFrame, fun::Function, windowsize::Int; bycolumn=true)
 ```
 """
-function rollapply(fun::Function, ts::TSFrame, windowsize::Int; bycolumn=true)
+function rollapply(ts::TSFrame, fun::Function, windowsize::Int; bycolumn=true)
     firstWindow = ts[1:windowsize]
-    res = bycolumn ? mapcols(col -> fun(col), DataFrame(firstWindow)[:, Not(:Index)]) : [fun(firstWindow)]
+    res = bycolumn ? mapcols(col -> fun(col), firstWindow.coredata[!, Not(:Index)]) : [fun(firstWindow)]
 
     for endindex in windowsize + 1:TSFrames.nrow(ts)
         currentWindow = ts[endindex - windowsize + 1:endindex]
         if bycolumn
-            res = vcat(res, mapcols(col -> fun(col), DataFrame(currentWindow)[:, Not(:Index)]))
+            res = vcat(res, mapcols(col -> fun(col), currentWindow.coredata[!, Not(:Index)]), cols=:orderequal)
         else
             res = vcat(res, [fun(currentWindow)])
         end
