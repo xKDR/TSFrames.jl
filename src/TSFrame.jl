@@ -35,6 +35,8 @@ TSFrame(coredata::AbstractVector{T}, index::AbstractVector{V}; colnames=:auto) w
 TSFrame(coredata::AbstractVector{T}; colnames=:auto) where {T}
 TSFrame(coredata::AbstractArray{T,2}; colnames=:auto) where {T}
 TSFrame(coredata::AbstractArray{T,2}, index::AbstractVector{V}; colnames=:auto) where {T, V}
+TSFrame(IndexType::DataType; n::Int=1)
+TSFrame(IndexType::DataType, cols::Vector{Tuple{DataType, S}}) where S <: Union{Symbol, String}
 ```
 
 # Examples
@@ -294,6 +296,15 @@ julia> ts = TSFrame([random(10) random(10)], dates, colnames=[:A, :B]) # columns
  2017-01-09  0.26864    0.26864
  2017-01-10  0.108871   0.108871
 
+julia> ts = TSFrame(Int64; n=5) # empty TSFrame with 5 columns of type Any and with Int64 index type
+0×5 TSFrame with Int64 Index
+
+julia> ts = TSFrame(Date, [(Int64, :col1), (String, :col2), (Float64, :col3)]) # empty TSFrame with specific column names and types
+0×3 TSFrame with Date Index
+
+julia> ts = TSFrame(Date, [(Int64, "col1"), (String, "col2"), (Float64, "col3")]) # using strings instead of symbols
+0×3 TSFrame with Date Index
+
 ```
 """
 struct TSFrame
@@ -382,9 +393,16 @@ function TSFrame(coredata::AbstractArray{T,2}, index::AbstractVector{V}; colname
     TSFrame(df, index)
 end
 
-function TSFrame(T::DataType; n::Int=1)
+function TSFrame(IndexType::DataType; n::Int=1)
     (n>=1) || throw(DomainError(n, "n should be >= 1"))
     df = DataFrame(fill([],n), :auto)
-    df.Index = T[]
+    df.Index = IndexType[]
+    TSFrame(df)
+end
+
+# For empty TSFrames
+function TSFrame(IndexType::DataType, cols::Vector{Tuple{DataType, S}}) where S <: Union{Symbol, String}
+    df = DataFrame([colname => type[] for (type, colname) in cols])
+    insertcols!(df, :Index => IndexType[])
     TSFrame(df)
 end
