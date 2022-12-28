@@ -100,7 +100,7 @@ function test_isregular()
 
     @test isregular(dates_rand) == false
     @test isregular(dates_eq) == false
-    @test isregular(dates_month) == true
+    @test isregular(dates_month, :month) == true
     @test isregular(dates_rep) == false
     @test isregular(dates_day) == true
 
@@ -121,7 +121,7 @@ function test_isregular()
     @test isregular(dates_rep, Month(0)) == false
     @test isregular(dates_day, Month(0)) == false
 
-    @test isregular(ts_month) == true
+    @test isregular(ts_month, Month(1)) == true
     @test isregular(ts_rand) == false
     @test isregular(ts_eq) == false
     @test isregular(ts_day) == true
@@ -153,9 +153,9 @@ function test_isregular_new()
 
     # leap year test 
     # 2020 was a leap year
-    @test isregular(Date(2019,2,28):Year(1):Date(2022,2,28)) == true
+    @test isregular(Date(2019,2,28):Year(1):Date(2022,2,28), :year) == true
     
-    @test isregular(Date(2017,1,2):Month(2):Date(2017,9,10)) == true
+    @test isregular(Date(2017,1,2):Month(2):Date(2017,9,10), :month) == true
 
     #irregular tests
     @test isregular(Date(2022,2,1):Week(1):Date(2022,4,3),Month(1)) == false
