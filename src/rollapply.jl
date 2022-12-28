@@ -135,6 +135,12 @@ julia> rollapply(ts, regress, 5; bycolumn=false)    # doing multiple regressions
 ```
 """
 function rollapply(ts::TSFrame, fun::Function, windowsize::Int; bycolumn=true)
+    if windowsize < 1
+        throw(ArgumentError("windowsize must be greater than or equal to 1"))
+    elseif windowsize > TSFrames.nrow(ts)
+        windowsize = TSFrames.nrow(ts)
+    end
+
     firstWindow = ts[1:windowsize]
     res = bycolumn ? mapcols(col -> fun(col), firstWindow.coredata[!, Not(:Index)]) : [fun(firstWindow)]
 
