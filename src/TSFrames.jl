@@ -65,7 +65,6 @@ export TSFrame,
     vcat,
     DataFrame,
     Date
-    
 
 include("TSFrame.jl")
 include("utils.jl")
