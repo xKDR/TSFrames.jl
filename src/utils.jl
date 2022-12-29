@@ -472,7 +472,6 @@ false
 
 function isregular(timestamps::AbstractVector{V}, unit::Symbol=:firstdiff) where {V<:TimeType}
     s = size(timestamps, 1)
-    map = Dict{Symbol,DataType}(:day=>Day, :week=>Week, :month=>Month, :year=>Year)
 
     if s == 1
         return false
@@ -481,7 +480,9 @@ function isregular(timestamps::AbstractVector{V}, unit::Symbol=:firstdiff) where
     if unit==:firstdiff
         time = timestamps[2]-timestamps[1]
     else
-        time = gettimeperiod(timestamps[1], timestamps[2], map[unit]) #get time period like Month(2)
+        unit = Symbol(uppercasefirst(String(unit))) # make first letter of symbol uppercase
+        unitfunc = getfield(Dates,unit)
+        time = gettimeperiod(timestamps[1], timestamps[2], unitfunc)
     end
 
     isregular(timestamps, time)
