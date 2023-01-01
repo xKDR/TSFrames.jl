@@ -416,3 +416,14 @@ Returns a row-based iterator for `tsf`.
 Base.iterate(tsf::TSFrame, state=1) = state > length(tsf) ? nothing : (tsf[state], state+1)
 
 Base.ndims(::Type{TSFrame}) = 2
+
+"""
+# Equality
+```julia
+Two TSFrame are considered equal if their `coredata` property is equal.
+Base.:(==)(tsf1::TSFrame, tsf2::TSFrame)::Bool
+Base.isequal(tsf1::TSFrame, tsf2::TSFrame)::Bool
+```
+"""
+Base.:(==)(tsf1::TSFrame, tsf2::TSFrame)::Bool = tsf1.coredata == tsf2.coredata
+Base.isequal(tsf1::TSFrame, tsf2::TSFrame)::Bool = isequal(tsf1.coredata, tsf2.coredata)
