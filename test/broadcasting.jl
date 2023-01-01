@@ -19,3 +19,4 @@ for i in 1:100
     @test log_ts_A[i, :A_Complex_log] == log(Complex(ts[i, :A]))
 end
 
+@test 100 .* TSFrame(1:10) == TSFrame(100:100:1000)
