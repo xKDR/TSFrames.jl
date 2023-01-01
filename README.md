@@ -28,7 +28,7 @@ TSFrames is a [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible pac
 julia> using CSV, Dates, DataFrames, TSFrames
 
 julia> ts = CSV.read("IBM.csv", TSFrame)
-(252 x 6) TSFrame with Dates.Date Index
+252x6 TSFrame with Date Index
 
  Index       Open     High     Low      Close    Adj Close  Volume
  Date        Float64  Float64  Float64  Float64  Float64    Int64
@@ -123,8 +123,8 @@ julia> ts[1:10, [:Close]]
 ```julia
 julia> from = Date(2021, 04, 29); to = Date(2021, 06, 02);
 
-julia> TSFrames.subset(ts, from, to)
-(24 x 6) TSFrame with Date Index
+julia> subset(ts, from, to)
+24x6 TSFrame with Date Index
 
  Index       Open     High     Low      Close    Adj Close  Volume  
  Date        Float64  Float64  Float64  Float64  Float64    Int64   
@@ -158,9 +158,8 @@ julia> TSFrames.subset(ts, from, to)
 
 ### Frequency conversion
 ```julia
-julia> ep = endpoints(ts, Week(1));
-julia> ts_weekly = ts[ep]
-(52 x 6) TSFrame with Date Index
+julia> ts_weekly = to_weekly(ts)
+52x6 TSFrame with Date Index
 
  Index       Open_last  High_last  Low_last  Close_last  Adj Close_last  Volume_last 
  Date        Float64    Float64    Float64   Float64     Float64         Int64       

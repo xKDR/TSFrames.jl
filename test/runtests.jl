@@ -80,3 +80,7 @@ end
 @testset "rollapply()" begin
     include("rollapply.jl")
 end
+
+@testset "to_period()" begin
+    include("to_period.jl")
+end
