@@ -382,7 +382,6 @@ Int64  Int64  Int64
      92 rows omitted
 ```
 """
-
 function rename!(ts::TSFrame, colnames::AbstractVector{String})
     rename!(ts, Symbol.(colnames))
 end
@@ -405,3 +404,15 @@ object.
 function _check_consistency(ts::TSFrame)::Bool
     issorted(index(ts))
 end
+
+"""
+# Iterators
+```julia
+Base.iterate(tsf::TSFrame)
+
+Returns a row-based iterator for `tsf`.
+```
+"""
+Base.iterate(tsf::TSFrame, state=1) = state > length(tsf) ? nothing : (tsf[state], state+1)
+
+Base.ndims(::Type{TSFrame}) = 2
