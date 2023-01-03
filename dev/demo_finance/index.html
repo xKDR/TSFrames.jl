@@ -72,7 +72,7 @@
  2021-06-09   127.21   127.75   126.52   127.13   126.023  5.68779e7
  2021-06-10   127.02   128.19   125.94   126.11   125.012  7.11864e7
      ⋮          ⋮        ⋮        ⋮        ⋮        ⋮          ⋮
- 2021-12-22   173.04   175.86   172.15   175.64   174.627  9.21353e7
+ 2021-12-22   173.04   175.86   172.15   175.64   174.626  9.21353e7
  2021-12-23   175.85   176.85   175.27   176.28   175.263  6.83566e7
  2021-12-27   177.09   180.42   177.07   180.33   179.289  7.49196e7
  2021-12-28   180.16   181.33   178.53   179.29   178.255  7.91443e7
@@ -92,7 +92,7 @@
  2021-06-09   133.889     126.023
  2021-06-10   133.774     125.012
      ⋮          ⋮          ⋮
- 2021-12-22   123.619     174.627
+ 2021-12-22   123.619     174.626
  2021-12-23   124.458     175.263
  2021-12-27   125.401     179.289
  2021-12-28   126.363     178.255
@@ -112,7 +112,7 @@
  2021-06-09  133.889  126.023
  2021-06-10  133.774  125.012
      ⋮          ⋮        ⋮
- 2021-12-22  123.619  174.627
+ 2021-12-22  123.619  174.626
  2021-12-23  124.458  175.263
  2021-12-27  125.401  179.289
  2021-12-28  126.363  178.255
@@ -124,7 +124,7 @@
  Date        Float64  Float64
 ──────────────────────────────
  2021-06-04  131.001  124.794
- 2021-06-11  134.431  126.242
+ 2021-06-11  134.431  126.241
  2021-06-18  127.18   129.324
  2021-06-25  130.486  131.951
  2021-07-02  124.425  138.742
@@ -144,44 +144,44 @@
  Date        Float64?          Float64?
 ────────────────────────────────────────────────
  2021-06-04  missing           missing
- 2021-06-11        0.0258468         0.0115307
- 2021-06-18       -0.0554491         0.0241274
- 2021-06-25        0.0256603         0.0201092
- 2021-07-02       -0.0475583         0.0501809
- 2021-07-09        0.0106557         0.0361351
- 2021-07-16       -0.0186869         0.00878223
- 2021-07-23        0.0174142         0.0147147
+ 2021-06-11        0.0258471         0.0115307
+ 2021-06-18       -0.0554492         0.0241274
+ 2021-06-25        0.0256602         0.0201093
+ 2021-07-02       -0.0475583         0.0501807
+ 2021-07-09        0.0106557         0.0361355
+ 2021-07-16       -0.0186868         0.00878222
+ 2021-07-23        0.0174141         0.0147146
      ⋮              ⋮                 ⋮
- 2021-11-19       -0.0247661         0.0680369
- 2021-11-26       -0.00207029       -0.0235706
+ 2021-11-19       -0.0247662         0.0680366
+ 2021-11-26       -0.00207022       -0.0235704
  2021-12-03        0.0258272         0.0315731
- 2021-12-10        0.043229          0.103289
- 2021-12-17        0.0263247        -0.0474147
+ 2021-12-10        0.043229          0.103288
+ 2021-12-17        0.0263247        -0.0474145
  2021-12-23        0.0250372         0.0295916
- 2021-12-31        0.0229304         0.00729129
+ 2021-12-31        0.0229303         0.00729147
                                  16 rows omitted</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; TSFrames.rename!(ibm_aapl_weekly_returns, [:IBM, :AAPL])</code><code class="nohighlight hljs ansi" style="display:block;">31×2 TSFrame with Date Index
  Index       IBM               AAPL
  Date        Float64?          Float64?
 ────────────────────────────────────────────────
  2021-06-04  missing           missing
- 2021-06-11        0.0258468         0.0115307
- 2021-06-18       -0.0554491         0.0241274
- 2021-06-25        0.0256603         0.0201092
- 2021-07-02       -0.0475583         0.0501809
- 2021-07-09        0.0106557         0.0361351
- 2021-07-16       -0.0186869         0.00878223
- 2021-07-23        0.0174142         0.0147147
+ 2021-06-11        0.0258471         0.0115307
+ 2021-06-18       -0.0554492         0.0241274
+ 2021-06-25        0.0256602         0.0201093
+ 2021-07-02       -0.0475583         0.0501807
+ 2021-07-09        0.0106557         0.0361355
+ 2021-07-16       -0.0186868         0.00878222
+ 2021-07-23        0.0174141         0.0147146
      ⋮              ⋮                 ⋮
- 2021-11-19       -0.0247661         0.0680369
- 2021-11-26       -0.00207029       -0.0235706
+ 2021-11-19       -0.0247662         0.0680366
+ 2021-11-26       -0.00207022       -0.0235704
  2021-12-03        0.0258272         0.0315731
- 2021-12-10        0.043229          0.103289
- 2021-12-17        0.0263247        -0.0474147
+ 2021-12-10        0.043229          0.103288
+ 2021-12-17        0.0263247        -0.0474145
  2021-12-23        0.0250372         0.0295916
- 2021-12-31        0.0229304         0.00729129
-                                 16 rows omitted</code></pre><h2 id="Compute-standard-deviation-of-weekly-returns"><a class="docs-heading-anchor" href="#Compute-standard-deviation-of-weekly-returns">Compute standard deviation of weekly returns</a><a id="Compute-standard-deviation-of-weekly-returns-1"></a><a class="docs-heading-anchor-permalink" href="#Compute-standard-deviation-of-weekly-returns" title="Permalink"></a></h2><p>Computing standard deviation is done using the <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.std"><code>std</code></a> function from <code>Statistics</code> package. The <code>skipmissing</code> is used to skip missing values which may have been generated while computing log returns or were already present in the data.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ibm_std = std(skipmissing(ibm_aapl_weekly_returns[:, :IBM]))</code><code class="nohighlight hljs ansi" style="display:block;">0.034079306243752445</code></pre><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; aapl_std = std(skipmissing(ibm_aapl_weekly_returns[:, :AAPL]))</code><code class="nohighlight hljs ansi" style="display:block;">0.03058230230217072</code></pre><h3 id="Scatter-plot-of-AAPL-and-IBM"><a class="docs-heading-anchor" href="#Scatter-plot-of-AAPL-and-IBM">Scatter plot of AAPL and IBM</a><a id="Scatter-plot-of-AAPL-and-IBM-1"></a><a class="docs-heading-anchor-permalink" href="#Scatter-plot-of-AAPL-and-IBM" title="Permalink"></a></h3><p>Here, we use the <a href="https://docs.juliaplots.org/latest/tutorial/">Plots</a> package to create a scatter plot with IBM weekly returns on the x-axis and Apple weekly returns on the y-axis.</p><pre><code class="language-julia hljs">plot(ibm_aapl_weekly_returns[:, :AAPL],
+ 2021-12-31        0.0229303         0.00729147
+                                 16 rows omitted</code></pre><h2 id="Compute-standard-deviation-of-weekly-returns"><a class="docs-heading-anchor" href="#Compute-standard-deviation-of-weekly-returns">Compute standard deviation of weekly returns</a><a id="Compute-standard-deviation-of-weekly-returns-1"></a><a class="docs-heading-anchor-permalink" href="#Compute-standard-deviation-of-weekly-returns" title="Permalink"></a></h2><p>Computing standard deviation is done using the <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.std"><code>std</code></a> function from <code>Statistics</code> package. The <code>skipmissing</code> is used to skip missing values which may have been generated while computing log returns or were already present in the data.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ibm_std = std(skipmissing(ibm_aapl_weekly_returns[:, :IBM]))</code><code class="nohighlight hljs ansi" style="display:block;">0.03407930578748132</code></pre><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; aapl_std = std(skipmissing(ibm_aapl_weekly_returns[:, :AAPL]))</code><code class="nohighlight hljs ansi" style="display:block;">0.030582249139005986</code></pre><h3 id="Scatter-plot-of-AAPL-and-IBM"><a class="docs-heading-anchor" href="#Scatter-plot-of-AAPL-and-IBM">Scatter plot of AAPL and IBM</a><a id="Scatter-plot-of-AAPL-and-IBM-1"></a><a class="docs-heading-anchor-permalink" href="#Scatter-plot-of-AAPL-and-IBM" title="Permalink"></a></h3><p>Here, we use the <a href="https://docs.juliaplots.org/latest/tutorial/">Plots</a> package to create a scatter plot with IBM weekly returns on the x-axis and Apple weekly returns on the y-axis.</p><pre><code class="language-julia hljs">plot(ibm_aapl_weekly_returns[:, :AAPL],
     ibm_aapl_weekly_returns[:, :IBM],
     seriestype = :scatter;
     xlabel = &quot;AAPL&quot;,
     ylabel = &quot;IBM&quot;,
-    legend = false)</code></pre><p><img src="../ts-plot.svg" alt/></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Introduction</a><a class="docs-footer-nextpage" href="../user_guide/">User guide »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Monday 2 January 2023 07:59">Monday 2 January 2023</span>. Using Julia version 1.8.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+    legend = false)</code></pre><p><img src="../ts-plot.svg" alt/></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Introduction</a><a class="docs-footer-nextpage" href="../user_guide/">User guide »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Tuesday 3 January 2023 09:59">Tuesday 3 January 2023</span>. Using Julia version 1.8.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
