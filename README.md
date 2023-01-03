@@ -197,3 +197,18 @@ to fork the repository and submit a Pull Request.
 
 We gratefully acknowledge the JuliaLab at MIT for financial support
 for this project.
+
+We thank Achim Zeileis, Jeffrey A. Ryan, Joshua M. Ulrich, Ross
+Bennett, and Corwin Joy for their remarkable work in the
+[zoo](https://cran.r-project.org/web/packages/zoo/index.html) and
+[xts](https://cran.r-project.org/web/packages/xts/index.html) packages
+in R, which shaped our thinking in this field.
+
+We thank Bogumił Kamiński and the Julia community for the remarkable
+[DataFrames.jl](https://github.com/JuliaData/DataFrames.jl/) package
+which was the foundation of our work, and for Prof. Kamiński's
+continuous peer review and feedback in our work.
+
+We also thank all the code/documentation contributors to this package
+as well as the overall Julia community for all the valuable
+discussions.
