@@ -416,6 +416,13 @@ isregular(ts::TSFrame, unit::Symbol = :firstdiff)
 isregular(ts::TSFrame, unit::T) where {T<:Dates.Period}
 ```
 
+Check if ts is regular.
+
+* if unit == :firstdiff then it checks if first difference of index is constant
+
+* otherwise it will check if first difference is constant with respect to specified timeperiod.
+For eg. if unit == :month then check if first difference is constant with respect to months.
+
 # Examples
 ```jldoctest; setup = :(using TSFrame, Dates, Random)
 julia> using Random;
