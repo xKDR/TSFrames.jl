@@ -443,6 +443,9 @@ true
 julia> isregular(dates, Day(2)) # check if regular with a time difference of 2 days
 false
 
+julia> isregular(dates, :month) # check if regular with respect to months
+false
+
 julia> ts = TSFrame(random(10), dates)
 10×1 TSFrame with Date Index
  Index       x1        
@@ -468,6 +471,8 @@ true
 julia> isregular(ts, Day(2))
 false
 
+julia> isregular(ts, :month)
+false
 ```
 """
 function isregular(timestamps::AbstractVector{V}, unit::Symbol = :firstdiff) where {V<:TimeType}
