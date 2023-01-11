@@ -470,8 +470,7 @@ false
 
 ```
 """
-
-function isregular(timestamps::AbstractVector{V}, unit::Symbol=:firstdiff) where {V<:TimeType}
+function isregular(timestamps::AbstractVector{V}, unit::Symbol = :firstdiff) where {V<:TimeType}
     s = size(timestamps, 1)
 
     if s == 1
@@ -518,7 +517,7 @@ function gettimeperiod(startdate, enddate, unit)
 
 end
 
-function isregular(ts::TSFrame, unit::Symbol=:firstdiff)
+function isregular(ts::TSFrame, unit::Symbol = :firstdiff)
     return isregular(ts.Index, unit)
 end
 
