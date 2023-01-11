@@ -411,7 +411,8 @@ end
 ```julia
 isregular(timestamps::V, unit::T) where {V<:AbstractVector{TimeType}, T<:Dates.Period}
 isregular(timestamps::T) where {T<:AbstractVector{TimeType}}
-isregular(ts::TS)
+isregular(timestamps::AbstractVector{V}, unit::Symbol = :firstdiff) where {V<:TimeType}
+isregular(ts::TSFrame, unit::Symbol = :firstdiff)
 isregular(ts::TS, unit::T) where {T<:Dates.Period}
 ```
 
