@@ -151,15 +151,15 @@ some basic intelligence while doing the merge.
 `join` merges two datasets based on the `Index` values of both
 objects. Depending on the join strategy employed the final object may
 only contain index values only from the left object (using
-`JoinLeft`), the right object (using `JoinRight`), intersection of
-both objects (using `JoinBoth`), or a union of both objects
-(`JoinAll`) while inserting `missing` values where index values are
+`jointype=:JoinLeft`), the right object (using `jointype=:JoinRight`), intersection of
+both objects (using `jointype=:JoinBoth`), or a union of both objects
+(`jointype=:JoinAll`) while inserting `missing` values where index values are
 missing from any of the other object.
 
 ```@repl e1
 dates = collect(Date(2007,1,1):Day(1):Date(2007,1,30));
 ts2 = TSFrame(rand(length(dates)), dates)
-join(ts, ts2, JoinAll) # cbind/join on Index column
+join(ts, ts2; jointype=:JoinAll) # cbind/join on Index column
 ```
 
 `vcat` also works similarly but merges two datasets by rows. This

@@ -5,7 +5,7 @@
 To load the IBM historical data, we will use the `MarketData.yahoo` function from [MarketData.jl](https://github.com/JuliaQuant/MarketData.jl), which returns the data in the form of a `TimeArray`. We just simply pass this on to the `TSFrame` constructor.
 
 ```@repl e1
-using TSFrames, MarketData, DataFrames, Dates, Plots, Statistics
+using TSFrames, MarketData, Plots, Statistics
 ibm_ts = TSFrame(MarketData.yahoo(:IBM))
 ```
 
@@ -46,7 +46,7 @@ the objects have data, all the other rows are omitted from the
 result.
 
 ```@repl e1
-ibm_aapl = TSFrames.join(ibm[:, ["AdjClose"]], aapl[:, ["AdjClose"]], JoinBoth)
+ibm_aapl = TSFrames.join(ibm[:, ["AdjClose"]], aapl[:, ["AdjClose"]]; jointype=:JoinBoth)
 TSFrames.rename!(ibm_aapl, [:IBM, :AAPL])
 ```
 
@@ -62,8 +62,7 @@ value with which the trading closed on the last day of the week as the
 week's price.
 
 ```@repl e1
-ep = endpoints(ibm_aapl, Week(1));
-ibm_aapl_weekly = ibm_aapl[ep]
+ibm_aapl_weekly = to_weekly(ibm_aapl)
 ```
 
 ## Compute weekly returns using the familiar `log` and `diff` functions

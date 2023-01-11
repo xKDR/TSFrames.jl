@@ -56,12 +56,24 @@ export TSFrame,
     pctchange,
     plot,
     rbind,
+    rollapply,
     show,
     size,
     subset,
     summary,
     tail,
-    rollapply,
+    to_period,
+    to_yearly,
+    to_quarterly,
+    to_monthly,
+    to_weekly,
+    to_daily,
+    to_hourly,
+    to_minutes,
+    to_seconds,
+    to_milliseconds,
+    to_microseconds,
+    to_nanoseconds,
     vcat,
     DataFrame,
     Date
@@ -82,6 +94,7 @@ include("pctchange.jl")
 include("plot.jl")
 include("rollapply.jl")
 include("subset.jl")
+include("to_period.jl")
 include("vcat.jl")
 include("broadcasting.jl")
 include("tables.jl")
