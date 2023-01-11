@@ -517,8 +517,8 @@ function gettimeperiod(startdate, enddate, unit)
 
 end
 
-function isregular(ts::TSFrame)
-    return isregular(ts.Index)
+function isregular(ts::TSFrame, unit::Symbol=:firstdiff)
+    return isregular(ts.Index, unit)
 end
 
 function isregular(ts::TSFrame, unit::T) where {T<:Dates.Period}
