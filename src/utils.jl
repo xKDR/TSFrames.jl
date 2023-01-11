@@ -413,11 +413,11 @@ isregular(timestamps::V, unit::T) where {V<:AbstractVector{TimeType}, T<:Dates.P
 isregular(timestamps::T) where {T<:AbstractVector{TimeType}}
 isregular(timestamps::AbstractVector{V}, unit::Symbol = :firstdiff) where {V<:TimeType}
 isregular(ts::TSFrame, unit::Symbol = :firstdiff)
-isregular(ts::TS, unit::T) where {T<:Dates.Period}
+isregular(ts::TSFrame, unit::T) where {T<:Dates.Period}
 ```
 
 # Examples
-```jldoctest; setup = :(using TSx, Dates, Random)
+```jldoctest; setup = :(using TSFrame, Dates, Random)
 julia> using Random;
 julia> random(x) = rand(MersenneTwister(123), x);
 
@@ -443,10 +443,10 @@ true
 julia> isregular(dates, Day(2)) # check if regular with a time difference of 2 days
 false
 
-julia> ts = TS(random(10), dates)
-10×1 TS with Date Index
+julia> ts = TSFrame(random(10), dates)
+10×1 TSFrame with Date Index
  Index       x1        
- TimeType    Float64   
+ Date        Float64   
 ───────────────────────
  2017-01-01  0.768448
  2017-01-02  0.940515
