@@ -516,13 +516,11 @@ end
 #find number of units between start and end date
 function gettimeperiod(startdate, enddate, unit)
     try
-        return unit(length(startdate:unit(1):enddate)-1)
+        return unit(max(length(startdate:unit(1):enddate)-1,0))
     catch e
         #TODO find better way to write this
         if isa(e, MethodError)
             return 0
-        else
-            println(e)
         end
     end
 
