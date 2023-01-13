@@ -180,6 +180,10 @@ function test_isregular_new()
     #some edge cases
     @test isregular([Date(2022,1,31), Date(2022,2,28), Date(2022,3,31)],Month(1)) == true
     @test isregular([Date(2022,1,31), Date(2022,2,28), Date(2022,3,28)],Month(1)) == false
+
+    #test gettimeperiod
+    @test TSFrames.gettimeperiod(Date(2022,2,2),Date(2022,4,7),Time) == 0
+    @test TSFrames.gettimeperiod(Date(2022,2,2),Date(2021,1,1),Day) == Day(0)
 end
 
 # Run each test
