@@ -509,7 +509,6 @@ function isregular(timestamps::AbstractVector{V}, unit::T) where {V<:TimeType, T
         return false
     end
 
-    #todo add check for boundary case
     return (timestamps[1]:unit:timestamps[s])==timestamps
 end
 
@@ -518,7 +517,6 @@ function gettimeperiod(startdate, enddate, unit)
     try
         return unit(max(length(startdate:unit(1):enddate)-1,0))
     catch e
-        #TODO find better way to write this
         if isa(e, MethodError)
             return 0
         end
