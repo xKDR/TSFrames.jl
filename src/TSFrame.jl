@@ -406,3 +406,7 @@ function TSFrame(IndexType::DataType, cols::Vector{Tuple{DataType, S}}) where S 
     insertcols!(df, :Index => IndexType[])
     TSFrame(df)
 end
+
+macro coredata(ts)
+    :(ts.coredata)
+end
