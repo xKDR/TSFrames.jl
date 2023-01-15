@@ -194,7 +194,7 @@ the dataset. In the example below, we compute the 10-day average of
 dataset values on a rolling basis.
 
 ```@repl e1
-rollapply(Statistics.mean, ts, :value, 10)
+rollapply(ts, mean, 10)
 ```
 
 
