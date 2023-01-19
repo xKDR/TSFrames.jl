@@ -147,6 +147,14 @@ function test_empty_timeframe_cons()
     @test eltype(ts_empty_date[:, :col3])==String
 end
 
+@testset "issorted in constructor" begin
+    unsorted = randperm(1000)
+    unsorted_frame = TSFrame(1:1000, unsorted; issorted = true)
+    @test !(issorted(unsorted_frame.coredata[!, :Index]))
+    sorted_frame = TSFrame(1:1000, unsorted; issorted = false)
+    @test issorted(sorted_frame.coredata[!, :Index])
+end
+
 # Run each test
 # NOTE: Do not forget to add any new test-function created above
 # otherwise that test won't run.
