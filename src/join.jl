@@ -303,3 +303,145 @@ end
 
 # alias
 cbind = join
+
+# EXPERIMENTAL: basic merge-join algorithm
+
+# requirements:
+# `allunique(left) & allunique(right)`
+# `issorted(left) & issorted(right)`
+function sort_merge_idx(left::AbstractVector, right::AbstractVector)
+    # iteration variables
+    i = 1
+    j = 1
+    k = 1
+
+    length_left, length_right = length(left), length(right)
+
+    result = DataFrames.similar_outer(left, right, length(left) + length(right))
+    idx_left  = Vector{Int32}(undef, length(left))
+    idx_right = Vector{Int32}(undef, length(right))
+
+    @inbounds begin
+        while (i <= length_left) && (j <= length_right)
+            if left[i] < right[j]
+                result[k] = left[i]
+                idx_left[i] = k
+                i += 1
+            elseif left[i] > right[j]
+                result[k] = right[j]
+                idx_right[j] = k
+                j += 1
+            else
+                result[k] = left[i]
+                idx_left[i] = k
+                idx_right[j] = k
+                i += 1
+                j += 1
+            end
+            k += 1
+        end
+        while i <= length_left
+            result[k] = left[i]
+            idx_left[i] = k
+            i += 1
+            k += 1
+        end
+        while j <= length_right
+            result[k] = right[j]
+            idx_right[j] = k
+            j += 1
+            k += 1
+        end
+    end
+    resize!(result, k - 1)
+    return result, idx_left, idx_right
+end
+
+function fast_outerjoin(left::TSFrame, right::TSFrame)
+
+    to = Main.to
+
+    merged_idx, merged_idx_left, merged_idx_right = @timeit to "sort_merge_idx" sort_merge_idx(index(left), index(right))
+
+    merged_length = length(merged_idx)
+
+    # TODO: add this feature,
+    # if all three arrays have the same length, then the indices are the same
+    # and we can go down a faster path of simple concatenation.
+    # add_missings = !(length(merged_idx) == length(left) == length(right)) 
+
+    @timeit to "column disambiguation" begin
+
+        left_colnames = setdiff(Tables.columnnames(left.coredata), (:Index,))
+        right_colnames = setdiff(Tables.columnnames(right.coredata), (:Index,))
+        disambiguated_right_colnames = deepcopy(right_colnames)
+
+        # disambiguate col names
+        for (ind, colname) in enumerate(right_colnames)
+            leftind = findfirst(==(colname), left_colnames)
+            isnothing(leftind) || (disambiguated_right_colnames[ind] = Symbol(string(colname)*"_1"))
+        end
+
+    end
+
+    @timeit to "DataFrame construction" begin
+        result = DataFrame(:Index => merged_idx; makeunique = false, copycols = false)
+        left_coredata = left.coredata
+        right_coredata = right.coredata
+    end
+
+    @timeit to "column building" for col_idx in 1:length(left_colnames)
+        contents = @timeit to "column allocation" DataFrames.similar_missing(left.coredata[!, col_idx], merged_length)
+        @timeit to "column population" (@inbounds contents[merged_idx_left] = left_coredata[!, col_idx])
+        @timeit to "column transfer" (result[!, left_colnames[col_idx]] = contents)
+    end
+
+    @timeit to "column building" for col_idx in 1:length(right_colnames)
+        contents = @timeit to "column allocation" DataFrames.similar_missing(right.coredata[!, col_idx], merged_length)
+        @timeit to "column population" (@inbounds contents[merged_idx_right] = right_coredata[!, col_idx])
+        @timeit to "column transfer" result[!, disambiguated_right_colnames[col_idx]] = contents
+    end
+
+    return @timeit to "TSFrame construction" TSFrame(result, :Index; issorted = true, copycols = false)
+
+end
+
+function fast_outerjoin(ts1::TSFrame, ts2::TSFrame, others:::TSFrame...)
+
+    result = fast_outerjoin(ts1, ts2)
+    
+    for other in others
+        result = fast_outerjoin(ts1, ts2)
+    end
+
+    return result
+
+end
+
+# # as of 22-Jan-22, the timer outputs are as follows:
+# BenchmarkTools.Trial: 100 samples with 1 evaluation.
+#  Range (min … max):  61.627 ms … 287.822 ms  ┊ GC (min … max):  0.00% … 71.47%
+#  Time  (median):     76.965 ms               ┊ GC (median):     0.00%
+#  Time  (mean ± σ):   94.324 ms ±  47.940 ms  ┊ GC (mean ± σ):  22.42% ± 21.94%
+
+#    ▄█▆▇▄                                                        
+#   ▄█████▆▁▁▆▅▃▄▃▁▁▃▁▁▁▁▁▃▃▁▁▃▃▁▁▁▃▁▁▁▁▃▁▁▃▃▁▁▁▁▁▁▁▁▁▁▁▁▃▃▁▁▁▃▃ ▃
+#   61.6 ms         Histogram: frequency by time          270 ms <
+
+#  Memory estimate: 584.75 MiB, allocs estimate: 127.
+
+#  ──────────────────────────────────────────────────────────────────────────────────
+#                                           Time                    Allocations      
+#                                  ───────────────────────   ────────────────────────
+#         Tot / % measured:             43.8s /  93.7%            244GiB /  99.8%    
+
+#  Section                 ncalls     time    %tot     avg     alloc    %tot      avg
+#  ──────────────────────────────────────────────────────────────────────────────────
+#  column building            854    23.0s   56.1%  26.9ms   74.2GiB   30.4%  89.0MiB
+#    column population        854    13.5s   32.9%  15.8ms   4.82MiB    0.0%  5.78KiB
+#    column allocation        854    9.49s   23.1%  11.1ms   74.2GiB   30.4%  89.0MiB
+#    column transfer          854   16.9ms    0.0%  19.8μs   1.02MiB    0.0%  1.23KiB
+#  sort_merge_idx             427    12.4s   30.1%  29.0ms   95.4GiB   39.1%   229MiB
+#  TSFrame construction       427    5.64s   13.8%  13.2ms   74.2GiB   30.4%   178MiB
+#  column disambiguation      427   6.44ms    0.0%  15.1μs    709KiB    0.0%  1.66KiB
+#  ──────────────────────────────────────────────────────────────────────────────────
