@@ -307,7 +307,7 @@ cbind = join
 # EXPERIMENTAL: basic merge-join algorithm
 
 # requirements:
-# `allunique(left) & allunique(right)`
+# `allunique(left) & allunique(right)` # TODO: look at this issue.
 # `issorted(left) & issorted(right)`
 function sort_merge_idx(left::AbstractVector, right::AbstractVector)
     # iteration variables
@@ -374,6 +374,8 @@ function fast_outerjoin(left::TSFrame, right::TSFrame)
 
         left_colnames = setdiff(Tables.columnnames(left.coredata), (:Index,))
         right_colnames = setdiff(Tables.columnnames(right.coredata), (:Index,))
+        left_colidxs = Tables.columnindex.((left.coredata,), left_colnames)
+        right_colidxs = Tables.columnindex.((right.coredata,), right_colnames)
         disambiguated_right_colnames = deepcopy(right_colnames)
 
         # disambiguate col names
@@ -390,16 +392,18 @@ function fast_outerjoin(left::TSFrame, right::TSFrame)
         right_coredata = right.coredata
     end
 
-    @timeit to "column building" for col_idx in 1:length(left_colnames)
+    @timeit to "column building" for idx in 1:length(left_colnames)
+        col_idx = left_colidxs[idx]
         contents = @timeit to "column allocation" DataFrames.similar_missing(left.coredata[!, col_idx], merged_length)
         @timeit to "column population" (@inbounds contents[merged_idx_left] = left_coredata[!, col_idx])
-        @timeit to "column transfer" (result[!, left_colnames[col_idx]] = contents)
+        @timeit to "column transfer" (result[!, left_colnames[idx]] = contents)
     end
 
-    @timeit to "column building" for col_idx in 1:length(right_colnames)
+    @timeit to "column building" for idx in 1:length(right_colnames)
+        col_idx = right_colidxs[idx]
         contents = @timeit to "column allocation" DataFrames.similar_missing(right.coredata[!, col_idx], merged_length)
         @timeit to "column population" (@inbounds contents[merged_idx_right] = right_coredata[!, col_idx])
-        @timeit to "column transfer" result[!, disambiguated_right_colnames[col_idx]] = contents
+        @timeit to "column transfer" result[!, disambiguated_right_colnames[idx]] = contents
     end
 
     return @timeit to "TSFrame construction" TSFrame(result, :Index; issorted = true, copycols = false)
@@ -445,3 +449,5 @@ end
 #  TSFrame construction       427    5.64s   13.8%  13.2ms   74.2GiB   30.4%   178MiB
 #  column disambiguation      427   6.44ms    0.0%  15.1μs    709KiB    0.0%  1.66KiB
 #  ──────────────────────────────────────────────────────────────────────────────────
+
+
