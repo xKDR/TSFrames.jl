@@ -309,7 +309,7 @@ cbind = join
 # requirements:
 # `allunique(left) & allunique(right)` # TODO: look at this issue.
 # `issorted(left) & issorted(right)`
-function sort_merge_idx(left::AbstractVector, right::AbstractVector)
+function sort_merge_idx(left::AbstractVector, right::AbstractVector, ::Val{DoLeft}, ::Val{DoRight}) where {DoLeft, DoRight}
     # iteration variables
     i = 1
     j = 1
@@ -317,21 +317,23 @@ function sort_merge_idx(left::AbstractVector, right::AbstractVector)
 
     length_left, length_right = length(left), length(right)
 
-    result = DataFrames.similar_outer(left, right, length(left) + length(right))
+    merged_length = (DoLeft ? length(left) : 0) + (DoRight ? length(right) : 0)
+
+    result = DataFrames.similar_outer(left, right, merged_length)
     idx_left  = Vector{Int32}(undef, length(left))
     idx_right = Vector{Int32}(undef, length(right))
 
     @inbounds begin
         while (i <= length_left) && (j <= length_right)
-            if left[i] < right[j]
+            if DoLeft && left[i] < right[j]
                 result[k] = left[i]
                 idx_left[i] = k
                 i += 1
-            elseif left[i] > right[j]
+            elseif DoRight && left[i] > right[j]
                 result[k] = right[j]
                 idx_right[j] = k
                 j += 1
-            else
+            else # equal - true in all cases!
                 result[k] = left[i]
                 idx_left[i] = k
                 idx_right[j] = k
@@ -340,28 +342,46 @@ function sort_merge_idx(left::AbstractVector, right::AbstractVector)
             end
             k += 1
         end
-        while i <= length_left
+        DoLeft && while i <= length_left
             result[k] = left[i]
             idx_left[i] = k
             i += 1
             k += 1
         end
-        while j <= length_right
+        DoRight && while j <= length_right
             result[k] = right[j]
             idx_right[j] = k
             j += 1
             k += 1
         end
     end
+    (i-1) > length(idx_left) && resize!(idx_left, i - 1)
+    (j-1) > length(idx_right) && resize!(idx_right, j - 1)
     resize!(result, k - 1)
     return result, idx_left, idx_right
 end
 
-function fast_outerjoin(left::TSFrame, right::TSFrame)
+function fast_join(left::TSFrame, right::TSFrame; method = :outer)
+
+    @assert method in (:inner, :outer, :left, :right)
+
+    if method == :outer
+        do_left = Val(true)
+        do_right = Val(true)
+    elseif method == :inner
+        do_left = Val(false)
+        do_right = Val(false)
+    elseif method == :left
+        do_left = Val(true)
+        do_right = Val(false)
+    elseif method == :right
+        do_left = Val(true)
+        do_right = Val(true)
+    end
 
     to = Main.to
 
-    merged_idx, merged_idx_left, merged_idx_right = @timeit to "sort_merge_idx" sort_merge_idx(index(left), index(right))
+    merged_idx, merged_idx_left, merged_idx_right = @timeit to "sort_merge_idx" sort_merge_idx(index(left), index(right), Val(true), Val(true))
 
     merged_length = length(merged_idx)
 
