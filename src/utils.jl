@@ -406,6 +406,17 @@ function rename!(ts::TSFrame, args::AbstractVector{Pair{Symbol, Symbol}})
     return ts
 end
 
+function rename!(ts::TSFrame,
+                 args::Union{AbstractVector{<:Pair{Symbol, <:AbstractString}},
+                             AbstractVector{<:Pair{<:AbstractString, Symbol}},
+                             AbstractVector{<:Pair{<:AbstractString, <:AbstractString}},
+                             AbstractDict{Symbol, Symbol},
+                             AbstractDict{Symbol, <:AbstractString},
+                             AbstractDict{<:AbstractString, Symbol},
+                             AbstractDict{<:AbstractString, <:AbstractString}})
+    rename!(ts, [Symbol(from) => Symbol(to) for (from, to) in args])
+    return ts
+end
 
 """
 Internal function to check consistency of the Index of a TSFrame
