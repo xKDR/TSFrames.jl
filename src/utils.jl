@@ -397,6 +397,16 @@ function rename!(ts::TSFrame, colnames::AbstractVector{Symbol})
     return ts
 end
 
+function rename!(ts::TSFrame, args::AbstractVector{Pair{Symbol, Symbol}})
+    idx = findall(i -> i == :Index, [pair.first for pair in args])
+    if length(idx) > 0
+        throw(ArgumentError("Column name Index not allowed in TSFrame object"))
+    end
+    DataFrames.rename!(ts.coredata, args)
+    return ts
+end
+
+
 """
 Internal function to check consistency of the Index of a TSFrame
 object.
