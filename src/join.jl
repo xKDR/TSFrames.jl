@@ -325,11 +325,11 @@ function sort_merge_idx(left::AbstractVector, right::AbstractVector, ::Val{DoLef
 
     @inbounds begin
         while (i <= length_left) && (j <= length_right)
-            if DoLeft && left[i] < right[j]
+            if left[i] < right[j]
                 result[k] = left[i]
                 idx_left[i] = k
                 i += 1
-            elseif DoRight && left[i] > right[j]
+            elseif left[i] > right[j]
                 result[k] = right[j]
                 idx_right[j] = k
                 j += 1
