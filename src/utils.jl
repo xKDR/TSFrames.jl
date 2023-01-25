@@ -418,6 +418,8 @@ function rename!(ts::TSFrame,
     return ts
 end
 
+rename!(ts::TSFrame, args::Pair...) = rename!(ts, collect(args))
+
 """
 Internal function to check consistency of the Index of a TSFrame
 object.
