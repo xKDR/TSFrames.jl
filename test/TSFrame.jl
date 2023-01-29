@@ -153,6 +153,9 @@ end
     @test !(issorted(unsorted_frame.coredata[!, :Index]))
     sorted_frame = TSFrame(1:1000, unsorted; issorted = false)
     @test issorted(sorted_frame.coredata[!, :Index])
+    unsorted_dataframe = DataFrame(:myind => unsorted)
+    unsorted_tsframe_from_dataframe = TSFrame(unsorted_dataframe; issorted = true)
+    @test unsorted_dataframe[!, :myind] == unsorted_tsframe_from_dataframe.coredata[!, :Index]
 end
 
 # Run each test
