@@ -382,18 +382,18 @@ Int64  Int64  Int64
      92 rows omitted
 ```
 """
-function rename!(ts::TSFrame, colnames::AbstractVector{String})
-    rename!(ts, Symbol.(colnames))
+function rename!(ts::TSFrame, colnames::AbstractVector{String}; makeunique::Bool=false)
+    rename!(ts, Symbol.(colnames), makeunique=makeunique)
 end
 
-function rename!(ts::TSFrame, colnames::AbstractVector{Symbol})
+function rename!(ts::TSFrame, colnames::AbstractVector{Symbol}; makeunique::Bool=false)
     idx = findall(i -> i == :Index, colnames)
     if length(idx) > 0
         error("Column name `Index` not allowed in TSFrame object")
     end
     cols = copy(colnames)
     insert!(cols, 1, :Index)
-    DataFrames.rename!(ts.coredata, cols)
+    DataFrames.rename!(ts.coredata, cols; makeunique=makeunique)
     return ts
 end
 
