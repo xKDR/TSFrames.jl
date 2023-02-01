@@ -482,7 +482,7 @@ end
 function rename!(ts::TSFrame, colnames::AbstractVector{Symbol}; makeunique::Bool=false)
     idx = findall(i -> i == :Index, colnames)
     if length(idx) > 0
-        error("Column name `Index` not allowed in TSFrame object")
+        throw(ArgumentError("Column name Index not allowed in TSFrame object"))
     end
     cols = copy(colnames)
     insert!(cols, 1, :Index)
