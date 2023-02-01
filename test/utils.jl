@@ -1,6 +1,7 @@
 using TSFrames
 
 ts = TSFrame(DataFrame(a=["a", "b", "c"], b=[1,2, missing]), [1, 2, 3]) ;
+NUM_COLUMNS = 5
 
 ###
 # describe()
@@ -78,3 +79,32 @@ ts = TSFrame(data_vector, 1:length(data_vector));
 ts.coredata.Index = sample(index_integer, length(data_vector), replace=true);
 @test TSFrames._check_consistency(ts) == false;
 ###
+
+### TSFrames.rename!
+old_names = ["x" * string(i) for i in 1:NUM_COLUMNS]
+new_names = ["X" * string(i) for i in 1:NUM_COLUMNS]
+duplicate_names = ["x1" for i in 1:NUM_COLUMNS]
+
+# Index column not allowed
+ts = TSFrame(Date; n = NUM_COLUMNS)
+rand_index = random(1:NUM_COLUMNS)
+new_names[rand_index] = "Index"
+@test_throws ArgumentError TSFrames.rename!(ts, new_names)
+@test_throws ArgumentError TSFrames.rename!(ts, Symbol.(new_names))
+new_names[rand_index] = "X" * string(rand_index)
+
+# rename!(ts::TSFrame, colnames::AbstractVector{String}; makeunique=false)
+TSFrames.rename!(ts, new_names)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.(new_names)))
+
+# rename!(ts::TSFrame, colnames::AbstractVector{Symbol}; makeunique=false)
+TSFrames.rename!(ts, Symbol.(old_names))
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.(old_names)))
+
+# rename!(ts::TSFrame, colnames::AbstractVector{String}; makeunique=true)
+TSFrames.rename!(ts, duplicate_names, makeunique=true)
+@test isequal(propertynames(ts.coredata), vcat([:Index], [:x1], Symbol.(["x1_" * string(i) for i in 1:NUM_COLUMNS - 1])))
+
+# rename!(ts::TSFrame, colnames::AbstractVector{Symbol}; makeunique=true)
+TSFrames.rename!(ts, Symbol.(duplicate_names), makeunique=true)
+@test isequal(propertynames(ts.coredata), vcat([:Index], [:x1], Symbol.(["x1_" * string(i) for i in 1:NUM_COLUMNS - 1])))
