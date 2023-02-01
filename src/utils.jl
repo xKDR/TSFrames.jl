@@ -362,41 +362,118 @@ If pairs are passed to `rename!` (as positional arguments or as a dictionary or 
 - `to` can be a `String` or a `Symbol`.
 - Mixing `String`s and `Symbol`s in `from` and `to` is not allowed.
 
-```jldoctest; setup = :(using TSFrames, DataFrames, Dates, Random)
-julia> ts
-(100 x 2) TSFrame with Int64 Index
+```jldoctest; setup = :(using TSFrames, DataFrames, Dates)
+julia> ts = TSFrame(DataFrame(Index=Date(2012, 1, 1):Day(1):Date(2012, 1, 10), x1=1:10, x2=11:20))
+10×2 TSFrame with Date Index
+ Index       x1     x2
+ Date        Int64  Int64
+──────────────────────────
+ 2012-01-01      1     11
+ 2012-01-02      2     12
+ 2012-01-03      3     13
+ 2012-01-04      4     14
+ 2012-01-05      5     15
+ 2012-01-06      6     16
+ 2012-01-07      7     17
+ 2012-01-08      8     18
+ 2012-01-09      9     19
+ 2012-01-10     10     20
 
- Index  x1     x2
- Int64  Int64  Int64
-─────────────────────
-     1      2      1
-     2      3      2
-     3      4      3
-     4      5      4
-   ⋮      ⋮      ⋮
-    97     98     97
-    98     99     98
-    99    100     99
-   100    101    100
-      92 rows omitted
+julia> TSFrames.rename!(ts, ["X1", "X2"])
+ 10×2 TSFrame with Date Index
+ Index       X1     X2
+ Date        Int64  Int64
+──────────────────────────
+ 2012-01-01      1     11
+ 2012-01-02      2     12
+ 2012-01-03      3     13
+ 2012-01-04      4     14
+ 2012-01-05      5     15
+ 2012-01-06      6     16
+ 2012-01-07      7     17
+ 2012-01-08      8     18
+ 2012-01-09      9     19
+ 2012-01-10     10     20
 
-julia> rename!(ts, ["Col1", "Col2"])
-(100 x 2) TSFrame with Int64 Index
+julia> TSFrames.rename!(ts, [:x1, :x2])
+10×2 TSFrame with Date Index
+ Index       x1     x2
+ Date        Int64  Int64
+──────────────────────────
+ 2012-01-01      1     11
+ 2012-01-02      2     12
+ 2012-01-03      3     13
+ 2012-01-04      4     14
+ 2012-01-05      5     15
+ 2012-01-06      6     16
+ 2012-01-07      7     17
+ 2012-01-08      8     18
+ 2012-01-09      9     19
+ 2012-01-10     10     20
 
-Index  Col1   Col2
-Int64  Int64  Int64
-─────────────────────
-    1      2      1
-    2      3      2
-    3      4      3
-    4      5      4
-  ⋮      ⋮      ⋮
-   97     98     97
-   98     99     98
-   99    100     99
-  100    101    100
-     92 rows omitted
-```
+julia> TSFrames.rename!(ts, :x1 => :X1, :x2 => :X2)
+10×2 TSFrame with Date Index
+ Index       X1     X2
+ Date        Int64  Int64
+──────────────────────────
+ 2012-01-01      1     11
+ 2012-01-02      2     12
+ 2012-01-03      3     13
+ 2012-01-04      4     14
+ 2012-01-05      5     15
+ 2012-01-06      6     16
+ 2012-01-07      7     17
+ 2012-01-08      8     18
+ 2012-01-09      9     19
+ 2012-01-10     10     20
+
+julia> TSFrames.rename!(ts, Dict("X1" => :x1, "X2" => :x2))
+ 10×2 TSFrame with Date Index
+ Index       x1     x2
+ Date        Int64  Int64
+──────────────────────────
+ 2012-01-01      1     11
+ 2012-01-02      2     12
+ 2012-01-03      3     13
+ 2012-01-04      4     14
+ 2012-01-05      5     15
+ 2012-01-06      6     16
+ 2012-01-07      7     17
+ 2012-01-08      8     18
+ 2012-01-09      9     19
+ 2012-01-10     10     20
+
+julia> TSFrames.rename!(ts, [:x1 => "X1", :x2 => "X2"])
+10×2 TSFrame with Date Index
+ Index       X1     X2
+ Date        Int64  Int64
+──────────────────────────
+ 2012-01-01      1     11
+ 2012-01-02      2     12
+ 2012-01-03      3     13
+ 2012-01-04      4     14
+ 2012-01-05      5     15
+ 2012-01-06      6     16
+ 2012-01-07      7     17
+ 2012-01-08      8     18
+ 2012-01-09      9     19
+ 2012-01-10     10     20
+
+julia> TSFrames.rename(lowercase, ts)
+10×2 TSFrame with Date Index
+ Index       x1     x2
+ Date        Int64  Int64
+──────────────────────────
+ 2012-01-01      1     11
+ 2012-01-02      2     12
+ 2012-01-03      3     13
+ 2012-01-04      4     14
+ 2012-01-05      5     15
+ 2012-01-06      6     16
+ 2012-01-07      7     17
+ 2012-01-08      8     18
+ 2012-01-09      9     19
+ 2012-01-10     10     20
 """
 function rename!(ts::TSFrame, colnames::AbstractVector{String}; makeunique::Bool=false)
     rename!(ts, Symbol.(colnames), makeunique=makeunique)
