@@ -338,13 +338,29 @@ end
 """
 # Column Rename
 ```julia
-rename!(ts::TSFrame, colnames::AbstractVector{String})
-rename!(ts::TSFrame, colnames::AbstractVector{Symbol})
+rename!(ts::TSFrame, colnames::AbstractVector{String}; makeunique::Bool=false)
+rename!(ts::TSFrame, colnames::AbstractVector{Symbol}; makeunique::Bool=false)
+rename!(ts::TSFrame, (from => to)::Pair...)
+rename!(ts::TSFrame, d::AbstractDict)
+rename!(ts::TSFrame, d::AbstractVector{<:Pair})
+rename!(f::Function, ts::TSFrame)
 ```
 
-Renames columns of `ts` to the values in `colnames`, in order. Input
-is a vector of either Strings or Symbols. The `Index` column name is reserved,
-and `rename!()` will throw an error if `colnames` contains the name `Index`.
+Renames columns of `ts` in-place. The interface is similar to [DataFrames.jl's renaming interface](https://dataframes.juliadata.org/stable/lib/functions/#DataFrames.rename!).
+
+# Arguments
+
+- `ts`: the `TSFrame`.
+- `colnames`: an `AbstractVector` containing `String`s or `Symbol`s. Must be of the same length as the number of non-`Index` columns in `ts`, and cannot contain the string `"Index"` or the symbol `:Index`.
+- `makeunique`: if `false` (which is the default), an error will be raised if `colnames` contains duplicate names. If `true`, then duplicate names will be suffixed with `_i` (`i` starting at `1` for the first duplicate).
+- `d`: an `AbstractDict` or an `AbstractVector` of `Pair`s that maps original names to new names. Cannot map `:Index` to any other column name.
+- `f`: a function which for each non-`Index` column takes the old name as a `String` and returns the new name as a `String`.
+
+If pairs are passed to `rename!` (as positional arguments or as a dictionary or as a vector), then
+
+- `from` can be a `String` or a `Symbol`.
+- `to` can be a `String` or a `Symbol`.
+- Mixing `String`s and `Symbol`s in `from` and `to` is not allowed.
 
 ```jldoctest; setup = :(using TSFrames, DataFrames, Dates, Random)
 julia> ts
