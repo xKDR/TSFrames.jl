@@ -420,6 +420,18 @@ end
 
 rename!(ts::TSFrame, args::Pair...) = rename!(ts, collect(args))
 
+function rename!(f::Function, ts::TSFrame)
+    # check if f maps some non-Index column to Index
+    cols = String.(propertynames(ts.coredata))
+    idx = findall(i -> i != "Index" && f(i) == "Index", cols)
+    if length(idx) > 0
+        throw(ArgumentError("Column name Index not allowed in TSFrame object"))
+    end
+
+    DataFrames.rename!(col -> (col == "Index") ? "Index" : f(col), ts.coredata)
+    return ts
+end
+
 """
 Internal function to check consistency of the Index of a TSFrame
 object.
