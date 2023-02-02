@@ -108,3 +108,45 @@ TSFrames.rename!(ts, duplicate_names, makeunique=true)
 # rename!(ts::TSFrame, colnames::AbstractVector{Symbol}; makeunique=true)
 TSFrames.rename!(ts, Symbol.(duplicate_names), makeunique=true)
 @test isequal(propertynames(ts.coredata), vcat([:Index], [:x1], Symbol.(["x1_" * string(i) for i in 1:NUM_COLUMNS - 1])))
+
+# rename!(ts::TSFrame, args::AbstractVector{<:Pair})
+pairs_sym_sym = [Symbol("x" * string(i)) => Symbol("X" * string(i)) for i in 1:NUM_COLUMNS]
+pairs_sym_string = [Symbol("x" * string(i)) => "X" * string(i) for i in 1:NUM_COLUMNS]
+pairs_string_sym = ["x" * string(i) => Symbol("X" * string(i)) for i in 1:NUM_COLUMNS]
+pairs_string_string = ["x" * string(i) => "X" * string(i) for i in 1:NUM_COLUMNS]
+rand_index = random(1:NUM_COLUMNS)
+
+## Symbol => Symbol
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, pairs_sym_sym)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+## Symbol => String
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, pairs_sym_string)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+## String => Symbol
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, pairs_string_sym)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+## String => String
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, pairs_string_string)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+## cannot map Index to any other name or map any other column to Index
+@test_throws ArgumentError TSFrames.rename!(ts, vcat([:Index => :nonIndex], pairs_sym_sym))
+@test_throws ArgumentError TSFrames.rename!(ts, vcat([:Index => "nonIndex"], pairs_sym_string))
+@test_throws ArgumentError TSFrames.rename!(ts, vcat(["Index" => :nonIndex], pairs_string_sym))
+@test_throws ArgumentError TSFrames.rename!(ts, vcat(["nonIndex" => "nonIndex"], pairs_string_string))
+
+pairs_sym_sym[rand_index] = Symbol("x" * string(rand_index)) => :Index
+pairs_sym_string[rand_index] = Symbol("x" * string(rand_index)) => "Index"
+pairs_string_sym[rand_index] = "x" * string(rand_index) => :Index
+pairs_string_string[rand_index] = "x" * string(rand_index) => "Index"
+@test_throws ArgumentError TSFrames.rename!(ts, pairs_sym_sym)
+@test_throws ArgumentError TSFrames.rename!(ts, pairs_sym_string)
+@test_throws ArgumentError TSFrames.rename!(ts, pairs_string_sym)
+@test_throws ArgumentError TSFrames.rename!(ts, pairs_string_string)
