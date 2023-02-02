@@ -177,3 +177,28 @@ ts = TSFrame(Date; n=NUM_COLUMNS)
 TSFrames.rename!(ts, dict_string_string)
 @test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
 
+# rename!(ts::TSFrame, (from => to)::Pair...)
+pairs_sym_sym = [Symbol("x" * string(i)) => Symbol("X" * string(i)) for i in 1:NUM_COLUMNS]
+pairs_sym_string = [Symbol("x" * string(i)) => "X" * string(i) for i in 1:NUM_COLUMNS]
+pairs_string_sym = ["x" * string(i) => Symbol("X" * string(i)) for i in 1:NUM_COLUMNS]
+pairs_string_string = ["x" * string(i) => "X" * string(i) for i in 1:NUM_COLUMNS]
+
+## Symbol => Symbol
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, pairs_sym_sym...)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+## Symbol => String
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, pairs_sym_string...)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+## String => Symbol
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, pairs_string_sym...)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+## String => String
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, pairs_string_string...)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
