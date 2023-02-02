@@ -491,10 +491,12 @@ function rename!(ts::TSFrame, colnames::AbstractVector{Symbol}; makeunique::Bool
 end
 
 function rename!(ts::TSFrame, args::AbstractVector{Pair{Symbol, Symbol}})
-    idx = findall(i -> i == :Index, [pair.first for pair in args])
+    # should not be able to map Index to anything or map any other column to Index
+    idx = findall(pair -> pair.first == :Index || pair.second == :Index, [pair for pair in args])
     if length(idx) > 0
-        throw(ArgumentError("Column name Index not allowed in TSFrame object"))
+        throw(ArgumentError("Cannot change name of Index and column name Index not allowed in TSFrame object"))
     end
+
     DataFrames.rename!(ts.coredata, args)
     return ts
 end
