@@ -202,3 +202,8 @@ TSFrames.rename!(ts, pairs_string_sym...)
 ts = TSFrame(Date; n=NUM_COLUMNS)
 TSFrames.rename!(ts, pairs_string_string...)
 @test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+# rename!(f::Function, ts::TSFrame)
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(uppercase, ts)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
