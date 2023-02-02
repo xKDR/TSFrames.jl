@@ -109,7 +109,7 @@ TSFrames.rename!(ts, duplicate_names, makeunique=true)
 TSFrames.rename!(ts, Symbol.(duplicate_names), makeunique=true)
 @test isequal(propertynames(ts.coredata), vcat([:Index], [:x1], Symbol.(["x1_" * string(i) for i in 1:NUM_COLUMNS - 1])))
 
-# rename!(ts::TSFrame, args::AbstractVector{<:Pair})
+# rename!(ts::TSFrame, d::AbstractVector{<:Pair})
 pairs_sym_sym = [Symbol("x" * string(i)) => Symbol("X" * string(i)) for i in 1:NUM_COLUMNS]
 pairs_sym_string = [Symbol("x" * string(i)) => "X" * string(i) for i in 1:NUM_COLUMNS]
 pairs_string_sym = ["x" * string(i) => Symbol("X" * string(i)) for i in 1:NUM_COLUMNS]
@@ -150,3 +150,30 @@ pairs_string_string[rand_index] = "x" * string(rand_index) => "Index"
 @test_throws ArgumentError TSFrames.rename!(ts, pairs_sym_string)
 @test_throws ArgumentError TSFrames.rename!(ts, pairs_string_sym)
 @test_throws ArgumentError TSFrames.rename!(ts, pairs_string_string)
+
+# rename!(ts::TSFrame, d::AbstractDict)
+dict_sym_sym = Dict([Symbol("x" * string(i)) => Symbol("X" * string(i)) for i in 1:NUM_COLUMNS])
+dict_sym_string = Dict([Symbol("x" * string(i)) => "X" * string(i) for i in 1:NUM_COLUMNS])
+dict_string_sym = Dict(["x" * string(i) => Symbol("X" * string(i)) for i in 1:NUM_COLUMNS])
+dict_string_string = Dict(["x" * string(i) => "X" * string(i) for i in 1:NUM_COLUMNS])
+
+## Symbol => Symbol
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, dict_sym_sym)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+## Symbol => String
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, dict_sym_string)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+## String => Symbol
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, dict_string_sym)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+## String => String
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, dict_string_string)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
