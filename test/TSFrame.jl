@@ -154,7 +154,7 @@ end
     sorted_frame = TSFrame(1:1000, unsorted; issorted = false)
     @test issorted(sorted_frame.coredata[!, :Index])
     unsorted_dataframe = DataFrame(:myind => unsorted)
-    unsorted_tsframe_from_dataframe = TSFrame(unsorted_dataframe; issorted = true)
+    unsorted_tsframe_from_dataframe = TSFrame(unsorted_dataframe, :myind; issorted = true)
     @test unsorted_dataframe[!, :myind] == unsorted_tsframe_from_dataframe.coredata[!, :Index]
 end
 
