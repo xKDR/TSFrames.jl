@@ -345,7 +345,7 @@ struct TSFrame
 
     # From DataFrame, external index
     function TSFrame(coredata::DataFrame, index::AbstractVector{T}; issorted = false, copycols = true) where {T<:Union{Int, TimeType}}
-        sorted_index = issorted ? (copycols ? deepcopy(index) : index) : sort(index)
+        sorted_index = issorted ? (copycols ? copy(index) : index) : sort(index)
 
         cd = copy(coredata)
         insertcols!(cd, 1, :Index => sorted_index, after=false, copycols = copycols)
