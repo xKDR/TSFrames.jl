@@ -1,6 +1,7 @@
 using TSFrames
 
 ts = TSFrame(DataFrame(a=["a", "b", "c"], b=[1,2, missing]), [1, 2, 3]) ;
+NUM_COLUMNS = 5
 
 ###
 # describe()
@@ -78,3 +79,131 @@ ts = TSFrame(data_vector, 1:length(data_vector));
 ts.coredata.Index = sample(index_integer, length(data_vector), replace=true);
 @test TSFrames._check_consistency(ts) == false;
 ###
+
+### TSFrames.rename!
+old_names = ["x" * string(i) for i in 1:NUM_COLUMNS]
+new_names = ["X" * string(i) for i in 1:NUM_COLUMNS]
+duplicate_names = ["x1" for i in 1:NUM_COLUMNS]
+
+# Index column not allowed
+ts = TSFrame(Date; n = NUM_COLUMNS)
+rand_index = random(1:NUM_COLUMNS)
+new_names[rand_index] = "Index"
+@test_throws ArgumentError TSFrames.rename!(ts, new_names)
+@test_throws ArgumentError TSFrames.rename!(ts, Symbol.(new_names))
+new_names[rand_index] = "X" * string(rand_index)
+
+# rename!(ts::TSFrame, colnames::AbstractVector{String}; makeunique=false)
+TSFrames.rename!(ts, new_names)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.(new_names)))
+
+# rename!(ts::TSFrame, colnames::AbstractVector{Symbol}; makeunique=false)
+TSFrames.rename!(ts, Symbol.(old_names))
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.(old_names)))
+
+# rename!(ts::TSFrame, colnames::AbstractVector{String}; makeunique=true)
+TSFrames.rename!(ts, duplicate_names, makeunique=true)
+@test isequal(propertynames(ts.coredata), vcat([:Index], [:x1], Symbol.(["x1_" * string(i) for i in 1:NUM_COLUMNS - 1])))
+
+# rename!(ts::TSFrame, colnames::AbstractVector{Symbol}; makeunique=true)
+TSFrames.rename!(ts, Symbol.(duplicate_names), makeunique=true)
+@test isequal(propertynames(ts.coredata), vcat([:Index], [:x1], Symbol.(["x1_" * string(i) for i in 1:NUM_COLUMNS - 1])))
+
+# rename!(ts::TSFrame, d::AbstractVector{<:Pair})
+pairs_sym_sym = [Symbol("x" * string(i)) => Symbol("X" * string(i)) for i in 1:NUM_COLUMNS]
+pairs_sym_string = [Symbol("x" * string(i)) => "X" * string(i) for i in 1:NUM_COLUMNS]
+pairs_string_sym = ["x" * string(i) => Symbol("X" * string(i)) for i in 1:NUM_COLUMNS]
+pairs_string_string = ["x" * string(i) => "X" * string(i) for i in 1:NUM_COLUMNS]
+rand_index = random(1:NUM_COLUMNS)
+
+## Symbol => Symbol
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, pairs_sym_sym)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+## Symbol => String
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, pairs_sym_string)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+## String => Symbol
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, pairs_string_sym)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+## String => String
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, pairs_string_string)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+## cannot map Index to any other name or map any other column to Index
+@test_throws ArgumentError TSFrames.rename!(ts, vcat([:Index => :nonIndex], pairs_sym_sym))
+@test_throws ArgumentError TSFrames.rename!(ts, vcat([:Index => "nonIndex"], pairs_sym_string))
+@test_throws ArgumentError TSFrames.rename!(ts, vcat(["Index" => :nonIndex], pairs_string_sym))
+@test_throws ArgumentError TSFrames.rename!(ts, vcat(["nonIndex" => "nonIndex"], pairs_string_string))
+
+pairs_sym_sym[rand_index] = Symbol("x" * string(rand_index)) => :Index
+pairs_sym_string[rand_index] = Symbol("x" * string(rand_index)) => "Index"
+pairs_string_sym[rand_index] = "x" * string(rand_index) => :Index
+pairs_string_string[rand_index] = "x" * string(rand_index) => "Index"
+@test_throws ArgumentError TSFrames.rename!(ts, pairs_sym_sym)
+@test_throws ArgumentError TSFrames.rename!(ts, pairs_sym_string)
+@test_throws ArgumentError TSFrames.rename!(ts, pairs_string_sym)
+@test_throws ArgumentError TSFrames.rename!(ts, pairs_string_string)
+
+# rename!(ts::TSFrame, d::AbstractDict)
+dict_sym_sym = Dict([Symbol("x" * string(i)) => Symbol("X" * string(i)) for i in 1:NUM_COLUMNS])
+dict_sym_string = Dict([Symbol("x" * string(i)) => "X" * string(i) for i in 1:NUM_COLUMNS])
+dict_string_sym = Dict(["x" * string(i) => Symbol("X" * string(i)) for i in 1:NUM_COLUMNS])
+dict_string_string = Dict(["x" * string(i) => "X" * string(i) for i in 1:NUM_COLUMNS])
+
+## Symbol => Symbol
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, dict_sym_sym)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+## Symbol => String
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, dict_sym_string)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+## String => Symbol
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, dict_string_sym)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+## String => String
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, dict_string_string)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+# rename!(ts::TSFrame, (from => to)::Pair...)
+pairs_sym_sym = [Symbol("x" * string(i)) => Symbol("X" * string(i)) for i in 1:NUM_COLUMNS]
+pairs_sym_string = [Symbol("x" * string(i)) => "X" * string(i) for i in 1:NUM_COLUMNS]
+pairs_string_sym = ["x" * string(i) => Symbol("X" * string(i)) for i in 1:NUM_COLUMNS]
+pairs_string_string = ["x" * string(i) => "X" * string(i) for i in 1:NUM_COLUMNS]
+
+## Symbol => Symbol
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, pairs_sym_sym...)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+## Symbol => String
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, pairs_sym_string...)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+## String => Symbol
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, pairs_string_sym...)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+## String => String
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(ts, pairs_string_string...)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
+
+# rename!(f::Function, ts::TSFrame)
+ts = TSFrame(Date; n=NUM_COLUMNS)
+TSFrames.rename!(uppercase, ts)
+@test isequal(propertynames(ts.coredata), vcat([:Index], Symbol.("X" * string(i) for i in 1:NUM_COLUMNS)))
