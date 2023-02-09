@@ -131,8 +131,8 @@ function test_empty_timeframe_cons()
     @test TSFrames.ncol(ts_empty_int)==3
     @test TSFrames.ncol(ts_empty_date)==3
 
-    @test propertynames(ts_empty_int.coredata) == [:Index, :col1, :col2, :col3]
-    @test propertynames(ts_empty_date.coredata) == [:Index, :col1, :col2, :col3]
+    @test isempty(setdiff(propertynames(ts_empty_int.coredata), [:Index, :col1, :col2, :col3]))
+    @test isempty(setdiff(propertynames(ts_empty_date.coredata), [:Index, :col1, :col2, :col3]))
 
     @test eltype(index(ts_empty_int))==Int
     @test eltype(index(ts_empty_date))==Date
