@@ -61,7 +61,7 @@ As another example of this, consider the following code, which converts a `TimeA
 ```julia
 julia> using TSFrames, MarketData;
 
-julia> TSFrame(MarketData.yahoo(:AAPL))
+julia> TSFrame(MarketData.yahoo(:AAPL); issorted = true)
 10550×6 TSFrame with Date Index
  Index       Open        High        Low         Close       AdjClose    Volume
  Date        Float64     Float64     Float64     Float64     Float64     Float64
@@ -97,6 +97,8 @@ julia> TSFrame(MarketData.yahoo(:AAPL))
  2022-10-14  144.31      144.52      138.19      138.38      138.38      8.85123e7
                                                                  10522 rows omitted
 ```
+
+Since we know that our data is in chronological order, we set the `issorted` keyword argument to the `TSFrame` constructor to `true`, allowing it to skip sorting the input table.
 
 ### Indexing
 ```julia
