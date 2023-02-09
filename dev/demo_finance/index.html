@@ -144,42 +144,42 @@
  Date        Float64?          Float64?
 ────────────────────────────────────────────────
  2021-06-04  missing           missing
- 2021-06-11        0.0258466         0.0115306
+ 2021-06-11        0.0258467         0.0115307
  2021-06-18       -0.0554489         0.0241275
  2021-06-25        0.0256601         0.0201092
- 2021-07-02       -0.0475582         0.0501809
- 2021-07-09        0.0106557         0.0361355
- 2021-07-16       -0.0186868         0.00878201
- 2021-07-23        0.0174141         0.0147147
+ 2021-07-02       -0.0475583         0.0501809
+ 2021-07-09        0.0106557         0.0361353
+ 2021-07-16       -0.0186869         0.00878212
+ 2021-07-23        0.017414          0.0147146
      ⋮              ⋮                 ⋮
- 2021-11-19       -0.0247662         0.0680366
- 2021-11-26       -0.00207015       -0.0235704
+ 2021-11-19       -0.0247662         0.0680368
+ 2021-11-26       -0.00207015       -0.0235705
  2021-12-03        0.0258271         0.0315732
  2021-12-10        0.043229          0.103289
- 2021-12-17        0.0263246        -0.0474148
- 2021-12-23        0.0250372         0.0295917
- 2021-12-31        0.0229305         0.00729138
+ 2021-12-17        0.0263247        -0.0474147
+ 2021-12-23        0.0250371         0.0295916
+ 2021-12-31        0.0229305         0.00729129
                                  16 rows omitted</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; TSFrames.rename!(ibm_aapl_weekly_returns, [:IBM, :AAPL])</code><code class="nohighlight hljs ansi" style="display:block;">31×2 TSFrame with Date Index
  Index       IBM               AAPL
  Date        Float64?          Float64?
 ────────────────────────────────────────────────
  2021-06-04  missing           missing
- 2021-06-11        0.0258466         0.0115306
+ 2021-06-11        0.0258467         0.0115307
  2021-06-18       -0.0554489         0.0241275
  2021-06-25        0.0256601         0.0201092
- 2021-07-02       -0.0475582         0.0501809
- 2021-07-09        0.0106557         0.0361355
- 2021-07-16       -0.0186868         0.00878201
- 2021-07-23        0.0174141         0.0147147
+ 2021-07-02       -0.0475583         0.0501809
+ 2021-07-09        0.0106557         0.0361353
+ 2021-07-16       -0.0186869         0.00878212
+ 2021-07-23        0.017414          0.0147146
      ⋮              ⋮                 ⋮
- 2021-11-19       -0.0247662         0.0680366
- 2021-11-26       -0.00207015       -0.0235704
+ 2021-11-19       -0.0247662         0.0680368
+ 2021-11-26       -0.00207015       -0.0235705
  2021-12-03        0.0258271         0.0315732
  2021-12-10        0.043229          0.103289
- 2021-12-17        0.0263246        -0.0474148
- 2021-12-23        0.0250372         0.0295917
- 2021-12-31        0.0229305         0.00729138
-                                 16 rows omitted</code></pre><h2 id="Compute-standard-deviation-of-weekly-returns"><a class="docs-heading-anchor" href="#Compute-standard-deviation-of-weekly-returns">Compute standard deviation of weekly returns</a><a id="Compute-standard-deviation-of-weekly-returns-1"></a><a class="docs-heading-anchor-permalink" href="#Compute-standard-deviation-of-weekly-returns" title="Permalink"></a></h2><p>Computing standard deviation is done using the <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.std"><code>std</code></a> function from <code>Statistics</code> package. The <code>skipmissing</code> is used to skip missing values which may have been generated while computing log returns or were already present in the data.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ibm_std = std(skipmissing(ibm_aapl_weekly_returns[:, :IBM]))</code><code class="nohighlight hljs ansi" style="display:block;">0.03407928993687505</code></pre><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; aapl_std = std(skipmissing(ibm_aapl_weekly_returns[:, :AAPL]))</code><code class="nohighlight hljs ansi" style="display:block;">0.030582284272563293</code></pre><h3 id="Scatter-plot-of-AAPL-and-IBM"><a class="docs-heading-anchor" href="#Scatter-plot-of-AAPL-and-IBM">Scatter plot of AAPL and IBM</a><a id="Scatter-plot-of-AAPL-and-IBM-1"></a><a class="docs-heading-anchor-permalink" href="#Scatter-plot-of-AAPL-and-IBM" title="Permalink"></a></h3><p>Here, we use the <a href="https://docs.juliaplots.org/latest/tutorial/">Plots</a> package to create a scatter plot with IBM weekly returns on the x-axis and Apple weekly returns on the y-axis.</p><pre><code class="language-julia hljs">plot(ibm_aapl_weekly_returns[:, :AAPL],
+ 2021-12-17        0.0263247        -0.0474147
+ 2021-12-23        0.0250371         0.0295916
+ 2021-12-31        0.0229305         0.00729129
+                                 16 rows omitted</code></pre><h2 id="Compute-standard-deviation-of-weekly-returns"><a class="docs-heading-anchor" href="#Compute-standard-deviation-of-weekly-returns">Compute standard deviation of weekly returns</a><a id="Compute-standard-deviation-of-weekly-returns-1"></a><a class="docs-heading-anchor-permalink" href="#Compute-standard-deviation-of-weekly-returns" title="Permalink"></a></h2><p>Computing standard deviation is done using the <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.std"><code>std</code></a> function from <code>Statistics</code> package. The <code>skipmissing</code> is used to skip missing values which may have been generated while computing log returns or were already present in the data.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ibm_std = std(skipmissing(ibm_aapl_weekly_returns[:, :IBM]))</code><code class="nohighlight hljs ansi" style="display:block;">0.03407927307493895</code></pre><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; aapl_std = std(skipmissing(ibm_aapl_weekly_returns[:, :AAPL]))</code><code class="nohighlight hljs ansi" style="display:block;">0.030582286537156146</code></pre><h3 id="Scatter-plot-of-AAPL-and-IBM"><a class="docs-heading-anchor" href="#Scatter-plot-of-AAPL-and-IBM">Scatter plot of AAPL and IBM</a><a id="Scatter-plot-of-AAPL-and-IBM-1"></a><a class="docs-heading-anchor-permalink" href="#Scatter-plot-of-AAPL-and-IBM" title="Permalink"></a></h3><p>Here, we use the <a href="https://docs.juliaplots.org/latest/tutorial/">Plots</a> package to create a scatter plot with IBM weekly returns on the x-axis and Apple weekly returns on the y-axis.</p><pre><code class="language-julia hljs">plot(ibm_aapl_weekly_returns[:, :AAPL],
     ibm_aapl_weekly_returns[:, :IBM],
     seriestype = :scatter;
     xlabel = &quot;AAPL&quot;,
