@@ -330,7 +330,7 @@ struct TSFrame
         end
 
 
-        sorted_cd = issorted ? (copycols ? deepcopy(coredata) : coredata) : sort(coredata, index)
+        sorted_cd = issorted ? (copycols ? copy(coredata) : coredata) : sort(coredata, index)
 
         if (index isa Symbol && index == :Index) || (index isa String && index == "Index")
             return new(sorted_cd)
