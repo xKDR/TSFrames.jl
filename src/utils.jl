@@ -474,6 +474,8 @@ julia> TSFrames.rename(lowercase, ts)
  2012-01-08      8     18
  2012-01-09      9     19
  2012-01-10     10     20
+
+```
 """
 function rename!(ts::TSFrame, colnames::AbstractVector{String}; makeunique::Bool=false)
     rename!(ts, Symbol.(colnames), makeunique=makeunique)
