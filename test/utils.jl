@@ -137,11 +137,7 @@ function test_isregular()
     @test isregular(ts_rep, Month(1)) == false
     @test isregular(ts_day, Day(1)) == true
     @test isregular(ts_rep, Day(0)) == false
-end
-
-function test_isregular_new()
     
-    #regular tests
     @test isregular(Date(2022,2,1):Week(1):Date(2022,4,1),Week(1)) == true
     @test isregular(Date(2022,2,1):Week(1):Date(2022,4,3),Week(1)) == true
 
@@ -190,4 +186,3 @@ end
 # NOTE: Do not forget to add any new test-function created above
 # otherwise that test won't run.
 test_isregular()
-test_isregular_new()
