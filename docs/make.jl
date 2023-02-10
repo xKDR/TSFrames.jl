@@ -27,4 +27,5 @@ deploydocs(;
     repo="github.com/xKDR/TSFrames.jl",
     devbranch="main",
     target = "build",
+    push_preview = true,
 )
