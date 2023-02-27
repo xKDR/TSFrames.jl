@@ -332,10 +332,6 @@ struct TSFrame
 
         sorted_cd = issorted ? (copycols ? copy(coredata) : coredata) : sort(coredata, index)
 
-        if (index isa Symbol && index == :Index) || (index isa String && index == "Index")
-            return new(sorted_cd)
-        end
-
         index_vals = sorted_cd[!, index]
         cd = sorted_cd[:, Not(index)]
         insertcols!(cd, 1, :Index => index_vals, after=false, copycols = copycols)
@@ -417,6 +413,6 @@ end
 # For empty TSFrames
 function TSFrame(IndexType::DataType, cols::Vector{Tuple{DataType, S}}; issorted = false, copycols = true) where S <: Union{Symbol, String}
     df = DataFrame([colname => type[] for (type, colname) in cols])
-    insertcols!(df, :Index => IndexType[])
+    insertcols!(df, 1, :Index => IndexType[]; after = false, copycols = false)
     TSFrame(df; issorted = issorted, copycols = copycols)
 end

@@ -84,7 +84,7 @@ function rollapply(ts::TSFrame, fun::Function, windowsize::Int; bycolumn=true)
 
     if bycolumn
         DataFrames.rename!(res, [col => string("rolling_", col, "_", Symbol(fun)) for col in propertynames(res)])
-        DataFrames.insertcols!(res, 1, :Index => TSFrames.index(ts)[windowsize:end]; after = false, copycols = false)
+        res[:, :Index] = TSFrames.index(ts)[windowsize:end]
         return TSFrame(res)
     else
         res_df = DataFrame(Index=TSFrames.index(ts)[windowsize:end], outputs=res)
