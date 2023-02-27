@@ -398,7 +398,7 @@ end
 # FIXME: use Metadata.jl
 function TSFrame(coredata::AbstractArray{T,2}; colnames=:auto, issorted = false, copycols = true) where {T}
     index_vals = collect(Base.OneTo(size(coredata)[1]))
-    df = DataFrame(coredata, colnames, copycols=true)
+    df = DataFrame(coredata, colnames, copycols=copycols)
     TSFrame(df, index_vals; issorted = issorted, copycols = copycols)
 end
 
@@ -410,7 +410,7 @@ end
 function TSFrame(IndexType::DataType; n::Int=1, issorted = false, copycols = true)
     (n>=1) || throw(DomainError(n, "n should be >= 1"))
     df = DataFrame(fill([],n), :auto)
-    df.Index = IndexType[]
+    insertcols!(df, 1, :Index => IndexType[]; after = false, copycols = false)
     TSFrame(df; issorted = issorted, copycols = copycols)
 end
 
