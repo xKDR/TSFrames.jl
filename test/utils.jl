@@ -80,6 +80,114 @@ ts.coredata.Index = sample(index_integer, length(data_vector), replace=true);
 @test TSFrames._check_consistency(ts) == false;
 ###
 
+function test_isregular()
+    random(x) = rand(MersenneTwister(123), x)
+
+    dates_day = collect(Date(2017,1,1):Day(1):Date(2017,1,10))
+    dates_month = collect(Date(2017,1,1):Month(1):Date(2017,10,1))
+    dates_rep = fill(Date(2017,1,1), 10)
+    dates_rand = copy(dates_day)
+    dates_rand[2] = Date(2017,10,9)
+    dates_rand[4] = Date(2017, 7,27)
+    dates_rand[7] = Date(2018,11,11)
+    dates_eq = copy(dates_day)
+    dates_eq[10] = Date(2017,1,9)
+
+    ts_day = TSFrame(random(10), dates_day)
+    ts_month = TSFrame(random(10), dates_month)
+    ts_rep = TSFrame(random(10), dates_rep)
+    ts_rand = TSFrame(random(10), dates_rand)
+    ts_eq = TSFrame(random(10), dates_eq)
+
+    @test isregular(dates_rand) == false
+    @test isregular(dates_eq) == false
+    @test isregular(dates_month, :month) == true
+    @test isregular(dates_rep) == false
+    @test isregular(dates_day) == true
+
+    @test isregular(dates_day, Day(2)) == false
+    @test isregular(dates_day, Month(1)) == false
+    @test isregular(dates_month, Day(1)) == false
+    @test isregular(dates_month, Month(1)) == true
+    @test isregular(dates_rand, Day(1)) == false
+    @test isregular(dates_rand, Month(1)) == false
+    @test isregular(dates_eq, Day(1)) == false
+    @test isregular(dates_rep, Month(1)) == false
+    @test isregular(dates_day, Day(1)) == true
+    @test isregular(dates_rep, Day(0)) == false
+
+    @test isregular(dates_rand, Month(0)) == false
+    @test isregular(dates_eq, Month(0)) == false
+    @test isregular(dates_month, Month(0)) == false
+    @test isregular(dates_rep, Month(0)) == false
+    @test isregular(dates_day, Month(0)) == false
+
+    @test isregular(ts_month, Month(1)) == true
+    @test isregular(ts_rand) == false
+    @test isregular(ts_eq) == false
+    @test isregular(ts_day) == true
+    @test isregular(ts_rep) == false
+
+    @test isregular(ts_day, Day(2)) == false
+    @test isregular(ts_day, Month(1)) == false
+    @test isregular(ts_month, Day(1)) == false
+    @test isregular(ts_month, Month(1)) == true
+    @test isregular(ts_rand, Day(1)) == false
+    @test isregular(ts_rand, Month(1)) == false
+    @test isregular(ts_eq, Day(1)) == false
+    @test isregular(ts_rep, Month(1)) == false
+    @test isregular(ts_day, Day(1)) == true
+    @test isregular(ts_rep, Day(0)) == false
+    
+    @test isregular(Date(2022,2,1):Week(1):Date(2022,4,1),Week(1)) == true
+    @test isregular(Date(2022,2,1):Week(1):Date(2022,4,3),Week(1)) == true
+
+    @test isregular(Date(2022,2,1):Month(1):Date(2022,4,1),Month(1)) == true
+    @test isregular(Date(2022,2,1):Month(1):Date(2022,4,3),Month(1)) == true
+
+    @test isregular(Date(2022,2,1):Year(1):Date(2023,4,1),Year(1)) == true
+    @test isregular(Date(2022,2,1):Year(1):Date(2023,4,3),Year(1)) == true
+
+    # leap year test 
+    # 2020 was a leap year
+    @test isregular(Date(2019,2,28):Year(1):Date(2022,2,28), :year) == true
+    
+    @test isregular(Date(2017,1,2):Month(2):Date(2017,9,10), :month) == true
+
+    #irregular tests
+    @test isregular(Date(2022,2,1):Week(1):Date(2022,4,3),Month(1)) == false
+    @test isregular(Date(2022,2,1):Month(1):Date(2022,4,3),Year(1)) == false
+    @test isregular(Date(2022,2,1):Year(1):Date(2023,4,3),Week(1)) == false
+
+    #tests for Time
+    @test isregular(Time(1):Hour(1):Time(3)) == true
+    @test isregular(Time(1):Second(1):Time(2)) == true
+    @test isregular([Time(1), Time(2), Time(7)]) == false
+
+    #tests for DateTime
+    @test isregular(DateTime(2022,2,1,4):Day(3):DateTime(2022,2,7,3)) == true
+    @test isregular(DateTime(2022,2,1,4):Second(3):DateTime(2022,2,7,3)) == true
+    @test isregular([DateTime(2022,2,1,4), DateTime(2022,2,2,4), DateTime(2022,2,3,2), DateTime(2022,2,4,4)]) == false
+
+    #tests for size 1
+    @test isregular([DateTime(2022,2,2,1)]) == false
+    @test isregular([DateTime(2022,2,2,1)],Month(1)) == false
+    @test isregular(TSFrame([1],[DateTime(2022,2,2,1)])) == false
+
+    #some edge cases
+    @test isregular([Date(2022,1,31), Date(2022,2,28), Date(2022,3,31)],Month(1)) == true
+    @test isregular([Date(2022,1,31), Date(2022,2,28), Date(2022,3,28)],Month(1)) == false
+
+    #test gettimeperiod
+    @test TSFrames.gettimeperiod(Date(2022,2,2),Date(2022,4,7),Time) == 0
+    @test TSFrames.gettimeperiod(Date(2022,2,2),Date(2021,1,1),Day) == Day(0)
+end
+
+# Run each test
+# NOTE: Do not forget to add any new test-function created above
+# otherwise that test won't run.
+test_isregular()
+
 ### TSFrames.rename!
 old_names = ["x" * string(i) for i in 1:NUM_COLUMNS]
 new_names = ["X" * string(i) for i in 1:NUM_COLUMNS]
