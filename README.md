@@ -125,7 +125,7 @@ julia> ts[1:10, [:Close]]
 ```julia
 julia> from = Date(2021, 04, 29); to = Date(2021, 06, 02);
 
-julia> subset(ts, from, to)
+julia> TSFrames.subset(ts, from, to)
 24x6 TSFrame with Date Index
 
  Index       Open     High     Low      Close    Adj Close  Volume  
