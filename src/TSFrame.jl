@@ -332,6 +332,10 @@ struct TSFrame
 
         sorted_cd = issorted ? (copycols ? copy(coredata) : coredata) : sort(coredata, index)
 
+        if string(index) == "Index" && propertynames(coredata)[1] == :Index
+            return new(sorted_cd)
+        end
+
         index_vals = sorted_cd[!, index]
         cd = sorted_cd[:, Not(index)]
         insertcols!(cd, 1, :Index => index_vals, after=false, copycols = copycols)
