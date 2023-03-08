@@ -1,5 +1,5 @@
 """
-    struct TSFrame
+    struct TSFrame <: AbstractDataFrame
       coredata :: DataFrame
     end
 
@@ -311,7 +311,7 @@ julia> ts = TSFrame(Date, [(Int64, "col1"), (String, "col2"), (Float64, "col3")]
 
 ```
 """
-struct TSFrame
+struct TSFrame <: AbstractDataFrame
 
     coredata :: DataFrame
 
