@@ -27,21 +27,25 @@ independently using methods provided by the DataFrames package
 
 # Constructors
 ```julia
-TSFrame(coredata::DataFrame, index::Union{String, Symbol, Int}; issorted = false)
-TSFrame(coredata::DataFrame, index::AbstractVector{T}; issorted = false) where {T<:Union{Int, TimeType}}
-TSFrame(coredata::DataFrame; issorted = false)
-TSFrame(coredata::DataFrame, index::UnitRange{Int}; issorted = false)
-TSFrame(coredata::AbstractVector{T}, index::AbstractVector{V}; colnames=:auto, issorted = false) where {T, V}
-TSFrame(coredata::AbstractVector{T}; colnames=:auto, issorted = false) where {T}
-TSFrame(coredata::AbstractArray{T,2}; colnames=:auto, issorted = false) where {T}
-TSFrame(coredata::AbstractArray{T,2}, index::AbstractVector{V}; colnames=:auto, issorted = false) where {T, V}
+TSFrame(coredata::DataFrame, index::Union{String, Symbol, Int}; issorted = false, copycols = true)
+TSFrame(coredata::DataFrame, index::AbstractVector{T}; issorted = false, copycols = true) where {T<:Union{Int, TimeType}}
+TSFrame(coredata::DataFrame; issorted = false, copycols = true)
+TSFrame(coredata::DataFrame, index::UnitRange{Int}; issorted = false, copycols = true)
+TSFrame(coredata::AbstractVector{T}, index::AbstractVector{V}; colnames=:auto, issorted = false, copycols = true) where {T, V}
+TSFrame(coredata::AbstractVector{T}; colnames=:auto, issorted = false, copycols = true) where {T}
+TSFrame(coredata::AbstractArray{T,2}; colnames=:auto, issorted = false, copycols = true) where {T}
+TSFrame(coredata::AbstractArray{T,2}, index::AbstractVector{V}; colnames=:auto, issorted = false, copycols = true) where {T, V}
 TSFrame(IndexType::DataType; n::Int=1)
-TSFrame(IndexType::DataType, cols::Vector{Tuple{DataType, S}}; issorted = false) where S <: Union{Symbol, String}
+TSFrame(IndexType::DataType, cols::Vector{Tuple{DataType, S}}; issorted = false, copycols = true) where S <: Union{Symbol, String}
 ```
 
-When `issorted` is true, no sort operations are performed on the input.  
-This offers some performance benefits, especially when constructing in a loop,
-or at scale.
+When `issorted` is `true``, no sort operations are performed on the input.
+When `copycols` is `true`, the inputs are not copied, but placed directly in the TSFrame.  
+This can be dangerous, so please only set this to `false` if the input arrays 
+will not be mutated later.
+
+`issorted = true, copycols = false` offers performance benefits, 
+especially when constructing TSFrames in loops or other performance sensitive code.
 
 # Examples
 ```jldoctest; setup = :(using TSFrames, DataFrames, Dates, Random, Statistics)
@@ -316,34 +320,40 @@ struct TSFrame
     coredata :: DataFrame
 
     # From DataFrame, index number/name/symbol
-    function TSFrame(coredata::DataFrame, index::Union{String, Symbol, Int}; issorted = false)
+    function TSFrame(coredata::DataFrame, index::Union{String, Symbol, Int}; issorted = false, copycols = true)
         if ! (eltype(coredata[!, index]) <: Union{Int, TimeType})
             throw(ArgumentError("only Int and TimeType index is supported"))
         end
 
         if (DataFrames.ncol(coredata) == 1)
-            TSFrame(coredata, collect(Base.OneTo(DataFrames.nrow(coredata))); issorted = issorted)
+            TSFrame(coredata, collect(Base.OneTo(DataFrames.nrow(coredata))); issorted = issorted, copycols = copycols)
         end
 
-        sorted_cd = issorted ? deepcopy(coredata) : sort(coredata, index)
-        index_vals = sorted_cd[!, index]
 
+        sorted_cd = issorted ? (copycols ? copy(coredata) : coredata) : sort(coredata, index)
+
+        if string(index) == "Index" && propertynames(coredata)[1] == :Index
+            return new(sorted_cd)
+        end
+
+        index_vals = sorted_cd[!, index]
         cd = sorted_cd[:, Not(index)]
-        insertcols!(cd, 1, :Index => index_vals, after=false, copycols=true)
+        insertcols!(cd, 1, :Index => index_vals, after=false, copycols = copycols)
 
         new(cd)
     end
 
     # From DataFrame, external index
-    function TSFrame(coredata::DataFrame, index::AbstractVector{T}; issorted = false) where {T<:Union{Int, TimeType}}
-        sorted_index = issorted ? deepcopy(index) : sort(index)
+    function TSFrame(coredata::DataFrame, index::AbstractVector{T}; issorted = false, copycols = true) where {T<:Union{Int, TimeType}}
+        sorted_index = issorted ? (copycols ? copy(index) : index) : sort(index)
 
         cd = copy(coredata)
-        insertcols!(cd, 1, :Index => sorted_index, after=false, copycols=true)
+        insertcols!(cd, 1, :Index => sorted_index, after=false, copycols = copycols)
 
         new(cd)
     end
 
+    
 end
 
 
@@ -353,60 +363,60 @@ end
 ####################################
 
 # For general Tables.jl compatible types
-function TSFrame(table; issorted = false)
-    coredata = DataFrame(table, copycols=true)
+function TSFrame(table; issorted = false, copycols = true)
+    coredata = DataFrame(table, copycols=copycols)
 
     if "Index" in names(coredata)
-        return TSFrame(coredata, :Index; issorted = issorted)
+        return TSFrame(coredata, :Index; issorted = issorted, copycols = copycols)
     elseif DataFrames.ncol(coredata) == 1
-        return TSFrame(coredata, collect(1:DataFrames.nrow(coredata)); issorted = issorted)
+        return TSFrame(coredata, collect(1:DataFrames.nrow(coredata)); issorted = issorted, copycols = copycols)
     else
-        return TSFrame(coredata, 1; issorted = issorted)
+        return TSFrame(coredata, 1; issorted = issorted, copycols = copycols)
     end
 end
 
 # From DataFrame, index range
-function TSFrame(coredata::DataFrame, index::UnitRange{Int}; issorted = false)
+function TSFrame(coredata::DataFrame, index::UnitRange{Int}; issorted = false, copycols = true)
     index_vals = collect(index)
     cd = copy(coredata)
-    insertcols!(cd, 1, :Index => index_vals, after=false, copycols=true)
-    TSFrame(cd, :Index; issorted = issorted)
+    insertcols!(cd, 1, :Index => index_vals, after=false, copycols=copycols)
+    TSFrame(cd, :Index; issorted = issorted, copycols = copycols)
 end
 
 # From AbstractVector
-function TSFrame(coredata::AbstractVector{T}, index::AbstractVector{V}; colnames=:auto, issorted = false) where {T, V}
+function TSFrame(coredata::AbstractVector{T}, index::AbstractVector{V}; colnames=:auto, issorted = false, copycols = true) where {T, V}
     df = DataFrame([coredata], colnames)
-    TSFrame(df, index; issorted = issorted)
+    TSFrame(df, index; issorted = issorted, copycols = copycols)
 end
 
-function TSFrame(coredata::AbstractVector{T}; colnames=:auto, issorted = false) where {T}
+function TSFrame(coredata::AbstractVector{T}; colnames=:auto, issorted = false, copycols = true) where {T}
     index_vals = collect(Base.OneTo(length(coredata)))
-    TSFrame(coredata, index_vals, colnames=colnames, issorted = issorted)
+    TSFrame(coredata, index_vals, colnames=colnames, issorted = issorted, copycols = copycols)
 end
 
 # From Matrix and meta
 # FIXME: use Metadata.jl
-function TSFrame(coredata::AbstractArray{T,2}; colnames=:auto, issorted = false) where {T}
+function TSFrame(coredata::AbstractArray{T,2}; colnames=:auto, issorted = false, copycols = true) where {T}
     index_vals = collect(Base.OneTo(size(coredata)[1]))
-    df = DataFrame(coredata, colnames, copycols=true)
-    TSFrame(df, index_vals; issorted = issorted)
+    df = DataFrame(coredata, colnames, copycols=copycols)
+    TSFrame(df, index_vals; issorted = issorted, copycols = copycols)
 end
 
-function TSFrame(coredata::AbstractArray{T,2}, index::AbstractVector{V}; colnames=:auto, issorted = false) where {T, V}
-    df = DataFrame(coredata, colnames, copycols=true)
-    TSFrame(df, index; issorted = issorted)
+function TSFrame(coredata::AbstractArray{T,2}, index::AbstractVector{V}; colnames=:auto, issorted = false, copycols = true) where {T, V}
+    df = DataFrame(coredata, colnames, copycols=copycols)
+    TSFrame(df, index; issorted = issorted, copycols = copycols)
 end
 
-function TSFrame(IndexType::DataType; n::Int=1, issorted = false)
+function TSFrame(IndexType::DataType; n::Int=1, issorted = false, copycols = true)
     (n>=1) || throw(DomainError(n, "n should be >= 1"))
     df = DataFrame(fill([],n), :auto)
-    df.Index = IndexType[]
-    TSFrame(df; issorted = issorted)
+    insertcols!(df, 1, :Index => IndexType[]; after = false, copycols = false)
+    TSFrame(df; issorted = issorted, copycols = copycols)
 end
 
 # For empty TSFrames
-function TSFrame(IndexType::DataType, cols::Vector{Tuple{DataType, S}}; issorted = false) where S <: Union{Symbol, String}
+function TSFrame(IndexType::DataType, cols::Vector{Tuple{DataType, S}}; issorted = false, copycols = true) where S <: Union{Symbol, String}
     df = DataFrame([colname => type[] for (type, colname) in cols])
-    insertcols!(df, :Index => IndexType[])
-    TSFrame(df; issorted = issorted)
+    insertcols!(df, 1, :Index => IndexType[]; after = false, copycols = false)
+    TSFrame(df; issorted = issorted, copycols = copycols)
 end
