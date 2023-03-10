@@ -1,7 +1,7 @@
 name = "TSFrames"
 uuid = "9f90e835-9451-4aaa-bcb1-743a1b8d2f84"
 authors = ["Chirag Anand", "xKDR Forum", "Naman Kumar", "Sumeet Suley"]
-version = "0.2.0"
+version = "0.2.1"
 
 [deps]
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
