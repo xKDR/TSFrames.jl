@@ -395,7 +395,7 @@ function fast_join(left::TSFrame, right::TSFrame; method = :outer)
 
     to = Main.to
 
-    merged_idx, merged_idx_left, merged_idx_right = @timeit to "sort_merge_idx" sort_merge_idx(index(left), index(right), Val(true), Val(true))
+    merged_idx, merged_idx_left, merged_idx_right = sort_merge_idx(index(left), index(right), Val(true), Val(true))
 
     merged_length = length(merged_idx)
 
@@ -404,43 +404,45 @@ function fast_join(left::TSFrame, right::TSFrame; method = :outer)
     # and we can go down a faster path of simple concatenation.
     # add_missings = !(length(merged_idx) == length(left) == length(right)) 
 
-    @timeit to "column disambiguation" begin
+    # this machinery disambiguates column names
+    # It doesn't take too much time, but it would be cleaner to somehow use 
+    # DataFrames' machinery here.
+    left_colnames = setdiff(Tables.columnnames(left.coredata), (:Index,))
+    right_colnames = setdiff(Tables.columnnames(right.coredata), (:Index,))
+    left_colidxs = Tables.columnindex.((left.coredata,), left_colnames)
+    right_colidxs = Tables.columnindex.((right.coredata,), right_colnames)
+    disambiguated_right_colnames = deepcopy(right_colnames)
 
-        left_colnames = setdiff(Tables.columnnames(left.coredata), (:Index,))
-        right_colnames = setdiff(Tables.columnnames(right.coredata), (:Index,))
-        left_colidxs = Tables.columnindex.((left.coredata,), left_colnames)
-        right_colidxs = Tables.columnindex.((right.coredata,), right_colnames)
-        disambiguated_right_colnames = deepcopy(right_colnames)
-
-        # disambiguate col names
-        for (ind, colname) in enumerate(right_colnames)
-            leftind = findfirst(==(colname), left_colnames)
-            isnothing(leftind) || (disambiguated_right_colnames[ind] = Symbol(string(colname)*"_1"))
-        end
-
+    # disambiguate col names
+    for (ind, colname) in enumerate(right_colnames)
+        leftind = findfirst(==(colname), left_colnames)
+        isnothing(leftind) || (disambiguated_right_colnames[ind] = Symbol(string(colname)*"_1"))
     end
 
-    @timeit to "DataFrame construction" begin
-        result = DataFrame(:Index => merged_idx; makeunique = false, copycols = false)
-        left_coredata = left.coredata
-        right_coredata = right.coredata
-    end
 
-    @timeit to "column building" for idx in 1:length(left_colnames)
+    # Construct the DataFrame
+    result = DataFrame(:Index => merged_idx; makeunique = false, copycols = false)
+    left_coredata = left.coredata
+    right_coredata = right.coredata
+
+    # Store the data from the left table in the result
+    for idx in 1:length(left_colnames)
         col_idx = left_colidxs[idx]
-        contents = @timeit to "column allocation" DataFrames.similar_missing(left.coredata[!, col_idx], merged_length)
-        @timeit to "column population" (@inbounds contents[merged_idx_left] = left_coredata[!, col_idx])
-        @timeit to "column transfer" (result[!, left_colnames[idx]] = contents)
+        contents = DataFrames.similar_missing(left.coredata[!, col_idx], merged_length)
+        @inbounds contents[merged_idx_left] = left_coredata[!, col_idx]
+        result[!, left_colnames[idx]] = contents
     end
 
-    @timeit to "column building" for idx in 1:length(right_colnames)
+    # Store the data from the right table in the result
+    for idx in 1:length(right_colnames)
         col_idx = right_colidxs[idx]
-        contents = @timeit to "column allocation" DataFrames.similar_missing(right.coredata[!, col_idx], merged_length)
-        @timeit to "column population" (@inbounds contents[merged_idx_right] = right_coredata[!, col_idx])
-        @timeit to "column transfer" result[!, disambiguated_right_colnames[idx]] = contents
+        contents = DataFrames.similar_missing(right.coredata[!, col_idx], merged_length)
+        @inbounds contents[merged_idx_right] = right_coredata[!, col_idx]
+        # note that column names have to be disambiguated
+        result[!, disambiguated_right_colnames[idx]] = contents
     end
 
-    return @timeit to "TSFrame construction" TSFrame(result, :Index; issorted = true, copycols = false)
+    return TSFrame(result, :Index; issorted = true, copycols = false)
 
 end
 

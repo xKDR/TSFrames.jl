@@ -1,6 +1,6 @@
 module TSFrames
 
-using DataFrames, Dates, ShiftedArrays, RecipesBase, RollingFunctions, Tables, TimerOutputs
+using DataFrames, Dates, ShiftedArrays, RecipesBase, RollingFunctions, Tables
 
 import Base.convert
 import Base.diff
