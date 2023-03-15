@@ -9,6 +9,10 @@ joinmap = Dict(
     :innerjoin => :inner, 
     :leftjoin => :left,
     :rightjoin => :right,
+    :inner => :inner, 
+    :outer => :outer,
+    :left => :left,
+    :right => :right,
 )
 
 """
@@ -308,9 +312,9 @@ function Base.join(
     ts...;
     jointype::Symbol=:JoinAll
 )
-    result = TSFrames.fast_join(ts1.coredata, ts2.coredata; method = joinmap[method])
+    result = TSFrames.fast_join(ts1, ts2; method = joinmap[jointype])
     for tsf in ts
-        result = TSFrames.fast_join(result, tsf.coredata; method = joinmap[method])
+        result = TSFrames.fast_join(result, tsf; method = joinmap[jointype])
     end
     return TSFrame(result)
 end
@@ -393,8 +397,6 @@ function fast_join(left::TSFrame, right::TSFrame; method = :outer)
         do_right = Val(true)
     end
 
-    to = Main.to
-
     merged_idx, merged_idx_left, merged_idx_right = sort_merge_idx(index(left), index(right), Val(true), Val(true))
 
     merged_length = length(merged_idx)
@@ -416,7 +418,14 @@ function fast_join(left::TSFrame, right::TSFrame; method = :outer)
     # disambiguate col names
     for (ind, colname) in enumerate(right_colnames)
         leftind = findfirst(==(colname), left_colnames)
-        isnothing(leftind) || (disambiguated_right_colnames[ind] = Symbol(string(colname)*"_1"))
+        isnothing(leftind) && continue
+        unique_indicator = Symbol(colname)
+        try_idx = 0
+        while in(unique_indicator, left_colnames)
+            try_idx += 1
+            unique_indicator = Symbol(colname, "_", try_idx)
+        end
+        disambiguated_right_colnames[ind] = unique_indicator
     end
 
 
