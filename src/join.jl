@@ -1,10 +1,14 @@
 joinmap = Dict(
-    :JoinInner=>DataFrames.innerjoin,
-    :JoinBoth=>DataFrames.innerjoin,
-    :JoinOuter=>DataFrames.outerjoin,
-    :JoinAll=>DataFrames.outerjoin,
-    :JoinLeft=>DataFrames.leftjoin,
-    :JoinRight=>DataFrames.rightjoin
+    :JoinInner => :inner,
+    :JoinBoth => :inner,
+    :JoinOuter => :outer,
+    :JoinAll => :outer,
+    :JoinLeft => :left,
+    :JoinRight => :right,
+    :outerjoin => :outer,
+    :innerjoin => :inner, 
+    :leftjoin => :left,
+    :rightjoin => :right,
 )
 
 """
@@ -70,6 +74,16 @@ where `jointype` must be one of `:JoinInner`, `:JoinBoth`, `:JoinOuter`, `:JoinA
 `:JoinLeft` or `:JoinRight`. Note that `join` on multiple `TSFrame`s is left associative.
 
 `cbind` is an alias for `join` method.
+
+## Using the `DataFrames` join methods
+
+DataFrames.jl's join methods are battle-tested, and handle quite a few error cases which `TSFrames.join` may not. 
+In order to use DataFrames' join methods, which are somewhat slower than `TSFrames.join`, you would have to 
+join the TSFrames' internal DataFrames, then construct a new TSFrame.  For `ts1::TSFrame`, `ts2::TSFrame`, 
+this is how you would construct an outer join:
+```julia
+TSFrame(DataFrames.outerjoin(ts1.coredata, ts2.coredata; makeunique = true))
+```
 
 # Examples
 ```jldoctest; setup = :(using TSFrames, DataFrames, Dates, Random, Statistics)
@@ -294,9 +308,9 @@ function Base.join(
     ts...;
     jointype::Symbol=:JoinAll
 )
-    result = joinmap[jointype](ts1.coredata, ts2.coredata, on=:Index, makeunique=true)
+    result = TSFrames.fast_join(ts1.coredata, ts2.coredata; method = joinmap[method])
     for tsf in ts
-        result = joinmap[jointype](result, tsf.coredata, on=:Index, makeunique=true)
+        result = TSFrames.fast_join(result, tsf.coredata; method = joinmap[method])
     end
     return TSFrame(result)
 end
@@ -427,18 +441,6 @@ function fast_join(left::TSFrame, right::TSFrame; method = :outer)
     end
 
     return @timeit to "TSFrame construction" TSFrame(result, :Index; issorted = true, copycols = false)
-
-end
-
-function fast_outerjoin(ts1::TSFrame, ts2::TSFrame, others:::TSFrame...)
-
-    result = fast_outerjoin(ts1, ts2)
-    
-    for other in others
-        result = fast_outerjoin(ts1, ts2)
-    end
-
-    return result
 
 end
 
