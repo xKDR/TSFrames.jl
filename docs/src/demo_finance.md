@@ -5,7 +5,7 @@
 To load the IBM historical data, we will use the `MarketData.yahoo` function from [MarketData.jl](https://github.com/JuliaQuant/MarketData.jl), which returns the data in the form of a `TimeArray`. We just simply pass this on to the `TSFrame` constructor.
 
 ```@repl e1
-using TSFrames, MarketData, Plots, Statistics
+using TSFrames, MarketData, Plots, Statistics, Impute
 ibm_ts = TSFrame(MarketData.yahoo(:IBM))
 ```
 
@@ -54,6 +54,12 @@ After the `join` operation the column names are modified because we
 merged two same-named columns (`AdjClose`) so we use
 `TSFrames.rename!()` method to rename the columns to easily
 remembered stock names.
+
+## Fill missing values
+
+```@repl e1
+ibm_aapl = ibm_aapl |> Impute.locf()
+```
 
 ## Convert data into weekly frequency using last values
 
@@ -106,3 +112,50 @@ savefig("ts-plot.svg"); nothing # hide
 ```
 
 ![](ts-plot.svg)
+
+## Aggregation and rolling window operations
+
+Here, we compute realised volatility of returns of both IBM and Apple
+stock weekly and bi-monthly. Then, we compute daily returns volatility
+on a rolling basis with a window size of 10.
+
+```@repl e1
+daily_returns = diff(log.(ibm_aapl))
+rvol = apply(daily_returns, Week(1), std) # Compute the realised volatility
+rvol = apply(daily_returns, Month(2), std) # Every two months
+rollapply(daily_returns, std, 10) # Compute rolling vols
+```
+
+## Rolling regression with a window of 10
+
+One of the common finance problems is to run a rolling window
+regression of firm returns over market returns. For doing this, we
+will use the `lm()` function from the `GLM` package. We will create a
+separate function `regress()` which would take in the data as an
+argument and use pre-defined strings to identify the returns columns,
+pass them to `lm()`, and return the results.
+
+We start by downloading the S&P500 daily data from Yahoo Finance, then
+performing the same steps as above to come to a joined `TSFrame` object
+containing daily returns of S&P500 and IBM stock prices. Then, use
+`rollapply()` with `bycolumn=false` to tell `rollapply()` to pass in
+the entire `TSFrame` to the function in one go for each iteration
+within the window.
+
+```@repl e1
+sp500 = TSFrame(MarketData.yahoo("^GSPC"));
+sp500_adjclose = TSFrames.subset(sp500, date_from, date_to)[:, ["AdjClose"]]
+
+sp500_ibm = join(sp500_adjclose, ibm_adjclose, jointype=:JoinBoth)
+sp500_ibm_returns = diff(log.(sp500_ibm))
+TSFrames.rename!(sp500_ibm_returns, ["SP500", "IBM"]);
+
+function regress(data)
+    ll = lm(@formula(IBM ~ SP500), data)
+    co::Real = coef(ll)[coefnames(ll) .== "IBM"][1]
+    sd::Real = Statistics.std(residuals(ll))
+    return (co, sd)
+end
+
+rollapply(sp500_ibm_returns, regress, 10, bycolumn=false)
+```
