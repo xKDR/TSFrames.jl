@@ -1,6 +1,6 @@
 module TSFrames
 
-using DataFrames, Dates, ShiftedArrays, RecipesBase, RollingFunctions, Tables, Indicators
+using DataFrames, Dates, ShiftedArrays, RecipesBase, RollingFunctions, Tables # , Indicators
 
 import Base.convert
 import Base.diff
@@ -75,9 +75,9 @@ export TSFrame,
     to_nanoseconds,
     vcat,
     DataFrame,
-    Date,
-    sma,
-    runmean
+    Date
+# sma,
+# runmean
 
 include("TSFrame.jl")
 include("utils.jl")
@@ -99,6 +99,6 @@ include("to_period.jl")
 include("vcat.jl")
 include("broadcasting.jl")
 include("tables.jl")
-include("indicators.jl")
+# include("indicators.jl")
 
 end                             # END module TSFrames
