@@ -1,61 +1,100 @@
+"""
+Methods for using Indicators.jl functions on TSFrame objects from TSFrames.jl package.
+See respective documentation on Indicators.jl for full description of the methods
+"""
 module IndicatorsExt
 
 using TSFrames, Indicators
 
-# Methods for using Indicators.jl functions on TSFrame objects from TSFrames.jl package
-# See respective documentation on Indicators.jl for full description of the methods
-
-function uni_func(X::TSFrame, f::Function, input_flds::Symbol, rename_flds::Vector{Symbol}; kwargs...)
+"""
+Abstracted function for Indicators.jl methods that take a single input, such as SMA, EMA, etc.
+"""
+function apply_func(X::TSFrame, f::Function, input_flds::Symbol, rename_flds::Vector{Symbol}; kwargs...)
     return TSFrames.rename!(TSFrame(f(X[:, input_flds]; kwargs...), index(X)), rename_flds)
 end
 
-function multi_func(X::TSFrame, f::Function, input_flds::Vector{Symbol}, rename_flds::Vector{Symbol}; kwargs...)
+"""
+Abstracted function for Indicators.jl methods that take multiple input columns as Matrix, such as VWMA, VWAP, etc.
+"""
+function apply_func(X::TSFrame, f::Function, input_flds::Vector{Symbol}, rename_flds::Vector{Symbol}; kwargs...)
     return TSFrames.rename!(TSFrame(f(Matrix(X[:, input_flds]); kwargs...), index(X)), rename_flds)
 end
 
-# Indicators.jl/src/ma.jl
-Indicators.runmean(X::TSFrame, x::Symbol; kwargs...) = uni_func(X, Indicators.runmean, x, [:runmean], kwargs...)
-Indicators.sma(X::TSFrame, x::Symbol; kwargs...) = uni_func(X, Indicators.sma, x, [:sma], kwargs...)
-Indicators.trima(X::TSFrame, x::Symbol; kwargs...) = uni_func(X, Indicators.trima, x, [:trima], kwargs...)
-Indicators.wma(X::TSFrame, x::Symbol; kwargs...) = uni_func(X, Indicators.wma, x, [:wma], kwargs...)
-Indicators.ema(X::TSFrame, x::Symbol; kwargs...) = uni_func(X, Indicators.ema, x, [:ema], kwargs...)
-Indicators.mma(X::TSFrame, x::Symbol; kwargs...) = uni_func(X, Indicators.mma, x, [:mma], kwargs...)
-Indicators.dema(X::TSFrame, x::Symbol; kwargs...) = uni_func(X, Indicators.dema, x, [:dema], kwargs...)
-Indicators.tema(X::TSFrame, x::Symbol; kwargs...) = uni_func(X, Indicators.tema, x, [:tema], kwargs...)
-Indicators.mama(X::TSFrame, x::Symbol; kwargs...) = uni_func(X, Indicators.mama, x, [:mama, :fama], kwargs...)
-Indicators.hma(X::TSFrame, x::Symbol; kwargs...) = uni_func(X, Indicators.hma, x, [:hma], kwargs...)
-Indicators.swma(X::TSFrame, x::Symbol; kwargs...) = uni_func(X, Indicators.swma, x, [:swma], kwargs...)
-Indicators.kama(X::TSFrame, x::Symbol; kwargs...) = uni_func(X, Indicators.kama, x, [:kama], kwargs...)
-Indicators.alma(X::TSFrame, x::Symbol; kwargs...) = uni_func(X, Indicators.alma, x, [:alma], kwargs...)
-Indicators.zlema(X::TSFrame, x::Symbol; kwargs...) = uni_func(X, Indicators.zlema, x, [:zlema], kwargs...)
-Indicators.hama(X::TSFrame, x::Symbol; kwargs...) = uni_func(X, Indicators.hama, x, [:hama], kwargs...)
-# ## VWMA, VWAP are defined on Matrix, not Array
-Indicators.vwma(X::TSFrame, x::Vector{Symbol}; kwargs...) = multi_func(X, Indicators.vwma, x, [:vwma], kwargs...)
-Indicators.vwap(X::TSFrame, x::Vector{Symbol}; kwargs...) = multi_func(X, Indicators.vwap, x, [:vwma], kwargs...)
+##########################################################################################
+### Dispatches to allow user to specify Symbol or Vector{Symbol} for input arguments
 
 # Indicators.jl/src/ma.jl
+Indicators.runmean(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.runmean, x, [:RUNMEAN]; kwargs...)
+Indicators.sma(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.sma, x, [:SMA]; kwargs...)
+Indicators.trima(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.trima, x, [:TRIMA]; kwargs...)
+Indicators.wma(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.wma, x, [:WMA]; kwargs...)
+Indicators.ema(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.ema, x, [:EMA]; kwargs...)
+Indicators.mma(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.mma, x, [:MMA]; kwargs...)
+Indicators.dema(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.dema, x, [:DEMA]; kwargs...)
+Indicators.tema(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.tema, x, [:TEMA]; kwargs...)
+Indicators.mama(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.mama, x, [:MAMA, :FAMA]; kwargs...)
+Indicators.hma(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.hma, x, [:HMA]; kwargs...)
+Indicators.swma(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.swma, x, [:SWMA]; kwargs...)
+Indicators.kama(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.kama, x, [:KAMA]; kwargs...)
+Indicators.alma(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.alma, x, [:ALMA]; kwargs...)
+Indicators.zlema(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.zlema, x, [:ZLEMA]; kwargs...)
+Indicators.hama(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.hama, x, [:HammingMA]; kwargs...)
+Indicators.vwma(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.vwma, x, [:VWMA]; kwargs...)
+Indicators.vwap(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.vwap, x, [:VWAP]; kwargs...)
 
-## aroon Matrix
-## donch Matrix
-## Ichimoku
-Indicators.momentum(X::TSFrame, x::Symbol; kwargs...) = TSFrame(Indicators.momentum(X[:, x]; kwargs...), index(X))
-Indicators.roc(X::TSFrame, x::Symbol; kwargs...) = TSFrame(Indicators.roc(X[:, x]; kwargs...), index(X))
-Indicators.macd(X::TSFrame, x::Symbol; kwargs...) = TSFrame(Indicators.macd(X[:, x]; kwargs...), index(X))
-Indicators.rsi(X::TSFrame, x::Symbol; kwargs...) = TSFrame(Indicators.rsi(X[:, x]; kwargs...), index(X))
-Indicators.adx(X::TSFrame, x::Symbol; kwargs...) = TSFrame(Indicators.adx(X[:, x]; kwargs...), index(X))
-## Heikin Ashi
-Indicators.kst(X::TSFrame, x::Symbol; kwargs...) = TSFrame(Indicators.kst(X[:, x]; kwargs...), index(X))
-## wpr
-## cci
-## stoch
-## smi
-smi
+# Indicators.jl/src/reg.jl
+Indicators.mlr_beta(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.mlr_beta, x, [:Intercept, :Slope]; kwargs...)
+Indicators.mlr_slope(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.mlr_slope, x, [:Slope]; kwargs...)
+Indicators.mlr_intercept(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.mlr_intercept, x, [:Intercept]; kwargs...)
+Indicators.mlr(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.mlr, x, [:MLR]; kwargs...)
+Indicators.mlr_se(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.mlr_se, x, [:StdErr]; kwargs...)
+Indicators.mlr_ub(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.mlr_ub, x, [:MLRUB]; kwargs...)
+Indicators.mlr_lb(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.mlr_lb, x, [:MLRLB]; kwargs...)'
+Indicators.mlr_bands(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.mlr_bands, x, [:MLRLB, :MLR, :MLRUB]; kwargs...)
+Indicators.mlr_rsq(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.mlr_rsq, x, [:RSquared]; kwargs...)
+
+# Indicators.jl/src/mom.jl
+Indicators.aroon(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.aroon, x, [:AroonUp, :AroonDn, :AroonOsc]; kwargs...)
+Indicators.donch(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.donch, x, [:Low, :Mid, :High]; kwargs...)
+Indicators.ichimoku(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.ichimoku, x, [:Tenkan, :Kijun, :SenkouA, :SenkouB, :Chikou]; kwargs...)
+Indicators.momentum(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.momentum, x, [:Momentum]; kwargs...)
+Indicators.roc(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.roc, x, [:ROC]; kwargs...)
+Indicators.macd(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.macd, x, [:MACD, :Signal, :Histogram]; kwargs...)
+Indicators.rsi(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.rsi, x, [:RSI]; kwargs...)
+Indicators.adx(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.adx, x, [:DiPlus, :DiMinus, :ADX]; kwargs...)
+Indicators.heikinashi(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.heikinashi, x, [:Open, :High, :Low, :Close]; kwargs...)
+Indicators.psar(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.psar, x, [:PSAR]; kwargs...)
+Indicators.kst(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.kst, x, [:KST]; kwargs...)
+Indicators.wpr(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.wpr, x, [:WPR]; kwargs...)
+Indicators.cci(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.cci, x, [:CCI]; kwargs...)
+Indicators.stoch(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.stoch, x, [:Stochastic, :Signal]; kwargs...)
+Indicators.smi(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.smi, x, [:SMI, :Signal]; kwargs...)
+
+# Indicators.jl/src/vol.jl
+Indicators.bbands(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.bbands, x, [:LB, :MA, :UB]; kwargs...)
+Indicators.tr(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.tr, x, [:TR]; kwargs...)
+Indicators.atr(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.atr, x, [:ATR]; kwargs...)
+Indicators.keltner(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.keltner, x, [:KeltnerLower, :KeltnerMiddle, :KeltnerUpper]; kwargs...)
+
+#Indicators.jl/src/trendy.jl
+Indicators.maxima(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.maxima, x, [:Maxima]; kwargs...)
+Indicators.minima(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.minima, x, [:Minima]; kwargs...)
+Indicators.support(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.support, x, [:Support]; kwargs...)
+Indicators.resistance(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.resistance, x, [:Resistance]; kwargs...)
+
+# Indicators.jl/src/utils.jl
+Indicators.crossover(X::TSFrame, x::Symbol, y::Symbol) = apply_func(X, Indicators.crossover, [x, y], [:CrossOver])
+Indicators.crossunder(X::TSFrame, x::Symbol, y::Symbol) = apply_func(X, Indicators.crossunder, [x, y], [:CrossUnder])
+
+# Indicators.jl/src/chaos.jl
+Indicators.hurst(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.hurst, x, [:Hurst]; kwargs...)
+Indicators.rsrange(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.rsrange, x, [:RS]; kwargs...)
+
+##########################################################################################
+### Multiple dispatches for "default" column labels, e.g. :Close, :High, :Low, :Open, :Volume
 
 # Indicators.jl/src/ma.jl
-Indicators.bbands(X::TSFrame, x::Symbol; kwargs...) = TSFrame(Indicators.bbands(X[:, x]; kwargs...), index(X))
-## tr
-## atr
-## keltner
-
+Indicators.runmean(X::TSFrame; kwargs...) = Indicators.runmean(X, :Close; kwargs...)
+Indicators.sma(X::TSFrame; kwargs...) = Indicators.sma(X, :Close; kwargs...)
 
 end
