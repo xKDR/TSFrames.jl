@@ -83,6 +83,7 @@ Indicators.support(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.
 Indicators.resistance(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.resistance, x, [:Resistance]; kwargs...)
 
 # Indicators.jl/src/utils.jl
+## Assumes both x and y are in same TSFrame object
 Indicators.crossover(X::TSFrame, x::Symbol, y::Symbol) = apply_func(X, Indicators.crossover, [x, y], [:CrossOver])
 Indicators.crossunder(X::TSFrame, x::Symbol, y::Symbol) = apply_func(X, Indicators.crossunder, [x, y], [:CrossUnder])
 
@@ -92,9 +93,65 @@ Indicators.rsrange(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.
 
 ##########################################################################################
 ### Multiple dispatches for "default" column labels, e.g. :Close, :High, :Low, :Open, :Volume
+close = :Close
+high = :High
+low = :Low
+open = :Open
+volume = :Volume
+
+has_close(X::TSFrame)::Bool = :Close in propertynames(X.coredata)
+close_error = error("Argument must have Close field")
+has_close_volume(X::TSFrame)::Bool = all(fld -> fld in propertynames(X.coredata), [:Close, :Volume])
+close_vol_error = error("Argument must have Close and Volume field")
 
 # Indicators.jl/src/ma.jl
-Indicators.runmean(X::TSFrame; kwargs...) = Indicators.runmean(X, :Close; kwargs...)
-Indicators.sma(X::TSFrame; kwargs...) = Indicators.sma(X, :Close; kwargs...)
+Indicators.runmean(X::TSFrame; kwargs...) = has_close(X) ? Indicators.runmean(X, close; kwargs...) : close_error
+Indicators.sma(X::TSFrame; kwargs...) = has_close(X) ? Indicators.sma(X, close; kwargs...) : close_error
+Indicators.trima(X::TSFrame; kwargs...) = has_close(X) ? Indicators.trima(X, close; kwargs...) : close_error
+Indicators.wma(X::TSFrame; kwargs...) = has_close(X) ? Indicators.wma(X, close; kwargs...) : close_error
+Indicators.ema(X::TSFrame; kwargs...) = has_close(X) ? Indicators.ema(X, close; kwargs...) : close_error
+Indicators.mma(X::TSFrame; kwargs...) = has_close(X) ? Indicators.mma(X, close; kwargs...) : close_error
+Indicators.dema(X::TSFrame; kwargs...) = has_close(X) ? Indicators.dema(X, close; kwargs...) : close_error
+Indicators.tema(X::TSFrame; kwargs...) = has_close(X) ? Indicators.tema(X, close; kwargs...) : close_error
+Indicators.mama(X::TSFrame; kwargs...) = has_close(X) ? Indicators.mama(X, close; kwargs...) : close_error
+Indicators.hma(X::TSFrame; kwargs...) = has_close(X) ? Indicators.hma(X, close; kwargs...) : close_error
+Indicators.swma(X::TSFrame; kwargs...) = has_close(X) ? Indicators.swma(X, close; kwargs...) : close_error
+Indicators.kama(X::TSFrame; kwargs...) = has_close(X) ? Indicators.kama(X, close; kwargs...) : close_error
+Indicators.alma(X::TSFrame; kwargs...) = has_close(X) ? Indicators.alma(X, close; kwargs...) : close_error
+Indicators.zlema(X::TSFrame; kwargs...) = has_close(X) ? Indicators.zlema(X, close; kwargs...) : close_error
+Indicators.hama(X::TSFrame; kwargs...) = has_close(X) ? Indicators.hama(X, close; kwargs...) : close_error
+Indicators.vwma(X::TSFrame; kwargs...) = has_close_volume(X) ? Indicators.vwma(X, [close, volume]; kwargs...) : close_vol_error
+Indicators.vwap(X::TSFrame; kwargs...) = has_close_volume(X) ? Indicators.vwap(X, [close, volume]; kwargs...) : close_vol_error
+
+# Indicators.jl/src/reg.jl
+Indicators.mlr_beta(X::TSFrame; kwargs...) = has_close(X) ? Indicators.mlr_beta(X, close; kwargs...) : close_error
+Indicators.mlr_slope(X::TSFrame; kwargs...) = has_close(X) ? Indicators.mlr_slope(X, close; kwargs...) : close_error
+Indicators.mlr_intercept(X::TSFrame; kwargs...) = has_close(X) ? Indicators.mlr_intercept(X, close; kwargs...) : close_error
+Indicators.mlr(X::TSFrame; kwargs...) = has_close(X) ? Indicators.mlr(X, close; kwargs...) : close_error
+Indicators.mlr_se(X::TSFrame; kwargs...) = has_close(X) ? Indicators.mlr_se(X, close; kwargs...) : close_error
+Indicators.mlr_ub(X::TSFrame; kwargs...) = has_close(X) ? Indicators.mlr_ub(X, close; kwargs...) : close_error
+Indicators.mlr_lb(X::TSFrame; kwargs...) = has_close(X) ? Indicators.mlr_lb(X, close; kwargs...) : close_error
+Indicators.mlr_bands(X::TSFrame; kwargs...) = has_close(X) ? Indicators.mlr_bands(X, close; kwargs...) : close_error
+Indicators.mlr_rsq(X::TSFrame; kwargs...) = has_close(X) ? Indicators.mlr_rsq(X, close; kwargs...) : close_error
+
+# Indicators.jl/src/mom.jl
+Indicators.aroon(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.aroon, x, [:AroonUp, :AroonDn, :AroonOsc]; kwargs...)
+Indicators.donch(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.donch, x, [:Low, :Mid, :High]; kwargs...)
+Indicators.ichimoku(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.ichimoku, x, [:Tenkan, :Kijun, :SenkouA, :SenkouB, :Chikou]; kwargs...)
+Indicators.momentum(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.momentum, x, [:Momentum]; kwargs...)
+Indicators.roc(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.roc, x, [:ROC]; kwargs...)
+Indicators.macd(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.macd, x, [:MACD, :Signal, :Histogram]; kwargs...)
+Indicators.rsi(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.rsi, x, [:RSI]; kwargs...)
+Indicators.adx(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.adx, x, [:DiPlus, :DiMinus, :ADX]; kwargs...)
+Indicators.heikinashi(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.heikinashi, x, [:Open, :High, :Low, :Close]; kwargs...)
+Indicators.psar(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.psar, x, [:PSAR]; kwargs...)
+Indicators.kst(X::TSFrame, x::Symbol; kwargs...) = apply_func(X, Indicators.kst, x, [:KST]; kwargs...)
+Indicators.wpr(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.wpr, x, [:WPR]; kwargs...)
+Indicators.cci(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.cci, x, [:CCI]; kwargs...)
+Indicators.stoch(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.stoch, x, [:Stochastic, :Signal]; kwargs...)
+Indicators.smi(X::TSFrame, x::Vector{Symbol}; kwargs...) = apply_func(X, Indicators.smi, x, [:SMI, :Signal]; kwargs...)
+
+
 
 end
+
