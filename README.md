@@ -194,6 +194,14 @@ examples and functionality. The API reference is available on the
 All or any contributions are welcome, small or large. Please feel free
 to fork the repository and submit a Pull Request.
 
+## JuliaCon 
+
+### JuliaCon 2022 :
+[![JuliaCon 2022](https://img.youtube.com/vi/Yp-Eo-f3DEk/hqdefault.jpg)](https://www.youtube.com/embed/Yp-Eo-f3DEk)
+
+### JuliaCon 2023 :
+[![JuliaCon 2023](https://img.youtube.com/vi/2H0Z2gJWO1M/hqdefault.jpg)](https://www.youtube.com/embed/2H0Z2gJWO1M)
+
 ## Acknowledgements
 
 We gratefully acknowledge the JuliaLab at MIT for financial support
