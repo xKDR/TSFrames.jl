@@ -74,7 +74,7 @@
  2021-06-10   127.02   128.19   125.94   126.11   124.159  7.11864e7
      ⋮          ⋮        ⋮        ⋮        ⋮        ⋮          ⋮
  2021-12-22   173.04   175.86   172.15   175.64   173.435  9.21353e7
- 2021-12-23   175.85   176.85   175.27   176.28   174.067  6.83566e7
+ 2021-12-23   175.85   176.85   175.27   176.28   174.066  6.83566e7
  2021-12-27   177.09   180.42   177.07   180.33   178.066  7.49196e7
  2021-12-28   180.16   181.33   178.53   179.29   177.039  7.91443e7
  2021-12-29   179.33   180.63   178.14   179.38   177.128  6.23489e7
@@ -94,7 +94,7 @@
  2021-06-10   126.293     124.159
      ⋮          ⋮          ⋮
  2021-12-22   116.706     173.435
- 2021-12-23   117.498     174.067
+ 2021-12-23   117.498     174.066
  2021-12-27   118.388     178.066
  2021-12-28   119.297     177.039
  2021-12-29   119.944     177.128
@@ -114,7 +114,7 @@
  2021-06-10  126.293  124.159
      ⋮          ⋮        ⋮
  2021-12-22  116.706  173.435
- 2021-12-23  117.498  174.067
+ 2021-12-23  117.498  174.066
  2021-12-27  118.388  178.066
  2021-12-28  119.297  177.039
  2021-12-29  119.944  177.128
@@ -138,49 +138,49 @@
  2021-12-03  106.893  159.808
  2021-12-10  111.615  177.197
  2021-12-17  114.592  168.991
- 2021-12-23  117.498  174.067
+ 2021-12-23  117.498  174.066
  2021-12-31  120.223  175.34
                16 rows omitted</code></pre><h2 id="Compute-weekly-returns-using-the-familiar-log-and-diff-functions"><a class="docs-heading-anchor" href="#Compute-weekly-returns-using-the-familiar-log-and-diff-functions">Compute weekly returns using the familiar <code>log</code> and <code>diff</code> functions</a><a id="Compute-weekly-returns-using-the-familiar-log-and-diff-functions-1"></a><a class="docs-heading-anchor-permalink" href="#Compute-weekly-returns-using-the-familiar-log-and-diff-functions" title="Permalink"></a></h2><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ibm_aapl_weekly_returns = diff(log.(ibm_aapl_weekly))</code><code class="nohighlight hljs ansi" style="display:block;">31×2 TSFrame with Date Index
  Index       IBM_log           AAPL_log
  Date        Float64?          Float64?
 ────────────────────────────────────────────────
  2021-06-04  missing           missing
- 2021-06-11        0.0258465         0.0115307
- 2021-06-18       -0.0554487         0.0241273
- 2021-06-25        0.0256602         0.0201095
- 2021-07-02       -0.0475584         0.0501808
- 2021-07-09        0.0106558         0.0361353
- 2021-07-16       -0.0186869         0.00878229
- 2021-07-23        0.0174142         0.0147147
+ 2021-06-11        0.0258468         0.0115307
+ 2021-06-18       -0.055449          0.0241276
+ 2021-06-25        0.0256602         0.0201091
+ 2021-07-02       -0.0475583         0.0501808
+ 2021-07-09        0.0106557         0.0361356
+ 2021-07-16       -0.0186869         0.00878187
+ 2021-07-23        0.0174141         0.0147147
      ⋮              ⋮                 ⋮
- 2021-11-19       -0.024766          0.0680366
- 2021-11-26       -0.00207045       -0.0235706
- 2021-12-03        0.0258273         0.0315735
+ 2021-11-19       -0.0247662         0.0680368
+ 2021-11-26       -0.00207037       -0.0235705
+ 2021-12-03        0.0258272         0.0315733
  2021-12-10        0.0432291         0.103288
- 2021-12-17        0.0263246        -0.0474146
- 2021-12-23        0.0250372         0.0295917
- 2021-12-31        0.0229303         0.00729135
+ 2021-12-17        0.0263247        -0.0474148
+ 2021-12-23        0.0250372         0.0295918
+ 2021-12-31        0.0229304         0.00729144
                                  16 rows omitted</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; TSFrames.rename!(ibm_aapl_weekly_returns, [:IBM, :AAPL])</code><code class="nohighlight hljs ansi" style="display:block;">31×2 TSFrame with Date Index
  Index       IBM               AAPL
  Date        Float64?          Float64?
 ────────────────────────────────────────────────
  2021-06-04  missing           missing
- 2021-06-11        0.0258465         0.0115307
- 2021-06-18       -0.0554487         0.0241273
- 2021-06-25        0.0256602         0.0201095
- 2021-07-02       -0.0475584         0.0501808
- 2021-07-09        0.0106558         0.0361353
- 2021-07-16       -0.0186869         0.00878229
- 2021-07-23        0.0174142         0.0147147
+ 2021-06-11        0.0258468         0.0115307
+ 2021-06-18       -0.055449          0.0241276
+ 2021-06-25        0.0256602         0.0201091
+ 2021-07-02       -0.0475583         0.0501808
+ 2021-07-09        0.0106557         0.0361356
+ 2021-07-16       -0.0186869         0.00878187
+ 2021-07-23        0.0174141         0.0147147
      ⋮              ⋮                 ⋮
- 2021-11-19       -0.024766          0.0680366
- 2021-11-26       -0.00207045       -0.0235706
- 2021-12-03        0.0258273         0.0315735
+ 2021-11-19       -0.0247662         0.0680368
+ 2021-11-26       -0.00207037       -0.0235705
+ 2021-12-03        0.0258272         0.0315733
  2021-12-10        0.0432291         0.103288
- 2021-12-17        0.0263246        -0.0474146
- 2021-12-23        0.0250372         0.0295917
- 2021-12-31        0.0229303         0.00729135
-                                 16 rows omitted</code></pre><h2 id="Compute-standard-deviation-of-weekly-returns"><a class="docs-heading-anchor" href="#Compute-standard-deviation-of-weekly-returns">Compute standard deviation of weekly returns</a><a id="Compute-standard-deviation-of-weekly-returns-1"></a><a class="docs-heading-anchor-permalink" href="#Compute-standard-deviation-of-weekly-returns" title="Permalink"></a></h2><p>Computing standard deviation is done using the <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.std"><code>std</code></a> function from <code>Statistics</code> package. The <code>skipmissing</code> is used to skip missing values which may have been generated while computing log returns or were already present in the data.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ibm_std = std(skipmissing(ibm_aapl_weekly_returns[:, :IBM]))</code><code class="nohighlight hljs ansi" style="display:block;">0.0340792603624418</code></pre><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; aapl_std = std(skipmissing(ibm_aapl_weekly_returns[:, :AAPL]))</code><code class="nohighlight hljs ansi" style="display:block;">0.030582235738495354</code></pre><h3 id="Scatter-plot-of-AAPL-and-IBM"><a class="docs-heading-anchor" href="#Scatter-plot-of-AAPL-and-IBM">Scatter plot of AAPL and IBM</a><a id="Scatter-plot-of-AAPL-and-IBM-1"></a><a class="docs-heading-anchor-permalink" href="#Scatter-plot-of-AAPL-and-IBM" title="Permalink"></a></h3><p>Here, we use the <a href="https://docs.juliaplots.org/latest/tutorial/">Plots</a> package to create a scatter plot with IBM weekly returns on the x-axis and Apple weekly returns on the y-axis.</p><pre><code class="language-julia hljs">plot(ibm_aapl_weekly_returns[:, :AAPL],
+ 2021-12-17        0.0263247        -0.0474148
+ 2021-12-23        0.0250372         0.0295918
+ 2021-12-31        0.0229304         0.00729144
+                                 16 rows omitted</code></pre><h2 id="Compute-standard-deviation-of-weekly-returns"><a class="docs-heading-anchor" href="#Compute-standard-deviation-of-weekly-returns">Compute standard deviation of weekly returns</a><a id="Compute-standard-deviation-of-weekly-returns-1"></a><a class="docs-heading-anchor-permalink" href="#Compute-standard-deviation-of-weekly-returns" title="Permalink"></a></h2><p>Computing standard deviation is done using the <a href="https://docs.julialang.org/en/v1/stdlib/Statistics/#Statistics.std"><code>std</code></a> function from <code>Statistics</code> package. The <code>skipmissing</code> is used to skip missing values which may have been generated while computing log returns or were already present in the data.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; ibm_std = std(skipmissing(ibm_aapl_weekly_returns[:, :IBM]))</code><code class="nohighlight hljs ansi" style="display:block;">0.034079313389528874</code></pre><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; aapl_std = std(skipmissing(ibm_aapl_weekly_returns[:, :AAPL]))</code><code class="nohighlight hljs ansi" style="display:block;">0.03058229235977582</code></pre><h3 id="Scatter-plot-of-AAPL-and-IBM"><a class="docs-heading-anchor" href="#Scatter-plot-of-AAPL-and-IBM">Scatter plot of AAPL and IBM</a><a id="Scatter-plot-of-AAPL-and-IBM-1"></a><a class="docs-heading-anchor-permalink" href="#Scatter-plot-of-AAPL-and-IBM" title="Permalink"></a></h3><p>Here, we use the <a href="https://docs.juliaplots.org/latest/tutorial/">Plots</a> package to create a scatter plot with IBM weekly returns on the x-axis and Apple weekly returns on the y-axis.</p><pre><code class="language-julia hljs">plot(ibm_aapl_weekly_returns[:, :AAPL],
     ibm_aapl_weekly_returns[:, :IBM],
     seriestype = :scatter;
     xlabel = &quot;AAPL&quot;,
@@ -190,68 +190,68 @@
  Date        Float64?           Float64?
 ──────────────────────────────────────────────────
  2021-06-01  missing            missing
- 2021-06-02        0.0105551          0.00625663
- 2021-06-03       -0.00116747        -0.0122287
- 2021-06-04        0.0127661          0.0188435
+ 2021-06-02        0.0105549          0.00625656
+ 2021-06-03       -0.00116728        -0.0122285
+ 2021-06-04        0.0127662          0.0188435
  2021-06-07        0.00406173         7.94047e-5
- 2021-06-08        0.00706858         0.00664973
- 2021-06-09        0.0106759          0.00307249
- 2021-06-10       -0.000863011       -0.00805552
+ 2021-06-08        0.00706857         0.00664973
+ 2021-06-09        0.0106761          0.00307243
+ 2021-06-10       -0.000863193       -0.00805564
      ⋮               ⋮                  ⋮
- 2021-12-22        0.00602956         0.0152026
- 2021-12-23        0.00675952         0.00363725
- 2021-12-27        0.00755001         0.022715
- 2021-12-28        0.00764449        -0.00578402
- 2021-12-29        0.00541386         0.000501838
- 2021-12-30        0.00419073        -0.0066
- 2021-12-31       -0.00186881        -0.00354142
+ 2021-12-22        0.00602962         0.0152026
+ 2021-12-23        0.00675953         0.00363716
+ 2021-12-27        0.00754987         0.0227149
+ 2021-12-28        0.00764444        -0.00578376
+ 2021-12-29        0.00541398         0.000501753
+ 2021-12-30        0.00419067        -0.00659991
+ 2021-12-31       -0.00186856        -0.00354151
                                   135 rows omitted</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; rvol = apply(daily_returns, Week(1), std) # Compute the realised volatility</code><code class="nohighlight hljs ansi" style="display:block;">31×2 TSFrame with Date Index
  Index       IBM_log_std       AAPL_log_std
  Date        Float64?          Float64?
 ────────────────────────────────────────────────
  2021-06-01  missing           missing
- 2021-06-07        0.00423132        0.00685025
- 2021-06-14        0.00515145        0.0140532
- 2021-06-21        0.0135566         0.00849503
- 2021-06-28        0.0222421         0.00681127
- 2021-07-06        0.00774681        0.0123477
- 2021-07-12        0.00554721        0.0145983
- 2021-07-19        0.00913874        0.020118
+ 2021-06-07        0.00423145        0.00685033
+ 2021-06-14        0.00515147        0.0140529
+ 2021-06-21        0.0135567         0.00849499
+ 2021-06-28        0.0222421         0.00681123
+ 2021-07-06        0.00774691        0.0123475
+ 2021-07-12        0.00554718        0.0145984
+ 2021-07-19        0.0091388         0.0201179
      ⋮              ⋮                 ⋮
- 2021-11-15        0.00421518        0.0107341
- 2021-11-22        0.0052403         0.0175359
+ 2021-11-15        0.00421515        0.0107341
+ 2021-11-22        0.00524033        0.0175359
  2021-11-29        0.0142161         0.0188586
  2021-12-06        0.00430293        0.0142467
- 2021-12-13        0.0139502         0.0249444
- 2021-12-20        0.00719013        0.0122395
- 2021-12-27        0.00389377        0.0121978
+ 2021-12-13        0.0139502         0.0249443
+ 2021-12-20        0.0071901         0.0122393
+ 2021-12-27        0.00389364        0.0121977
                                  16 rows omitted</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; rvol = apply(daily_returns, Month(2), std) # Every two months</code><code class="nohighlight hljs ansi" style="display:block;">4×2 TSFrame with Date Index
  Index       IBM_log_std       AAPL_log_std
  Date        Float64?          Float64?
 ───────────────────────────────────────────────
  2021-06-01  missing           missing
- 2021-08-02        0.00863795        0.0124996
- 2021-10-01        0.0187056         0.0131257
- 2021-12-01        0.00792975        0.0184034</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; rollapply(daily_returns, std, 10) # Compute rolling vols</code><code class="nohighlight hljs ansi" style="display:block;">141×2 TSFrame with Date Index
+ 2021-08-02        0.00863798        0.0124996
+ 2021-10-01        0.0187055         0.0131257
+ 2021-12-01        0.00792974        0.0184033</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; rollapply(daily_returns, std, 10) # Compute rolling vols</code><code class="nohighlight hljs ansi" style="display:block;">141×2 TSFrame with Date Index
  Index       rolling_IBM_log_std  rolling_AAPL_log_std
  Date        Float64?             Float64?
 ───────────────────────────────────────────────────────
  2021-06-14     missing               missing
- 2021-06-15           0.00703757            0.0116
- 2021-06-16           0.00777305            0.011578
- 2021-06-17           0.0093933             0.0103009
- 2021-06-18           0.0096532             0.0105068
- 2021-06-21           0.0128876             0.0109086
- 2021-06-22           0.0125775             0.0111716
- 2021-06-23           0.0121088             0.0114158
+ 2021-06-15           0.00703763            0.0116
+ 2021-06-16           0.00777314            0.0115779
+ 2021-06-17           0.00939342            0.0103008
+ 2021-06-18           0.00965328            0.0105067
+ 2021-06-21           0.0128877             0.0109085
+ 2021-06-22           0.0125776             0.0111714
+ 2021-06-23           0.0121089             0.0114156
      ⋮                ⋮                    ⋮
  2021-12-22           0.0102034             0.0220221
- 2021-12-23           0.0102077             0.0220115
+ 2021-12-23           0.0102077             0.0220114
  2021-12-27           0.0102132             0.0213968
- 2021-12-28           0.00798222            0.0202206
- 2021-12-29           0.00799234            0.0199267
- 2021-12-30           0.00678749            0.0179653
- 2021-12-31           0.00534799            0.0116642
+ 2021-12-28           0.00798224            0.0202205
+ 2021-12-29           0.00799235            0.0199266
+ 2021-12-30           0.0067875             0.0179653
+ 2021-12-31           0.00534794            0.0116641
                                        126 rows omitted</code></pre><h2 id="Rolling-regression-with-a-window-of-10"><a class="docs-heading-anchor" href="#Rolling-regression-with-a-window-of-10">Rolling regression with a window of 10</a><a id="Rolling-regression-with-a-window-of-10-1"></a><a class="docs-heading-anchor-permalink" href="#Rolling-regression-with-a-window-of-10" title="Permalink"></a></h2><p>One of the common finance problems is to run a rolling window regression of firm returns over market returns. For doing this, we will use the <code>lm()</code> function from the <code>GLM</code> package. We will create a separate function <code>regress()</code> which would take in the data as an argument and use pre-defined strings to identify the returns columns, pass them to <code>lm()</code>, and return the results.</p><p>We start by downloading the S&amp;P500 daily data from Yahoo Finance, then performing the same steps as above to come to a joined <code>TSFrame</code> object containing daily returns of S&amp;P500 and IBM stock prices. Then, use <code>rollapply()</code> with <code>bycolumn=false</code> to tell <code>rollapply()</code> to pass in the entire <code>TSFrame</code> to the function in one go for each iteration within the window.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; sp500 = TSFrame(MarketData.yahoo(&quot;^GSPC&quot;));</code><code class="nohighlight hljs ansi" style="display:block;"></code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; sp500_adjclose = TSFrames.subset(sp500, date_from, date_to)[:, [&quot;AdjClose&quot;]]</code><code class="nohighlight hljs ansi" style="display:block;">150×1 TSFrame with Date Index
  Index       AdjClose
  Date        Float64
@@ -278,4 +278,4 @@
            sd::Real = Statistics.std(residuals(ll))
            return (co, sd)
        end</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: LoadError: UndefVarError: `@formula` not defined
-in expression starting at REPL[6]:2</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; rollapply(sp500_ibm_returns, regress, 10, bycolumn=false)</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: `sp500_ibm_returns` not defined</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Introduction</a><a class="docs-footer-nextpage" href="../user_guide/">User guide »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Wednesday 20 March 2024 11:43">Wednesday 20 March 2024</span>. Using Julia version 1.10.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+in expression starting at REPL[6]:2</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; rollapply(sp500_ibm_returns, regress, 10, bycolumn=false)</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: `sp500_ibm_returns` not defined</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Introduction</a><a class="docs-footer-nextpage" href="../user_guide/">User guide »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.25 on <span class="colophon-date" title="Wednesday 20 March 2024 11:46">Wednesday 20 March 2024</span>. Using Julia version 1.10.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
