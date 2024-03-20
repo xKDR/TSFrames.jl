@@ -139,7 +139,7 @@ julia> subset(ts,Date("2022-9-27"),:)
 
 """
 function subset(ts::TSFrame, from::T, to::T) where {T<:Union{Int, TimeType}}
-    TSFrame(DataFrames.subset(ts.coredata, :Index => x -> x .>= from .&& x .<= to))
+    TSFrame(DataFrames.subset(ts.coredata, :Index => x -> from .<= x .<= to))
 end
 
 function subset(ts::TSFrame, ::Colon, to::T) where {T<:Union{Int, TimeType}}
@@ -149,3 +149,5 @@ end
 function subset(ts::TSFrame, from::T, ::Colon) where {T<:Union{Int, TimeType}}
     TSFrame(DataFrames.subset(ts.coredata, :Index => x -> x .>= from))
 end
+
+
