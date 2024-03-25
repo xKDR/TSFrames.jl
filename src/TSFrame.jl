@@ -325,7 +325,7 @@ struct TSFrame
             throw(ArgumentError("only Int and TimeType index is supported"))
         end
 
-        if (DataFrames.ncol(coredata) == 1)
+        if (DataFrames.ncol(coredata) == 1) && propertynames(coredata)[1] !== :Index
             TSFrame(coredata, collect(Base.OneTo(DataFrames.nrow(coredata))); issorted = issorted, copycols = copycols)
         end
 
