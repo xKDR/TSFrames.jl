@@ -5,7 +5,7 @@
 To load the IBM historical data, we will use the `MarketData.yahoo` function from [MarketData.jl](https://github.com/JuliaQuant/MarketData.jl), which returns the data in the form of a `TimeArray`. We just simply pass this on to the `TSFrame` constructor.
 
 ```@repl e1
-using TSFrames, MarketData, Plots, Statistics, Impute
+using TSFrames, MarketData, Plots, Statistics, Impute, GLM
 ibm_ts = TSFrame(MarketData.yahoo(:IBM))
 ```
 
@@ -145,13 +145,14 @@ within the window.
 ```@repl e1
 sp500 = TSFrame(MarketData.yahoo("^GSPC"));
 sp500_adjclose = TSFrames.subset(sp500, date_from, date_to)[:, ["AdjClose"]]
+ibm_adjclose = ibm[:, [:Index, :AdjClose]]
 
 sp500_ibm = join(sp500_adjclose, ibm_adjclose, jointype=:JoinBoth)
 sp500_ibm_returns = diff(log.(sp500_ibm))
 TSFrames.rename!(sp500_ibm_returns, ["SP500", "IBM"]);
 
 function regress(data)
-    ll = lm(@formula(IBM ~ SP500), data)
+    ll = lm(@formula(SP500 ~ IBM), data)
     co::Real = coef(ll)[coefnames(ll) .== "IBM"][1]
     sd::Real = Statistics.std(residuals(ll))
     return (co, sd)
