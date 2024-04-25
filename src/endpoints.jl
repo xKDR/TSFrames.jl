@@ -1,20 +1,7 @@
 """
 # Computing end points
 ```julia
-endpoints(timestamps::AbstractVector{T}, on::V) where {T<:Union{Date, DateTime, Time},
-                                                       V<:Union{
-                                                           Year,
-                                                           Quarter,
-                                                           Month,
-                                                           Week,
-                                                           Day,
-                                                           Hour,
-                                                           Minute,
-                                                           Second,
-                                                           Millisecond,
-                                                           Microsecond,
-                                                           Nanosecond
-                                                       }}
+endpoints(timestamps::AbstractVector{T}, on::V) where {T<:Union{Date, DateTime, Time}, V<:Dates.Period}
 endpoints(ts::TSFrame, on::T) where {T<:Dates.Period}
 endpoints(ts::TSFrame, on::Symbol, k::Int=1)
 endpoints(ts::TSFrame, on::String, k::Int=1)
@@ -317,20 +304,7 @@ function endpoints(ts::TSFrame, on::Function, k::Int=1)
     endpoints(index(ts), on, k)
 end
 
-function endpoints(timestamps::AbstractVector{T}, on::V)::Vector{Int} where {T<:Union{Date, DateTime, Time},
-                                                                V<:Union{
-                                                                    Year,
-                                                                    Quarter,
-                                                                    Month,
-                                                                    Week,
-                                                                    Day,
-                                                                    Hour,
-                                                                    Minute,
-                                                                    Second,
-                                                                    Millisecond,
-                                                                    Microsecond,
-                                                                    Nanosecond
-                                                                }}
+function endpoints(timestamps::AbstractVector{T}, on::V)::Vector{Int} where {T<:Union{Date, DateTime, Time}, V<:Dates.Period}
     if (on.value <= 0)
         throw(DomainError("`on.value` needs to be greater than 0"))
     end
