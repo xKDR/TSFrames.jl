@@ -25,9 +25,9 @@ julia> Pkg.add("TSFrames")
 TSFrames is a [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible package. This helps in easy conversion between `TSFrame` objects and other [Tables.jl](https://github.com/JuliaData/Tables.jl) compatible types. For example, to load a `CSV` into a `TSFrame` object, we do the following.
 
 ```julia
-julia> using CSV, Dates, DataFrames, TSFrames
+julia> using CSV, Dates, DataFrames, TSFrames, Artifacts
 
-julia> ts = CSV.read("IBM.csv", TSFrame)
+julia> ts = CSV.read(joinpath(artifact"ibm", "IBM.csv"), TSFrame)
 252x6 TSFrame with Date Index
 
  Index       Open     High     Low      Close    Adj Close  Volume
