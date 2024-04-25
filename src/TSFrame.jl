@@ -5,15 +5,33 @@
 
 `::TSFrame` - A type to hold ordered data with an index.
 
-A TSFrame object is essentially a `DataFrame` with a specific column marked
-as an index. The input `DataFrame` is sorted during construction and
-is stored under the property `coredata`. The index is stored in the
-`Index` column of `coredata`.
+A TSFrame object is essentially a
+[DataFrame](https://dataframes.juliadata.org/) with a specific column
+marked as an index. The first argument can accept a DataFrame, Vector,
+or an Array with 2-dimensions. Any
+[Tables.jl](https://github.com/JuliaData/Tables.jl) compatible table
+is also accepted as an input.
+
+If the first argument is a `DataFrame` then the DataFrame may contain
+an indexing column also. The indexing column can be identified by
+providing either the column number or the column name as `String` or
+`Symbol` in the DataFrame as the second argument `index`.
+
+In case, an indexing column is not present in the DataFrame then a
+sequential index is created automatically.
+
+The input `DataFrame` is sorted during construction and is stored
+in the property `coredata`. The index is stored in the column
+called `Index` of the `coredata` DataFrame. This index can be fetched
+using the [`index()`](@ref) method.
+
+Providing an empty DataFrame to the constructor results in a TSFrame
+object with an empty index and no columns. Similarly, providing empty
+Vector or empty Array as the first argument results in an empty
+TSFrame with no columns.
 
 Permitted data inputs to the constructors are `DataFrame`, `Vector`,
-and 2-dimensional `Array`. If an index is already not present in the
-constructor then a sequential integer index is created
-automatically.
+and 2-dimensional `Array`.
 
 `TSFrame(coredata::DataFrame)`: Here, the constructor looks for a column
 named `Index` in `coredata` as the index column, if this is not found
