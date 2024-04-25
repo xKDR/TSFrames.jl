@@ -5,7 +5,7 @@
 subset(ts::TSFrame, from::T, to::T) where {T<:Union{Int, TimeType}}
 ```
 
-Create a subset of `ts` based on the `Index` starting `from`
+Create a subset of `ts` based on the [`Index`](@ref) starting `from`
 (inclusive) till `to` (inclusive).
 
 # Examples
@@ -139,6 +139,7 @@ julia> subset(ts,Date("2022-9-27"),:)
 
 """
 function subset(ts::TSFrame, from::T, to::T) where {T<:Union{Int, TimeType}}
+    #TSFrame(DataFrames.subset(ts.coredata, :Index => x -> from .<= x .<= to))
     TSFrame(DataFrames.subset(ts.coredata, :Index => x -> from .<= x .<= to))
 end
 

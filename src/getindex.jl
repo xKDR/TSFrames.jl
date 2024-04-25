@@ -252,7 +252,6 @@ julia> ts[1, "x1"]; # same as above
 ###
 
 ### Inputs: row scalar, column scalar; Output: scalar
-
 function Base.getindex(ts::TSFrame, i::Int, j::Int)
     return ts.coredata[i,j+1]
 end
@@ -274,7 +273,7 @@ end
 
 ### Inputs: row scalar, column vector; Output: TSFrame
 function Base.getindex(ts::TSFrame, i::Int, j::AbstractVector{Int})
-    TSFrame(ts.coredata[[i], Cols(:Index, j.+1)])  # increment: account for Index
+    TSFrame(ts.coredata[[i], Cols(:Index, j.+1)]) # increment: account for Index
 end
 
 
@@ -285,7 +284,6 @@ function Base.getindex(ts::TSFrame, i::Int, j::AbstractVector{T}) where {T<:Unio
         throw(ArgumentError("The column vector cannot contain both String and Symbol types."))
     end
 end
-
 
 function Base.getindex(ts::TSFrame, dt::T, j::AbstractVector{Int}) where {T<:TimeType}
     idx = findfirst(x -> x == dt, index(ts))
@@ -314,7 +312,6 @@ function Base.getindex(ts::TSFrame, i::AbstractVector{Int}, j::Int)
     ts.coredata[i, j+1] # increment: account for Index
 end
 
-
 function Base.getindex(ts::TSFrame, i::AbstractVector{Int}, j::Union{AbstractString, Symbol})
     ts.coredata[i, j]
 end
@@ -326,7 +323,6 @@ function Base.getindex(ts::TSFrame, dt::AbstractVector{T}, j::Int) where {T<:Tim
     end
     ts[idx, j]
 end
-
 
 function Base.getindex(ts::TSFrame, dt::AbstractVector{T}, j::Union{AbstractString, Symbol}) where {T<:TimeType}
     idx = map(d -> findfirst(x -> x == d, index(ts)), dt)
@@ -347,7 +343,6 @@ function Base.getindex(ts::TSFrame, i::AbstractVector{Int}, j::AbstractVector{In
     TSFrame(ts.coredata[i, Cols(:Index, j.+1)]) # increment: account for Index
 end
 
-
 function Base.getindex(ts::TSFrame, i::AbstractVector{Int}, j::AbstractVector{T}) where {T<:Union{AbstractString, Symbol}}
     if length(unique(map(x -> typeof(x), j))) == 1
         TSFrame(ts.coredata[i, Cols(:Index, j)])
@@ -355,7 +350,6 @@ function Base.getindex(ts::TSFrame, i::AbstractVector{Int}, j::AbstractVector{T}
         throw(ArgumentError("The column vector cannot contain both AbstractString and Symbol types."))
     end
 end
-
 
 function Base.getindex(ts::TSFrame, dt::AbstractVector{T}, j::AbstractVector{Int}) where {T<:TimeType}
     idx = map(d -> findfirst(x -> x == d, index(ts)), dt)
@@ -365,15 +359,13 @@ function Base.getindex(ts::TSFrame, dt::AbstractVector{T}, j::AbstractVector{Int
     ts[idx, j]
 end
 
-
 function Base.getindex(ts::TSFrame, dt::AbstractVector{D}, j::AbstractVector{T}) where {D<:TimeType, T<:Union{AbstractString, Symbol}}
-    idx = map(d -> findfirst(x -> x == d, index(ts)), dt)
     if length(unique(map(x -> typeof(x), j))) == 1
+    idx = map(d -> findfirst(x -> x == d, index(ts)), dt)
         ts[idx, j]
     else
         throw(ArgumentError("The column vector cannot contain both AbstractString and Symbol types."))
-    end
-    
+    end   
 end
 ###
 
@@ -393,7 +385,6 @@ function Base.getindex(ts::TSFrame, i::UnitRange, j::Int)
     ts[collect(i), j]
 end
 
-
 function Base.getindex(ts::TSFrame, i::UnitRange, j::Union{AbstractString, Symbol})
     ts[collect(i), j]
 end
@@ -403,7 +394,6 @@ end
 function Base.getindex(ts::TSFrame, i::UnitRange, j::AbstractVector{Int})
     ts[collect(i), j]
 end
-
 
 function Base.getindex(ts::TSFrame, i::UnitRange, j::AbstractVector{T}) where {T<:Union{AbstractString, Symbol}}
     if length(unique(map(x -> typeof(x), j))) == 1
@@ -513,7 +503,6 @@ end
 function Base.getindex(ts::TSFrame, ::Colon, j::Int)
     ts[1:TSFrames.nrow(ts), j]
 end
-
 
 function Base.getindex(ts::TSFrame, ::Colon, j::Union{AbstractString, Symbol})
     ts[1:TSFrames.nrow(ts), j]
