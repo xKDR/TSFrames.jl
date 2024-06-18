@@ -1,6 +1,6 @@
 name = "TSFrames"
 uuid = "9f90e835-9451-4aaa-bcb1-743a1b8d2f84"
-authors = ["Chirag Anand", "xKDR Forum", "Naman Kumar", "Siddhant Chaudhary", "Sumeet Suley"]
+authors = ["Chirag Anand", "Siddhant Chaudhary", "xKDR Forum", "Naman Kumar", "Sumeet Suley"]
 version = "0.2.2"
 
 [deps]
