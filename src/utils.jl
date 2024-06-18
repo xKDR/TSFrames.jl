@@ -537,6 +537,7 @@ function _check_consistency(ts::TSFrame)::Bool
     issorted(index(ts))
 end
 
+
 """
 
 ```julia

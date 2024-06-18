@@ -280,7 +280,8 @@ julia> datetimesecondsrandom[endpoints(datetimesecondsrandom, Hour(1))]
 """
 function endpoints(values::AbstractVector, on::Function, k::Int=1)
     if (k <= 0)
-        throw(DomainError("`k` needs to be greater than 0"))
+        # throw(DomainError("`k` needs to be greater than 0"))
+        throw(ArgumentError("`k` must be a postive integer."))
     end
 
     ex = Expr(:call, on, values)
@@ -304,7 +305,20 @@ function endpoints(ts::TSFrame, on::Function, k::Int=1)
     endpoints(index(ts), on, k)
 end
 
-function endpoints(timestamps::AbstractVector{T}, on::V)::Vector{Int} where {T<:Union{Date, DateTime, Time}, V<:Dates.Period}
+function endpoints(timestamps::AbstractVector{T}, on::V)::Vector{Int} where {T<:Union{Date, DateTime, Time},
+                                                                V<:Union{
+                                                                    Year,
+                                                                    Quarter,
+                                                                    Month,
+                                                                    Week,
+                                                                    Day,
+                                                                    Hour,
+                                                                    Minute,
+                                                                    Second,
+                                                                    Millisecond,
+                                                                    Microsecond,
+                                                                    Nanosecond
+                                                                }}
     if (on.value <= 0)
         throw(DomainError("`on.value` needs to be greater than 0"))
     end

@@ -132,6 +132,10 @@ julia> show(ts_weekly[1:10])
 ```
 """
 function apply(ts::TSFrame, period::T, fun::V, index_at::Function=first; renamecols::Bool=true) where {T<:Dates.Period, V<:Function}
+    if !issorted(ts[:, :Index]) 
+        throw(ArgumentError("The `Index` column in the TSFrame object is not sorted."))
+    end
+
     ep = endpoints(ts, period)
 
     j = 1

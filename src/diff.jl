@@ -73,11 +73,14 @@ julia> diff(ts, 3)[1:10]     # difference over the third row
 ```
 """
 
-# Diff
+# Diff, Here we have used ArgumentError and not DomainError
+
 function diff(ts::TSFrame, periods::Int = 1)
     if periods <= 0
-        error("periods must be a postive int")
+        #error("periods must be a postive int")
+        throw(ArgumentError("`periods` must be a postive integer."))
     end
+
     ddf = ts.coredata[:, Not(:Index)] .- TSFrames.lag(ts, periods).coredata[:, Not(:Index)]
     insertcols!(ddf, 1, "Index" => ts.coredata[:, :Index])
     TSFrame(ddf, :Index)
