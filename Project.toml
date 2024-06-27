@@ -15,8 +15,15 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 Tables = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
 Artifacts = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
 
+[weakdeps]
+Indicators = "70c4c096-89a6-5ec6-8236-da8aa3bd86fd"
+
+[extensions]
+IndicatorsExt = "Indicators"
+
 [compat]
 DataFrames = "1.3.2"
+Indicators = "0.8.2"
 RecipesBase = "1.2.1"
 RollingFunctions = "0.6.2, 0.7"
 ShiftedArrays = "1.0.0, 2"
@@ -28,4 +35,4 @@ julia = "1.6, 1.7, 1.8, 1.9, 1.10"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test"]
+test = ["Test", "MarketData", "Indicators"]
